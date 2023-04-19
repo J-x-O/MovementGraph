@@ -1,0 +1,16 @@
+{
+    "name": "JescoDev.Utility.Condition",
+    "rootNamespace": "JescoDev.Utility.Condition",
+    "references": [
+        "MackySoft.SerializeReferenceExtensions"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

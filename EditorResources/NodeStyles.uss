@@ -1,0 +1,45 @@
+.NodeExtensionContainer {
+    background-color: #1D1D1E;
+    min-width: 300px;
+    padding: 8px;
+}
+
+.NodeMainContainer {
+    background-color: #1D1D1E;
+}
+
+.ReevaluateContainer {
+    background-color: #450506;
+}
+
+.AnyStateContainer {
+    background-color: #053605;
+}
+
+.NodeHeader > .unity-text-field > *  {
+    background-color: #1D1D1E;
+    border-color: #27292C;
+    border-radius: 4px;
+    max-width: 240px;
+    min-width: 160px;
+    padding: 8px;
+}
+
+.NodeHeader > .unity-text-field  > * {
+    background-color: rgba(0,0,0,0);
+    border-color: rgba(0,0,0,0);
+}
+
+.NodeHeader > .unity-text-field:focus  > * {
+    background-color: #1D1D1E;
+    border-color: #27292C;
+}
+
+.RedirectNode > #title {
+    height: 0;
+}
+
+.RedirectNode {
+    border-bottom-left-radius: 15px;
+    border-radius: 15px;
+}

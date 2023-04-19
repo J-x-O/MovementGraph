@@ -1,0 +1,18 @@
+{
+  "name": "com.j-x-o.movement-graph",
+  "version": "0.1.0",
+  "displayName": "Movement Graph",
+  "description": "A State machine focused on moving player characters",
+  "unity": "2021.3",
+  "license": "MIT",
+  "dependencies": { },
+  "keywords": [
+    "Movement",
+    "State",
+    "Machine",
+    "Graph"
+  ],
+  "author": {
+    "name": "Jesco"
+  }
+}
