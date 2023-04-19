@@ -18,9 +18,6 @@ namespace JescoDev.MovementGraph {
         public CharacterController CharController => _charController;
         [SerializeField] private CharacterController _charController;
 
-        public GroundedManager FloorManager => _floorManager;
-        [SerializeField] private GroundedManager _floorManager;
-
         [Tooltip("All possible states this character can use")] [SerializeReference]
         private List<State> _states = new List<State>();
         private readonly Dictionary<string, NamedState> _stateDictionary = new Dictionary<string, NamedState>();
