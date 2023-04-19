@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace JescoDev.MovementGraph {
+namespace Player.Movement {
     
     public class GroundedManager : MonoBehaviour {
 

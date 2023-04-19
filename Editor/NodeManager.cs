@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JescoDev.MovementGraph.Editor.Nodes;
-using JescoDev.MovementGraph.States;
+using Entities.Movement.States;
+using Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Utility;
 
-namespace JescoDev.MovementGraph.Editor {
+namespace Editor.MovementEditor {
     public partial class NodeManager {
         
         private readonly SerializedProperty _statesProperty;
@@ -78,14 +79,6 @@ namespace JescoDev.MovementGraph.Editor {
                 });
         }
 
-        private static SerializedProperty AppendArrayElement(SerializedProperty target, Action<SerializedProperty> setData) {
-            target.arraySize++;
-            SerializedProperty newElement = target.GetArrayElementAtIndex(target.arraySize - 1);
-            setData(newElement);
-            target.serializedObject.ApplyModifiedProperties();
-            return newElement;
-        }
-
         private BaseNode CreateNode<T> (DropdownMenuAction dropdownMenuAction) where T : State
             => CreateNode(dropdownMenuAction, typeof(T));
         
@@ -96,13 +89,13 @@ namespace JescoDev.MovementGraph.Editor {
         
         private BaseNode CreateNode(Vector2 position, Func<State> createInstance) {
             State instance = createInstance();
-            SerializedProperty newElement = AppendArrayElement(_statesProperty,
+            SerializedProperty newElement = SerializedPropertyUtility.AppendArrayElement(_statesProperty,
                 element => element.managedReferenceValue = instance);
             return CreateNode(position, newElement, instance);
         }
 
         public void DeleteNode(BaseNode node) {
-            int index = GetArrayIndex(node.State);
+            int index = SerializedPropertyUtility.GetArrayIndex(_statesProperty, node.State);
             _statesProperty.DeleteArrayElementAtIndex(index);
             _statesProperty.serializedObject.ApplyModifiedProperties();
             _nodes.Remove(node);
@@ -111,14 +104,5 @@ namespace JescoDev.MovementGraph.Editor {
             //MovementSystemEditor.GetWindow().Rebuild();
         }
         
-        private int GetArrayIndex(SerializedProperty p) {
-            
-            for (int i = 0; i < _statesProperty.arraySize; i++) {
-                SerializedProperty element = _statesProperty.GetArrayElementAtIndex(i);
-                if (SerializedProperty.EqualContents(element, p)) return i;
-            }
-
-            return -1;
-        }
     }
 }

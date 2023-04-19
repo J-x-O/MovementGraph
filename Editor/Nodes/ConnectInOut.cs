@@ -1,27 +1,57 @@
-﻿using UnityEditor.Experimental.GraphView;
+﻿using System.Linq;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine.UIElements;
 
-namespace JescoDev.MovementGraph.Editor.Nodes {
-    public interface IConnectIn {
-        public Port InputPort { get; set; }
-    }
+namespace Editor.MovementEditor {
 
-    public interface IConnectOut {
-        public Port OutputPort { get; set; }
-    }
-    
     public static class ConnectExtension {
-        public static void RebuildInput(this IConnectIn connectIn, BaseNode baseNode, string portName = "Input", Orientation orientation = Orientation.Horizontal) {
-            baseNode.inputContainer.Clear();
-            connectIn.InputPort = baseNode.InstantiatePort(orientation, Direction.Input, Port.Capacity.Multi, typeof(bool));
-            connectIn.InputPort.portName = portName;
-            baseNode.inputContainer.Add(connectIn.InputPort);
+
+        public static bool HasInput(this Node node, out Port port) {
+            port = node.inputContainer.Query<Port>().First();
+            return port != null;
         }
         
-        public static void RebuildOutput(this IConnectOut connectIn, BaseNode baseNode, string portName = "Output", Orientation orientation = Orientation.Horizontal) {
-            baseNode.outputContainer.Clear();
-            connectIn.OutputPort = baseNode.InstantiatePort(orientation, Direction.Output, Port.Capacity.Multi, typeof(bool));
-            connectIn.OutputPort.portName = portName;
-            baseNode.outputContainer.Add(connectIn.OutputPort);
+        public static bool HasOutput(this Node node, out Port port) {
+            port = node.outputContainer.Query<Port>().First();
+            return port != null;
         }
+
+        public static void RebuildInput(this Node baseNode, string portName = "Input") {
+            baseNode.inputContainer.Clear();
+            BuildInput(baseNode, portName);
+        }
+
+        public static void RebuildInputs(this Node baseNode, params string[] portNames) {
+            baseNode.inputContainer.Clear();
+            foreach (string name in portNames) {
+                BuildInput(baseNode, name);
+            }
+        }
+        
+        public static void BuildInput(this Node baseNode, string portName = "Input") {
+            Port port = baseNode.InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(bool));
+            port.portName = portName;
+            baseNode.inputContainer.Add(port);
+        }
+
+        public static void RebuildOutput(this Node baseNode, string portName = "Output") {
+            baseNode.outputContainer.Clear();
+            BuildOutput(baseNode, portName);
+        }
+        
+        public static void RebuildOutputs(this Node baseNode, params string[] portNames) {
+            baseNode.outputContainer.Clear();
+            foreach (string name in portNames) {
+                BuildOutput(baseNode, name);
+            }
+        }
+
+        public static void BuildOutput(this Node baseNode, string portName = "Output") {
+            Port port = baseNode.InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(bool));
+            port.portName = portName;
+            baseNode.outputContainer.Add(port);
+        }
+
+
     }
 }

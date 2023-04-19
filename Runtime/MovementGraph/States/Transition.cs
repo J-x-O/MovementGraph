@@ -2,10 +2,12 @@
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.States {
-    
+
     [Serializable]
     public class Transition {
-        public State Target => _target;
-        [SerializeReference] private State _target;
+
+        [field: SerializeReference] public Port From { get; private set; }
+
+        [field: SerializeReference] public Port To { get; private set; }
     }
 }

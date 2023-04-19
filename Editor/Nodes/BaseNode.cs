@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using JescoDev.MovementGraph.States;
+using Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 
-namespace JescoDev.MovementGraph.Editor.Nodes {
+
+namespace Editor.MovementEditor {
 
     public abstract class BaseNode : Node {
         

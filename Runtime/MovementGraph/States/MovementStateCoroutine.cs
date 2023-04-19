@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace JescoDev.MovementGraph.States {
+namespace Entities.Movement.States {
     public abstract class MovementStateCoroutine : MovementState {
 
         /// <summary> Overwrite this to still use the normal movement </summary>
@@ -20,7 +21,7 @@ namespace JescoDev.MovementGraph.States {
 
         private IEnumerator Coroutine() {
             yield return RunRoutine();
-            System.QueueReevaluation();
+            System.QueueExit();
         }
 
         protected abstract IEnumerator RunRoutine();

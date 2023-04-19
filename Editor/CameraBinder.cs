@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace JescoDev.MovementGraph.Editor {
+namespace Editor.MovementEditor {
     public class CameraBinder : Manipulator {
 
         private readonly SerializedProperty _position;

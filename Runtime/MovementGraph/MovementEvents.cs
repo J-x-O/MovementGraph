@@ -1,9 +1,9 @@
 ﻿using System;
+using Entities.Movement.States;
 using GameProgramming.Utility.TypeBasedEventSystem;
-using JescoDev.MovementGraph.States;
 using JescoDev.Utility.EventUtility.EventUtility;
 
-namespace JescoDev.MovementGraph {
+namespace Movement {
     public class MovementEvents {
         
         public event Action<MovementState> OnAnyStateActivated;

@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using JescoDev.MovementGraph.Editor.Nodes;
-using JescoDev.MovementGraph.States;
+﻿using Entities.Movement.States;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Utility;
 
-namespace JescoDev.MovementGraph.Editor {
+namespace Editor.MovementEditor {
     public partial class NodeManager {
 
         public ContextualMenuManipulator CreateDebugContextMenu() {
@@ -13,13 +12,7 @@ namespace JescoDev.MovementGraph.Editor {
                     action => {
                         
                         BaseNode node = FindSelectedNode();
-                        if (node == null) {
-                            Debug.Log("No node selected");
-                            return;
-                        }
-                        if (node.StateObject is NamedState namedStart) {
-                            Debug.Log("Start: " + namedStart.Identifier);
-                        }
+                        if (node.StateObject is NamedState namedStart) Debug.Log("Start: " + namedStart.Identifier);
                         foreach (BaseNode compare in _nodes) {
                             if (!node.StateObject.HasTransitionTo(compare.StateObject)) continue;
                             if (compare.StateObject is NamedState namedCompare)
@@ -29,6 +22,14 @@ namespace JescoDev.MovementGraph.Editor {
             });
         }
 
-        private BaseNode FindSelectedNode() => Enumerable.FirstOrDefault<BaseNode>(_nodes, node => node.selected);
+        private BaseNode FindSelectedNode() {
+            foreach (BaseNode node in _nodes) {
+                if(node.selected) return node;
+            }
+            BaseNode random = _nodes.PickRandom();
+            _view.AddToSelection(random);
+            return random;
+        }
+        
     }
 }

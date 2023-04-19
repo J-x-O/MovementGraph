@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using JescoDev.MovementGraph.States;
+using Entities.Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
+using UnityEngine;
+using UnityEngine.UIElements;
 
-namespace JescoDev.MovementGraph.Editor.Nodes {
+namespace Editor.MovementEditor {
     
     [Serializable]
-    public class EventNode : NamedNode, IConnectOut {
+    public class EventNode : NamedNode {
         
         public new EventState StateObject { get; protected set; }
-        
-        public Port OutputPort { get; set; }
 
         public EventNode(SerializedProperty state, EventState stateObject) : base(state, stateObject) {
             StateObject = stateObject;
@@ -22,7 +23,7 @@ namespace JescoDev.MovementGraph.Editor.Nodes {
         protected override void Rebuild(List<FieldInfo> fieldInfos) {
             RebuildHeader(fieldInfos);
             NodeHeader.RegisterValueChangeCallback(TestForSpecialName);
-            this.RebuildOutput(this);
+            this.RebuildOutput();
         }
 
         private void TestForSpecialName(SerializedPropertyChangeEvent evt) {

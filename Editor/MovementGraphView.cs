@@ -1,23 +1,26 @@
+using System;
 using System.Collections.Generic;
-using JescoDev.MovementGraph.Editor.Nodes;
+using System.Linq;
+using Entities.Movement;
+using Entities.Movement.States;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.UIElements;
 using Edge = UnityEditor.Experimental.GraphView.Edge;
 
-namespace JescoDev.MovementGraph.Editor {
+namespace Editor.MovementEditor {
     public class MovementGraphView : GraphView {
 
-        public const string ResourcePath = "Packages/com.j-x-o.movement-graph/EditorResources";
-        
         private readonly MovementSystem _link;
         private readonly SerializedObject _linkObject;
-        private readonly MovementGraph.Editor.NodeManager _nodeManager;
+        private readonly NodeManager _nodeManager;
         
         public MovementGraphView(MovementSystem link) {
             _link = link;
             _linkObject = _link ? new SerializedObject(_link) : null;
-            _nodeManager = new MovementGraph.Editor.NodeManager(this, _linkObject);
+            _nodeManager = new NodeManager(this, _linkObject);
             _nodeManager.LoadExistingNodes();
 
             AddGridBackground();
@@ -53,10 +56,7 @@ namespace JescoDev.MovementGraph.Editor {
                             _nodeManager.DeleteNode(node);
                             break;
                         case Edge edge:
-                            if (edge.output.node is not (IConnectOut and BaseNode start)) break;
-                            if (edge.input.node is not (IConnectIn and BaseNode end)) break;
-                            MovementGraph.Editor.NodeManager.RemoveConnection(start, end);
-
+                            NodeManager.RemoveConnection(edge.input, edge.output);
                             break;
                     }
                 }
@@ -66,7 +66,7 @@ namespace JescoDev.MovementGraph.Editor {
                 foreach (Edge edge in graphViewChange.edgesToCreate) {
                     if (edge.output.node is not (IConnectOut and BaseNode start)) break;
                     if (edge.input.node is not (IConnectIn and BaseNode end)) break;
-                    MovementGraph.Editor.NodeManager.CreateConnection(start, end);
+                    NodeManager.CreateConnection(start, end);
                 }
             }
             
@@ -97,9 +97,9 @@ namespace JescoDev.MovementGraph.Editor {
         }
 
         private void AddStyles() {
-            StyleSheet graphSheet = (StyleSheet) EditorGUIUtility.Load($"{ResourcePath}/MovementGraph.uss");
+            StyleSheet graphSheet = (StyleSheet) EditorGUIUtility.Load("MovementGraph/MovementGraph.uss");
             styleSheets.Add(graphSheet);
-            StyleSheet nodeSheet = (StyleSheet) EditorGUIUtility.Load($"{ResourcePath}/NodeStyles.uss");
+            StyleSheet nodeSheet = (StyleSheet) EditorGUIUtility.Load("MovementGraph/NodeStyles.uss");
             styleSheets.Add(nodeSheet);
         }
     }

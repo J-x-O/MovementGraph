@@ -1,21 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using JescoDev.MovementGraph.States;
+using Entities.Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 
-namespace JescoDev.MovementGraph.Editor.Nodes {
+namespace Editor.MovementEditor {
     
     [Serializable]
-    public class BoundNode : NamedNode, IConnectIn, IConnectOut {
+    public class BoundNode : NamedNode {
 
         public new MovementState StateObject { get; protected set; }
 
-        public Port InputPort { get; set; }
-        public Port OutputPort { get; set; }
-        
         protected TagView TagView { get; private set; }
         
         public BoundNode(SerializedProperty state, MovementState stateObject) : base(state, stateObject) {
@@ -25,8 +22,8 @@ namespace JescoDev.MovementGraph.Editor.Nodes {
         protected override void Rebuild(List<FieldInfo> fieldInfos) {
             RebuildHeader(fieldInfos);
             RebuildTagView(fieldInfos);
-            this.RebuildInput(this);
-            this.RebuildOutput(this);
+            this.RebuildInput();
+            this.RebuildOutput();
             RebuildProperties(fieldInfos);
         }
 

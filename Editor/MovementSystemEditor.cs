@@ -1,7 +1,15 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Codice.Client.Common.TreeGrouper;
+using Entities.Movement;
+using Entities.Movement.States;
+using Unity.VisualScripting;
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace JescoDev.MovementGraph.Editor {
+namespace Editor.MovementEditor {
 
     public class MovementSystemEditor : EditorWindow {
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace JescoDev.MovementGraph {
+namespace Player.Movement {
     public interface IMovementSource {
 
         public event Action OnValueFlipped;

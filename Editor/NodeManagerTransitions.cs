@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
-using JescoDev.MovementGraph.Editor.Nodes;
-using JescoDev.MovementGraph.States;
+using Entities.Movement.States;
+using Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace JescoDev.MovementGraph.Editor {
+namespace Editor.MovementEditor {
     public partial class NodeManager {
 
         private void LoadConnections() {
             foreach (BaseNode node in _nodes) {
-                List<Transition> fuckedUp = new List<Transition>();
+                List<State> fuckedUp = new List<State>();
                 
-                foreach (Transition transition in node.StateObject.Transitions) {
-                    BaseNode target = _nodes.Find(element => element.StateObject == transition.Target);
+                foreach (State transition in node.StateObject.Transitions) {
+                    BaseNode target = _nodes.Find(element => element.StateObject == transition);
                     if (target == null) {
                         Debug.LogError("Target wasn't found");
                         fuckedUp.Add(transition);
@@ -29,8 +29,8 @@ namespace JescoDev.MovementGraph.Editor {
                     _view.AddElement(start.ConnectTo(end));
                 }
 
-                foreach (Transition transition in fuckedUp) {
-                    RemoveConnection(node, transition.Target);
+                foreach (State transition in fuckedUp) {
+                    RemoveConnection(node, transition);
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace JescoDev.MovementGraph.Editor {
             SerializedProperty property = start.State.FindPropertyRelative("_transitions");
             if(property == null) return;
             if(IsConnected(start, end)) return;
-            global::JescoDev.MovementGraph.Editor.NodeManager.AppendArrayElement(property, element => {
+            AppendArrayElement(property, element => {
                 SerializedProperty target = element.FindPropertyRelative("_target");
                 target.managedReferenceValue = end.StateObject;
             });

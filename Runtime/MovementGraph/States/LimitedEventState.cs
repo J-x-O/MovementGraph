@@ -1,9 +1,13 @@
 ﻿using System;
+using JescoDev.MovementGraph.States;
 
-namespace JescoDev.MovementGraph.States {
+namespace Entities.Movement.States {
     
     [Serializable]
     public class LimitedEventState : EventState {
-        public override bool ValidActivation() => HasTransition(true);
+        
+        private Port InputPort;
+        
+        public override bool ValidActivation() => InputPort.HasTransition(true);
     }
 }

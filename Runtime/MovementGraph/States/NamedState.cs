@@ -1,8 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
-using State = JescoDev.MovementGraph.States.State;
+using Object = UnityEngine.Object;
+using State = Movement.States.State;
 
-namespace JescoDev.MovementGraph.States {
+namespace Entities.Movement.States {
     
     [Serializable]
     public abstract class NamedState : State {

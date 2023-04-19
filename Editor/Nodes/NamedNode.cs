@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using JescoDev.MovementGraph.States;
+using Entities.Movement.States;
+using Movement.States;
 using UnityEditor;
 using UnityEditor.UIElements;
 
-namespace JescoDev.MovementGraph.Editor.Nodes {
+namespace Editor.MovementEditor {
     public abstract class NamedNode : BaseNode {
         
         protected PropertyField NodeHeader { get; private set; }

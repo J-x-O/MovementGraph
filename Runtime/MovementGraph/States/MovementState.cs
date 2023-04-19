@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using JescoDev.MovementGraph.States;
 using JescoDev.Utility.Condition;
 using UnityEngine;
 
-namespace JescoDev.MovementGraph.States {
+namespace Entities.Movement.States {
     
     [Serializable]
     public abstract class MovementState : NamedState {
 
+        public Port InputPort;
+        public Port RegularExit;
+        public Port EventExit;
+        
         [Tooltip("The Condition that needs to be true so this can be activated")]
         [SubclassSelector] [SerializeReference] protected ICondition _activationCondition;
 
@@ -35,7 +40,7 @@ namespace JescoDev.MovementGraph.States {
         
         public bool HasTag(string tag) => _tags.Contains(tag);
 
-        public override bool ValidActivation() => HasTransition(true);
+        public override bool ValidActivation() => InputPort.HasTransition(true);
         
         /// <summary> It is important that only an state which can be activated results in a valid return </summary>
         public override MovementState ResolveActivation() {

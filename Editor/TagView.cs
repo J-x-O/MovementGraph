@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using static JescoDev.MovementGraph.Editor.MovementGraphView;
 
-namespace JescoDev.MovementGraph.Editor {
+namespace Editor.MovementEditor {
     public class TagView : BindableElement {
         
         private readonly Button _addButton;
@@ -15,7 +16,7 @@ namespace JescoDev.MovementGraph.Editor {
             _addButton = new Button(AddItem) { text = "Add" };
             _addButton.AddToClassList("tag-list-add-button");
 
-            styleSheets.Add((StyleSheet) EditorGUIUtility.Load($"{ResourcePath}/TagView.uss"));
+            styleSheets.Add((StyleSheet) EditorGUIUtility.Load("MovementGraph/TagView.uss"));
         }
         
         // Get the reference to the bound serialized object.
