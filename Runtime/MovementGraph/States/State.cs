@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Entities.Movement;
 using Entities.Movement.States;
+using Gameplay.Movement.Layer;
 using UnityEngine;
 
 namespace Movement.States {
@@ -14,14 +15,14 @@ namespace Movement.States {
         [HideInInspector] [SerializeField] protected Vector2 _position;
 #endif
         
-        public MovementSystem System { get; private set; }
+        public MovementLayer Layer { get; private set; }
         
-        protected Transform _transform => System.transform;
-        protected GameObject _gameObject => System.gameObject;
-        protected float _movementInput => System.MovementInput;
+        public Transform Transform => Layer.System.transform;
+        public GameObject GameObject => Layer.System.gameObject;
+        protected float _movementInput => Layer.System.MovementInput;
         
-        public virtual void Awake(MovementSystem system) {
-            System = system;
+        public virtual void Awake(MovementLayer layer) {
+            Layer = layer;
         }
         
         public abstract bool ValidActivation();

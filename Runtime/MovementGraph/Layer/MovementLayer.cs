@@ -4,6 +4,7 @@ using Entities.Movement;
 using Entities.Movement.States;
 using Movement;
 using Movement.States;
+using UnityEditor.Graphs;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -14,6 +15,9 @@ namespace Gameplay.Movement.Layer {
         
         public LayerInOut Interface => _interface;
         [SerializeReference] private LayerInOut _interface;
+        
+        [SerializeField] private bool _autoplay = true;
+        [SerializeField] private LayerComposition _composition;
 
         public MovementSystem System { get; private set; }
         
@@ -28,18 +32,35 @@ namespace Gameplay.Movement.Layer {
         
         public MovementState PreviousState { get; private set; }
         public MovementState CurrentState { get; private set; }
+
+        public void Awake(MovementSystem system) {
+            System = system;
+            foreach (State state in _states) {
+                state.Awake(this);
+                if(state is not NamedState namedState) continue;
+                _stateDictionary.Add(namedState.Identifier, namedState);
+            }
+        }
+
+        public void Start() {
+            // activate the first valid state and start this layer
+            if(_autoplay) ActivateState(Interface.In.FindFirstValidTransition());
+        }
+        
+        public void Restart()
         
         #region API
 
         /// <summary> Sets the state to a new one of the provided type </summary>
         /// <returns> if the state was activated successfully </returns>
-        public bool SetState<T>(bool ignoreActiveCheck = false) where T : MovementState
-            => SetState(NamedState.GetName<T>(), ignoreActiveCheck);
+        public bool SendEvent<T>(bool ignoreActiveCheck = false) where T : MovementState
+            => SendEvent(NamedState.GetName<T>(), ignoreActiveCheck);
         
-        /// <inheritdoc cref="SetState{T}"/>
-        public bool SetState(string t, bool ignoreActiveCheck = false) {
+        /// <inheritdoc cref="SendEvent{T}"/>
+        public bool SendEvent(string t, bool ignoreActiveCheck = false) {
             if (!TryGetState(t, out NamedState state)) return false;
             if (!ignoreActiveCheck && IsStateActive(t)) return false;
+            if (CurrentState != null && !CurrentState.EventExit.HasTransitionTo(state)) return false;
             return ActivateState(state);
         }
 

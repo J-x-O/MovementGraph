@@ -34,10 +34,10 @@ namespace JescoDev.MovementGraph.States {
         public bool HasTransitionFrom(State target) => HasDirectTransition(target, false, 0);
         
         private bool HasDirectTransition(State target, bool reverse, int recursionDepth) {
-            const int recursionLimit = 50;
+            const int recursionLimit = 10;
             if (recursionDepth >= recursionLimit) {
                 string name = State is NamedState casted ? casted.Identifier : "Unnamed";
-                Debug.LogWarning($"Hit Recursion Limit for TransitionSearch, starting at Node {name}", State.System.gameObject);
+                Debug.LogWarning($"Hit Recursion Limit for TransitionSearch, starting at Node {name}", State.GameObject);
                 return false;
             }
             
@@ -46,7 +46,8 @@ namespace JescoDev.MovementGraph.States {
                 if (compare.State == target) return true;
                 if (compare.State is not IFastForward redirect) continue;
                 
-                Port continuePort = redirect.GetNextPort(reverse);
+                Port continuePort = redirect.GetNextPort(compare);
+                if(continuePort == null) continue;
                 if (continuePort.HasDirectTransition(target, reverse, recursionDepth + 1)) return true;
             }
             
@@ -56,9 +57,9 @@ namespace JescoDev.MovementGraph.States {
         /// <summary> Check if there is a valid transition from the currently active state of the system </summary>
         /// <param name="useAnyState"> if true then the check will include if there is a transition from the any state block </param>
         public bool HasTransition(bool useAnyState) {
-            if (HasTransitionFrom(State.System.CurrentState)) return true;
+            if (HasTransitionFrom(State.Layer.CurrentState)) return true;
             return useAnyState 
-                   && State.System.TryGetState("Any State", out NamedState anyState)
+                   && State.Layer.TryGetState("Any State", out NamedState anyState)
                    && HasTransitionFrom(anyState);
         }
     }

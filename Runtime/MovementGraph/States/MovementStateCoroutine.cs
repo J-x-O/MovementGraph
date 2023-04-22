@@ -12,16 +12,16 @@ namespace Entities.Movement.States {
         protected Coroutine _routine;
         
         public override void Activate() {
-            _routine = System.StartCoroutine(Coroutine());
+            _routine = Layer.System.StartCoroutine(Coroutine());
         }
 
         public override void Deactivate() {
-            if(_routine != null) System.StopCoroutine(_routine);
+            if(_routine != null) Layer.System.StopCoroutine(_routine);
         }
 
         private IEnumerator Coroutine() {
             yield return RunRoutine();
-            System.QueueExit();
+            Layer.QueueExit();
         }
 
         protected abstract IEnumerator RunRoutine();

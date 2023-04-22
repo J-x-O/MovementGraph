@@ -18,8 +18,8 @@ namespace Gameplay.Movement.Layer {
         public Port OutReplay => _outReplay;
         [SerializeField] public Port _outReplay;
 
-        public Port GetNextPort(bool reverse) {
-            return reverse ? _in : _outReplay;
+        public Port GetNextPort(Port port) {
+            return port == OutReplay ? In : null;
         }
     }
 }

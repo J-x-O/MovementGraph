@@ -25,13 +25,14 @@ namespace Entities.Movement.States {
             _identifier = identifier;
         }
 
-        public CollisionFlags MovePosition(Vector3 position) => MoveDirection(position - _transform.position);
+        public CollisionFlags MovePosition(Vector3 position) => MoveDirection(position - Transform.position);
 
         public CollisionFlags MoveDirection(Vector3 direction) {
-            CollisionFlags flags = System.CharController.Move(direction);
-            Vector3 pos = _transform.position;
+            //TODO: Auslagern into System
+            CollisionFlags flags = Layer.System.CharController.Move(direction);
+            Vector3 pos = Transform.position;
             pos.z = 0;
-            _transform.position = pos;
+            Transform.position = pos;
             return flags;
         }
     }

@@ -14,8 +14,10 @@ namespace JescoDev.MovementGraph.States {
         public override bool ValidActivation() => InputPort.HasTransition(true);
 
         public override MovementState ResolveActivation() => OutputPort.FindFirstValidTransition();
-        public Port GetNextPort(bool reverse) {
-            return reverse ? InputPort : OutputPort;
+        public Port GetNextPort(Port port) {
+            if (port == OutputPort) return InputPort;
+            if (port == InputPort) return OutputPort;
+            return null;
         }
     }
 }

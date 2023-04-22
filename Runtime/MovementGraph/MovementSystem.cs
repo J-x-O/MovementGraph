@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Entities.Movement.States;
 using Gameplay;
+using Gameplay.Movement.Layer;
 using GameProgramming.Utility.TypeBasedEventSystem;
 using Movement;
 using Movement.States;
@@ -28,8 +29,7 @@ namespace Entities.Movement {
         [SerializeField] private GroundedManager _floorManager;
 
         [Tooltip("All possible states this character can use")] [SerializeReference]
-        private List<State> _states = new List<State>();
-        private readonly Dictionary<string, NamedState> _stateDictionary = new Dictionary<string, NamedState>();
+        private List<MovementLayer> _states = new List<MovementLayer>();
 
         public float MovementInput => InputSource?.MovementValue ?? 0;
         public IMovementSource InputSource => _source.Value;
@@ -38,18 +38,17 @@ namespace Entities.Movement {
         private bool _exitQueued;
 
         private void Awake() {
-            foreach (State state in _states) {
+            foreach (MovementLayer state in _states) {
                 state.Awake(this);
-                
-                if(state is not NamedState namedState) continue;
-                _stateDictionary.Add(namedState.Identifier, namedState);
             }
             CharController.enabled = false;
         }
 
-        // wait till the floor manager run once 
+        // wait for everything to initialize
         private void Start() {
-            ExitCurrentState();
+            foreach (MovementLayer state in _states) {
+                state.QueueExit(this);
+            }
             CharController.enabled = true;
         }
 

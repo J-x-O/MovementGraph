@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Gameplay.Movement.Layer;
 using JescoDev.MovementGraph.States;
 using JescoDev.Utility.Condition;
 using UnityEngine;
@@ -19,8 +20,8 @@ namespace Entities.Movement.States {
         public IReadOnlyList<string> Tags => _tags;
         [HideInInspector] [SerializeField] private List<string> _tags = new List<string>();
         
-        public override void Awake(MovementSystem system) {
-            base.Awake(system);
+        public override void Awake(MovementLayer layer) {
+            base.Awake(layer);
             Awake();
         }
         

@@ -3,7 +3,7 @@
 namespace Gameplay.Movement.States {
     public interface IFastForward {
 
-        public Port GetNextPort(bool reverse);
+        public Port GetNextPort(Port port);
 
     }
 }
