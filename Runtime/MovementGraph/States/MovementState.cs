@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Gameplay.Movement.Layer;
+using JescoDev.MovementGraph.MovementGraph.StateTransition;
 using JescoDev.MovementGraph.States;
 using JescoDev.Utility.Condition;
 using UnityEngine;
@@ -10,9 +11,9 @@ namespace Entities.Movement.States {
     [Serializable]
     public abstract class MovementState : NamedState {
 
-        public Port InputPort;
-        public Port RegularExit;
-        public Port EventExit;
+        [InputPort] public Port InputPort;
+        [OutputPort] public Port RegularExit;
+        [OutputPort] public Port EventExit;
         
         [Tooltip("The Condition that needs to be true so this can be activated")]
         [SubclassSelector] [SerializeReference] protected ICondition _activationCondition;

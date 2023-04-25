@@ -11,7 +11,7 @@ using UnityEngine;
 namespace Gameplay.Movement.Layer {
     
     [Serializable]
-    public class MovementLayer : IStateLoop {
+    public class MovementLayer {
         
         public LayerInOut Interface => _interface;
         [SerializeReference] private LayerInOut _interface;
@@ -24,8 +24,9 @@ namespace Gameplay.Movement.Layer {
         public readonly MovementEvents Events = new MovementEvents();
         
         public IReadOnlyList<State> States => _states;
-        [Tooltip("All possible states this character can use")] [SerializeReference]
-        private List<State> _states = new List<State>();
+        [Tooltip("All possible states this character can use")]
+        [SerializeReference] private List<State> _states = new List<State>();
+        
         private readonly Dictionary<string, NamedState> _stateDictionary = new Dictionary<string, NamedState>();
 
         private bool _exitQueued;
@@ -46,8 +47,10 @@ namespace Gameplay.Movement.Layer {
             // activate the first valid state and start this layer
             if(_autoplay) ActivateState(Interface.In.FindFirstValidTransition());
         }
-        
-        public void Restart()
+
+        public void Restart() {
+            
+        }
         
         #region API
 

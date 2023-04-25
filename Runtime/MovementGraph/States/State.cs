@@ -4,6 +4,7 @@ using System.Linq;
 using Entities.Movement;
 using Entities.Movement.States;
 using Gameplay.Movement.Layer;
+using JescoDev.MovementGraph.States;
 using UnityEngine;
 
 namespace Movement.States {
@@ -20,7 +21,7 @@ namespace Movement.States {
         public Transform Transform => Layer.System.transform;
         public GameObject GameObject => Layer.System.gameObject;
         protected float _movementInput => Layer.System.MovementInput;
-        
+
         public virtual void Awake(MovementLayer layer) {
             Layer = layer;
         }

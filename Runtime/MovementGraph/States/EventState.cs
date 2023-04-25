@@ -1,4 +1,5 @@
 ﻿using System;
+using JescoDev.MovementGraph.MovementGraph.StateTransition;
 using JescoDev.MovementGraph.States;
 
 namespace Entities.Movement.States {
@@ -6,7 +7,7 @@ namespace Entities.Movement.States {
     [Serializable]
     public class EventState : NamedState {
         
-        private Port OutputPort;
+        [OutputPort] private Port OutputPort;
         
         public override bool ValidActivation() => true;
 
