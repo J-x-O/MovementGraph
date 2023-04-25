@@ -30,6 +30,6 @@ namespace Movement.States {
         
         /// <summary> This function decides if the state can be activated or not </summary>
         /// <returns> The resolved movement state for activation, or null if we cant activate </returns>
-        public abstract MovementState ResolveActivation();
+        public abstract MovementState ResolveActivation(Port incomingPort = null);
     }
 }

@@ -9,6 +9,6 @@ namespace Entities.Movement.States {
         
         [InputPort] private Port InputPort;
         
-        public override bool ValidActivation() => InputPort.HasTransition(true);
+        public override bool ValidActivation() => InputPort.HasActiveTransition(true);
     }
 }

@@ -8,9 +8,14 @@ namespace Entities.Movement.States {
     public class EventState : NamedState {
         
         [OutputPort] private Port OutputPort;
+
+        public EventState() {
+            OutputPort = new Port { State = this };
+        }
         
         public override bool ValidActivation() => true;
 
-        public override MovementState ResolveActivation() => OutputPort.FindFirstValidTransition();
+        public override MovementState ResolveActivation(Port incomingPort = null)
+            => OutputPort.FindFirstValidTransition();
     }
 }

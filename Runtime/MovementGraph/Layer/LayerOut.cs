@@ -10,39 +10,35 @@ using UnityEngine;
 namespace Gameplay.Movement.Layer {
     
     [Serializable]
-    public class LayerInOut : MovementState, IFastForward {
-        
-        public Port In => _in;
-        [SerializeField, InputPort] private Port _in;
+    public class LayerOut : State, IFastForward {
         
         public Port OutStop => _outStop;
-        [SerializeField, OutputPort] private Port _outStop;
+        [SerializeField, OutputPort] private Port _outStop = new Port();
         
         public Port OutReplay => _outReplay;
-        [SerializeField, OutputPort] public Port _outReplay;
+        [SerializeField, OutputPort] public Port _outReplay = new Port();
 
-        private NullState _exitState;
-        
-        public LayerInOut() {
-            _exitState = new NullState();
-            _exitState.
+        private NullState _exitState = new NullState();
+        public LayerIn _in;
+        public LayerOut() {
+            _outStop.ConnectTo(_exitState.In);
             
-            _in.State = this;
             _outStop.State = this;
             _outReplay.State = this;
         }
-        
+
         public Port GetNextPort(Port port) {
             // this node will forward the output to the input, so the whole system loops
-            return port == OutReplay ? In : null;
+            return port == OutReplay ? _in.In : null;
         }
 
         public override bool ValidActivation() {
-            return false;
+            return true;
         }
 
-        public override MovementState ResolveActivation() {
-            throw new NotImplementedException();
+        public override MovementState ResolveActivation(Port incomingPort = null) {
+            if (incomingPort == _outReplay) return _in.ResolveActivation(_outReplay);
+            return _exitState;
         }
     }
 }

@@ -12,9 +12,11 @@ namespace JescoDev.MovementGraph.States {
         [OutputPort] public Port OutputPort;
         [InputPort] public Port InputPort;
 
-        public override bool ValidActivation() => InputPort.HasTransition(true);
+        public override bool ValidActivation() => InputPort.HasActiveTransition(true);
 
-        public override MovementState ResolveActivation() => OutputPort.FindFirstValidTransition();
+        public override MovementState ResolveActivation(Port incomingPort = null)
+            => OutputPort.FindFirstValidTransition();
+        
         public Port GetNextPort(Port port) {
             if (port == OutputPort) return InputPort;
             if (port == InputPort) return OutputPort;

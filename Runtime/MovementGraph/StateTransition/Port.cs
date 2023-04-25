@@ -7,6 +7,7 @@ using Movement.States;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.States {
+    
     [Serializable]
     public class Port {
 
@@ -16,24 +17,32 @@ namespace JescoDev.MovementGraph.States {
         public State State;
         
         public MovementState FindFirstValidTransition() {
-            return _transitions
-                .Select(transition => transition.To.State.ResolveActivation())
-                .FirstOrDefault(resolve => resolve != null);
+            foreach (Transition transition in _transitions) {
+                Port compare = transition.NotMe(this);
+                MovementState resolve = compare.ResolveActivation();
+                if (resolve != null) return resolve;
+            }
+            return null;
+        }
+
+        private MovementState ResolveActivation() => State.ResolveActivation(this);
+
+        public void ConnectTo(Port other) {
+            if (other == null) return;
+            if (HasDirectTransition(other)) return;
+            
+            Transition transition = new Transition(this, other);
+            _transitions.Add(transition);
+            other._transitions.Add(transition);
         }
 
         /// <summary> Checks if there is a valid transition from this state to the provided target state </summary>
         /// <remarks> This will only check direct connections </remarks>
         /// <param name="target"> the target state we want to check the transition to </param>
         /// <returns> if there is a transition </returns>
-        public bool HasTransitionTo(State target) => HasDirectTransition(target, false, 0);
+        public bool HasTransition(State target) => HasDirectTransition(target, 0);
 
-        /// <summary> Checks if there is a valid transition from the provided target state to this state </summary>
-        /// <remarks> This will only check direct connections </remarks>
-        /// <param name="target"> the target state we want to check the transition from </param>
-        /// <returns> if there is a transition </returns>
-        public bool HasTransitionFrom(State target) => HasDirectTransition(target, false, 0);
-        
-        private bool HasDirectTransition(State target, bool reverse, int recursionDepth) {
+        private bool HasDirectTransition(State target, int recursionDepth) {
             const int recursionLimit = 10;
             if (recursionDepth >= recursionLimit) {
                 string name = State is NamedState casted ? casted.Identifier : "Unnamed";
@@ -42,25 +51,33 @@ namespace JescoDev.MovementGraph.States {
             }
             
             foreach (Transition transition in Transitions) {
-                Port compare = reverse ? transition.From : transition.To;
+                Port compare = transition.NotMe(this);
                 if (compare.State == target) return true;
                 if (compare.State is not IFastForward redirect) continue;
                 
                 Port continuePort = redirect.GetNextPort(compare);
                 if(continuePort == null) continue;
-                if (continuePort.HasDirectTransition(target, reverse, recursionDepth + 1)) return true;
+                if (continuePort.HasDirectTransition(target, recursionDepth + 1)) return true;
             }
             
             return false;
         }
 
+        public bool HasDirectTransition(Port port) {
+            foreach (Transition transition in Transitions) {
+                Port compare = transition.NotMe(this);
+                if (compare == port) return true;
+            }
+            return false;
+        }
+
         /// <summary> Check if there is a valid transition from the currently active state of the system </summary>
         /// <param name="useAnyState"> if true then the check will include if there is a transition from the any state block </param>
-        public bool HasTransition(bool useAnyState) {
-            if (HasTransitionFrom(State.Layer.CurrentState)) return true;
+        public bool HasActiveTransition(bool useAnyState) {
+            if (HasTransition(State.Layer.CurrentState)) return true;
             return useAnyState 
                    && State.Layer.TryGetState("Any State", out NamedState anyState)
-                   && HasTransitionFrom(anyState);
+                   && HasTransition(anyState);
         }
     }
 }

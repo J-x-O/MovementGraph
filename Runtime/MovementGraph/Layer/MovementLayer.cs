@@ -13,8 +13,11 @@ namespace Gameplay.Movement.Layer {
     [Serializable]
     public class MovementLayer {
         
-        public LayerInOut Interface => _interface;
-        [SerializeReference] private LayerInOut _interface;
+        public LayerOut OutNode => _outNode;
+        [SerializeReference] private LayerOut _outNode;
+        
+        public LayerIn InNode => _inNode;
+        [SerializeReference] private LayerIn _inNode;
         
         [SerializeField] private bool _autoplay = true;
         [SerializeField] private LayerComposition _composition;
@@ -41,15 +44,18 @@ namespace Gameplay.Movement.Layer {
                 if(state is not NamedState namedState) continue;
                 _stateDictionary.Add(namedState.Identifier, namedState);
             }
+            
+            // connect the layer in and out nodes
+            _outNode._in = _inNode;
         }
 
         public void Start() {
             // activate the first valid state and start this layer
-            if(_autoplay) ActivateState(Interface.In.FindFirstValidTransition());
+            if(_autoplay) ActivateState(_inNode.ResolveActivation());
         }
 
         public void Restart() {
-            
+            ActivateState(_inNode.ResolveActivation());
         }
         
         #region API
@@ -63,7 +69,7 @@ namespace Gameplay.Movement.Layer {
         public bool SendEvent(string t, bool ignoreActiveCheck = false) {
             if (!TryGetState(t, out NamedState state)) return false;
             if (!ignoreActiveCheck && IsStateActive(t)) return false;
-            if (CurrentState != null && !CurrentState.EventExit.HasTransitionTo(state)) return false;
+            if (CurrentState != null && !CurrentState.EventExit.HasTransition(state)) return false;
             return ActivateState(state);
         }
 
@@ -104,14 +110,14 @@ namespace Gameplay.Movement.Layer {
 
         public T GetState<T>() where T : MovementState {
             string stateName = NamedState.GetName<T>();
-            return _stateDictionary.ContainsKey(stateName)
-                ? _stateDictionary[stateName] as T
+            return _stateDictionary.TryGetValue(stateName, out NamedState value)
+                ? value as T
                 : null;
         }
 
         public NamedState GetState(string identifier) {
-            return _stateDictionary.ContainsKey(identifier)
-                ? _stateDictionary[identifier]
+            return _stateDictionary.TryGetValue(identifier, out NamedState value)
+                ? value
                 : null;
         }
         
