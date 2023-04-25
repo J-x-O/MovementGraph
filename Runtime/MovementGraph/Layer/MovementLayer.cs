@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Entities.Movement;
 using Entities.Movement.States;
+using JescoDev.MovementGraph.States;
 using Movement;
 using Movement.States;
 using UnityEditor.Graphs;
@@ -12,6 +14,9 @@ namespace Gameplay.Movement.Layer {
     
     [Serializable]
     public class MovementLayer {
+        
+        public string Identifier => _identifier;
+        [SerializeReference] private string _identifier;
         
         public LayerOut OutNode => _outNode;
         [SerializeReference] private LayerOut _outNode;
@@ -32,7 +37,7 @@ namespace Gameplay.Movement.Layer {
         
         private readonly Dictionary<string, NamedState> _stateDictionary = new Dictionary<string, NamedState>();
 
-        private bool _exitQueued;
+        private Port _exitQueued;
         
         public MovementState PreviousState { get; private set; }
         public MovementState CurrentState { get; private set; }
@@ -57,7 +62,30 @@ namespace Gameplay.Movement.Layer {
         public void Restart() {
             ActivateState(_inNode.ResolveActivation());
         }
+
+        public Vector3 Update(float input) {
+
+            if (_exitQueued != null) {
+                _exitQueued = null;
+                ExitCurrentState();
+            }
+            
+            if (CurrentState == null) {
+                Debug.LogWarning("No State Active, Reevaluating!");
+                Restart();
+            }
+
+            return CurrentState?.HandleMovement(input) ?? Vector3.zero;
+        }
+
+        public void OnDestroy() {
+            foreach (NamedState baseState in _stateDictionary.Values) {
+                if (baseState is MovementState state) state.Destroy();
+            }
+        }
         
+        public void OnDrawGizmos() => CurrentState?.DrawGizmo();
+
         #region API
 
         /// <summary> Sets the state to a new one of the provided type </summary>
@@ -94,14 +122,22 @@ namespace Gameplay.Movement.Layer {
             // clear the old one
             if (PreviousState != null) {
                 PreviousState.Deactivate();
-                Events.InvokeEnd(PreviousState);
+                Events.InvokeEnd(PreviousState, false);
+                System.Events.InvokeStart(CurrentState, true);
             }
             
             CurrentState.Activate();
-            Events.InvokeStart(CurrentState);
+            Events.InvokeStart(CurrentState, false);
+            System.Events.InvokeStart(CurrentState, true);
         }
 
-        public void QueueExit() => _exitQueued = true;
+        public void QueueExit(Port port) {
+            if (!CurrentState.GetOutputPorts().Contains(port)) {
+                Debug.LogWarning("Trying to exit a state with a port that is not connected to it!");
+                return;
+            }
+            _exitQueued = port;
+        }
 
         private void ExitCurrentState() {
             MovementState state = CurrentState.RegularExit.FindFirstValidTransition();

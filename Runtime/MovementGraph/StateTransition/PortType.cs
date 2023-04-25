@@ -4,6 +4,8 @@ namespace JescoDev.MovementGraph.MovementGraph.StateTransition {
     
     public class PortType : Attribute {
         
+        public bool IsOutput => !IsInput;
+        
         public readonly bool IsInput;
         
         public PortType(bool isInput) {

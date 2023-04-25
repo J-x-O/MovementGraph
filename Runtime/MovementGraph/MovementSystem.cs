@@ -16,12 +16,6 @@ namespace Entities.Movement {
 
         public readonly MovementEvents Events = new MovementEvents();
 
-        /// <summary> The currently active Movement State of the state machine </summary>
-        public MovementState CurrentState { get; private set; }
-
-        /// <summary> The Movement State of the state machine  which was active before the current one </summary>
-        public MovementState PreviousState { get; private set; }
-
         public CharacterController CharController => _charController;
         [SerializeField] private CharacterController _charController;
 
@@ -46,34 +40,33 @@ namespace Entities.Movement {
 
         // wait for everything to initialize
         private void Start() {
-            foreach (MovementLayer state in _states) {
-                state.QueueExit(this);
+            foreach (MovementLayer layer in _states) {
+                layer.Restart();
             }
             CharController.enabled = true;
         }
 
         private void Update() {
-
-            if (_exitQueued) {
-                _exitQueued = false;
-                ExitCurrentState();
-            }
-            
-            if (CurrentState == null) {
-                Debug.LogWarning("No State Active, Reevaluating!");
-                ExitCurrentState();
+            Vector3 movement = Vector3.zero;
+            foreach (MovementLayer layer in _states) {
+                //TODO account for layer mode
+                movement += layer.Update(MovementInput);
             }
 
-            CurrentState?.HandleMovement(MovementInput);
+            CharController.Move(movement);
         }
 
         private void OnDestroy() {
-            foreach (NamedState baseState in _stateDictionary.Values) {
-                if (baseState is MovementState state) state.Destroy();
+            foreach (MovementLayer layer in _states) {
+                layer.OnDestroy();
             }
         }
 
-        private void OnDrawGizmos() => CurrentState?.DrawGizmo();
+        private void OnDrawGizmos() {
+            foreach (MovementLayer layer in _states) {
+                layer.OnDrawGizmos();
+            }
+        }
 
 #if UNITY_EDITOR
         //[SerializeField] private List<Tuple<string, Color>> _tags;

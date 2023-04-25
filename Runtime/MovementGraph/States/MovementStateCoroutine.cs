@@ -7,7 +7,7 @@ namespace Entities.Movement.States {
     public abstract class MovementStateCoroutine : MovementState {
 
         /// <summary> Overwrite this to still use the normal movement </summary>
-        protected Action<float> _handleMovementAction;
+        protected Func<float, Vector3> _handleMovementAction;
 
         protected Coroutine _routine;
         
@@ -21,13 +21,13 @@ namespace Entities.Movement.States {
 
         private IEnumerator Coroutine() {
             yield return RunRoutine();
-            Layer.QueueExit();
+            QueueRegularExit();
         }
 
         protected abstract IEnumerator RunRoutine();
 
-        public override void HandleMovement(float input) {
-            _handleMovementAction?.Invoke(input);
+        public override Vector3 HandleMovement(float input) {
+            return _handleMovementAction?.Invoke(input) ?? Vector3.zero;
         }
     }
 }

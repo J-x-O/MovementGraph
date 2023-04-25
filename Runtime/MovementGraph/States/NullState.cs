@@ -11,8 +11,8 @@ namespace JescoDev.MovementGraph.MovementGraph.States {
 
         [InputPort] public readonly Port In = new Port();
 
-        public override void HandleMovement(float input) {
-            // do nothing
+        public override Vector3 HandleMovement(float input) {
+            return Vector3.zero;
         }
     }
 }

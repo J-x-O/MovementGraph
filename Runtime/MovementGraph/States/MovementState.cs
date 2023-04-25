@@ -38,7 +38,7 @@ namespace Entities.Movement.States {
         
         public virtual void Deactivate() {}
 
-        public abstract void HandleMovement(float input);
+        public abstract Vector3 HandleMovement(float input);
         
         public bool HasTag(string tag) => _tags.Contains(tag);
 
@@ -48,5 +48,7 @@ namespace Entities.Movement.States {
         public override MovementState ResolveActivation(Port incomingPort = null) {
             return CanBeActivated() ? this : null;
         }
+        
+        public void QueueRegularExit() => Layer.QueueExit(RegularExit);
     }
 }
