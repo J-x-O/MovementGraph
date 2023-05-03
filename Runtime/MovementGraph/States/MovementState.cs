@@ -31,7 +31,7 @@ namespace JescoDev.MovementGraph.States {
         
         public virtual void Deactivate() {}
 
-        public abstract void HandleMovement(float input);
+        public abstract void HandleMovement();
         
         public bool HasTag(string tag) => _tags.Contains(tag);
 

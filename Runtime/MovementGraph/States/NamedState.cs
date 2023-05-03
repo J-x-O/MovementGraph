@@ -20,15 +20,5 @@ namespace JescoDev.MovementGraph.States {
         public NamedState(string identifier) {
             _identifier = identifier;
         }
-
-        public CollisionFlags MovePosition(Vector3 position) => MoveDirection(position - _transform.position);
-
-        public CollisionFlags MoveDirection(Vector3 direction) {
-            CollisionFlags flags = System.CharController.Move(direction);
-            Vector3 pos = _transform.position;
-            pos.z = 0;
-            _transform.position = pos;
-            return flags;
-        }
     }
 }

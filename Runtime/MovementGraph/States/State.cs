@@ -19,8 +19,7 @@ namespace JescoDev.MovementGraph.States {
         
         protected Transform _transform => System.transform;
         protected GameObject _gameObject => System.gameObject;
-        protected float _movementInput => System.MovementInput;
-        
+
         public virtual void Awake(MovementSystem system) {
             System = system;
         }

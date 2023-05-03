@@ -6,7 +6,7 @@ namespace JescoDev.MovementGraph.States {
     public abstract class MovementStateCoroutine : MovementState {
 
         /// <summary> Overwrite this to still use the normal movement </summary>
-        protected Action<float> _handleMovementAction;
+        protected Action _handleMovementAction;
 
         protected Coroutine _routine;
         
@@ -25,8 +25,8 @@ namespace JescoDev.MovementGraph.States {
 
         protected abstract IEnumerator RunRoutine();
 
-        public override void HandleMovement(float input) {
-            _handleMovementAction?.Invoke(input);
+        public override void HandleMovement() {
+            _handleMovementAction?.Invoke();
         }
     }
 }

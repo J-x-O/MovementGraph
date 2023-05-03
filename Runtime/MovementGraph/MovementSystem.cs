@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using JescoDev.MovementGraph.DefaultTargets;
 using JescoDev.MovementGraph.States;
 using TNRD;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace JescoDev.MovementGraph {
+
     [DefaultExecutionOrder(-1)]
     public class MovementSystem : MonoBehaviour {
 
@@ -14,34 +17,34 @@ namespace JescoDev.MovementGraph {
 
         /// <summary> The Movement State of the state machine  which was active before the current one </summary>
         public MovementState PreviousState { get; private set; }
-
-        public CharacterController CharController => _charController;
-        [SerializeField] private CharacterController _charController;
+        
+        public IMovementSource InputSource => _inputSource.Value;
+        private SerializableInterface<IMovementSource> _inputSource;
+        
+        public IMovementSink MovementSink => _movementSink;
+        [SerializeReference, SubclassSelector]
+        private IMovementSink _movementSink = new MovementSinkCharacterController();
 
         [Tooltip("All possible states this character can use")] [SerializeReference]
         private List<State> _states = new List<State>();
         private readonly Dictionary<string, NamedState> _stateDictionary = new Dictionary<string, NamedState>();
 
-        public float MovementInput => InputSource?.MovementValue ?? 0;
-        public IMovementSource InputSource => _source.Value;
-        [SerializeField] private SerializableInterface<IMovementSource> _source;
-        
         private bool _reevaluationQueued;
 
-        private void Awake() {
+        protected virtual void Awake() {
             foreach (State state in _states) {
                 state.Awake(this);
                 
                 if(state is not NamedState namedState) continue;
                 _stateDictionary.Add(namedState.Identifier, namedState);
             }
-            CharController.enabled = false;
+            MovementSink.Disable();
         }
 
         // wait till the floor manager run once 
-        private void Start() {
+        protected virtual void Start() {
             ReevaluateStates();
-            CharController.enabled = true;
+            MovementSink.Enable();
         }
 
         private void Update() {
@@ -56,10 +59,10 @@ namespace JescoDev.MovementGraph {
                 ReevaluateStates();
             }
 
-            CurrentState?.HandleMovement(MovementInput);
+            CurrentState?.HandleMovement();
         }
 
-        private void OnDestroy() {
+        protected virtual void OnDestroy() {
             foreach (NamedState baseState in _stateDictionary.Values) {
                 if (baseState is MovementState state) state.Destroy();
             }
