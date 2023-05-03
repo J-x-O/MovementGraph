@@ -17,13 +17,9 @@ namespace JescoDev.MovementGraph {
 
         /// <summary> The Movement State of the state machine  which was active before the current one </summary>
         public MovementState PreviousState { get; private set; }
-        
-        public IMovementSource InputSource => _inputSource.Value;
-        private SerializableInterface<IMovementSource> _inputSource;
-        
-        public IMovementSink MovementSink => _movementSink;
-        [SerializeReference, SubclassSelector]
-        private IMovementSink _movementSink = new MovementSinkCharacterController();
+
+        public MovementSystemCustomization Customization => _customization;
+        [SerializeField] private MovementSystemCustomization _customization;
 
         [Tooltip("All possible states this character can use")] [SerializeReference]
         private List<State> _states = new List<State>();
@@ -38,13 +34,11 @@ namespace JescoDev.MovementGraph {
                 if(state is not NamedState namedState) continue;
                 _stateDictionary.Add(namedState.Identifier, namedState);
             }
-            MovementSink.Disable();
         }
 
         // wait till the floor manager run once 
         protected virtual void Start() {
             ReevaluateStates();
-            MovementSink.Enable();
         }
 
         private void Update() {
@@ -121,14 +115,14 @@ namespace JescoDev.MovementGraph {
 
         public T GetState<T>() where T : MovementState {
             string stateName = NamedState.GetName<T>();
-            return _stateDictionary.ContainsKey(stateName)
-                ? _stateDictionary[stateName] as T
+            return _stateDictionary.TryGetValue(stateName, out NamedState value)
+                ? value as T
                 : null;
         }
 
         public NamedState GetState(string identifier) {
-            return _stateDictionary.ContainsKey(identifier)
-                ? _stateDictionary[identifier]
+            return _stateDictionary.TryGetValue(identifier, out NamedState value)
+                ? value
                 : null;
         }
         
