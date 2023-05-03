@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Entities.Movement.States;
+using JescoDev.MovementGraph.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;

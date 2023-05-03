@@ -97,7 +97,10 @@ namespace Gameplay.Movement.Layer {
         public bool SendEvent(string t, bool ignoreActiveCheck = false) {
             if (!TryGetState(t, out NamedState state)) return false;
             if (!ignoreActiveCheck && IsStateActive(t)) return false;
-            if (CurrentState != null && !CurrentState.EventExit.HasTransition(state)) return false;
+            if (CurrentState != null
+                && state.GetInputPorts().Any()
+                && !CurrentState.EventExit.HasTransition(state)) return false;
+            
             return ActivateState(state);
         }
 

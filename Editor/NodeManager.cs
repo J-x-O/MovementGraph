@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Entities.Movement.States;
+using JescoDev.MovementGraph.States;
 using Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Utility;
 
 namespace Editor.MovementEditor {
     public partial class NodeManager {
@@ -89,13 +89,12 @@ namespace Editor.MovementEditor {
         
         private BaseNode CreateNode(Vector2 position, Func<State> createInstance) {
             State instance = createInstance();
-            SerializedProperty newElement = SerializedPropertyUtility.AppendArrayElement(_statesProperty,
-                element => element.managedReferenceValue = instance);
+            SerializedProperty newElement = _statesProperty.AppendArrayElement(element => element.managedReferenceValue = instance);
             return CreateNode(position, newElement, instance);
         }
 
         public void DeleteNode(BaseNode node) {
-            int index = SerializedPropertyUtility.GetArrayIndex(_statesProperty, node.State);
+            int index = _statesProperty.GetArrayIndex(node.State);
             _statesProperty.DeleteArrayElementAtIndex(index);
             _statesProperty.serializedObject.ApplyModifiedProperties();
             _nodes.Remove(node);

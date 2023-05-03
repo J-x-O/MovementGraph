@@ -1,4 +1,5 @@
-﻿using Entities.Movement.States;
+﻿using System.Linq;
+using Entities.Movement.States;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Utility;
@@ -10,9 +11,13 @@ namespace Editor.MovementEditor {
             return new ContextualMenuManipulator(menuEvent => {
                 menuEvent.menu.AppendAction("Debug/Print ValidTransitions",
                     action => {
-                        
                         BaseNode node = FindSelectedNode();
-                        if (node.StateObject is NamedState namedStart) Debug.Log("Start: " + namedStart.Identifier);
+                        if (node == null) {
+                            Debug.Log("No node selected");
+                            return;
+                        }
+                        
+                        if(node.StateObject is NamedState namedStart) Debug.Log("Start: " + namedStart.Identifier);
                         foreach (BaseNode compare in _nodes) {
                             if (!node.StateObject.HasTransitionTo(compare.StateObject)) continue;
                             if (compare.StateObject is NamedState namedCompare)
@@ -23,12 +28,7 @@ namespace Editor.MovementEditor {
         }
 
         private BaseNode FindSelectedNode() {
-            foreach (BaseNode node in _nodes) {
-                if(node.selected) return node;
-            }
-            BaseNode random = _nodes.PickRandom();
-            _view.AddToSelection(random);
-            return random;
+            return _nodes.FirstOrDefault(node => node.selected);
         }
         
     }
