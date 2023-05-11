@@ -1,10 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace JescoDev.MovementGraph.DefaultTargets {
+namespace JescoDev.MovementGraph.Customization {
     
     /// <summary> Default Implementation using a character controller </summary>
-    public class MovementSystemCharacterController : MovementSystemCustomization {
+    public class CustomMovementCharacterController : CustomMovement {
         
         public CharacterController Target => _target;
         [SerializeField] private CharacterController _target;

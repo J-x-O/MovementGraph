@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using JescoDev.MovementGraph.DefaultTargets;
+using JescoDev.MovementGraph.Customization;
 using JescoDev.MovementGraph.States;
 using TNRD;
 using UnityEngine;
@@ -18,8 +18,8 @@ namespace JescoDev.MovementGraph {
         /// <summary> The Movement State of the state machine  which was active before the current one </summary>
         public MovementState PreviousState { get; private set; }
 
-        public MovementSystemCustomization Customization => _customization;
-        [SerializeField] private MovementSystemCustomization _customization;
+        public CustomMovement Extension => _extension;
+        [FormerlySerializedAs("_customization")] [SerializeField] private CustomMovement _extension;
 
         [Tooltip("All possible states this character can use")] [SerializeReference]
         private List<State> _states = new List<State>();
