@@ -18,8 +18,8 @@ namespace JescoDev.MovementGraph {
         /// <summary> The Movement State of the state machine  which was active before the current one </summary>
         public MovementState PreviousState { get; private set; }
 
-        public CustomMovement Extension => _extension;
-        [FormerlySerializedAs("_customization")] [SerializeField] private CustomMovement _extension;
+        public CustomMovement Custom => _custom;
+        [SerializeField] private CustomMovement _custom;
 
         [Tooltip("All possible states this character can use")] [SerializeReference]
         private List<State> _states = new List<State>();
