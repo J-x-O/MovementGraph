@@ -8,8 +8,8 @@ namespace JescoDev.MovementGraph.Customization {
         public CharacterController Target => _target;
         [SerializeField] private CharacterController _target;
 
-        public void Awake() => _target.enabled = true;
-        public void Start() => _target.enabled = false;
+        public void Awake() => _target.enabled = false;
+        public void Start() => _target.enabled = true;
 
         public override void MoveTo(Vector3 worldPos) => MoveBy(worldPos - _target.transform.position);
 
