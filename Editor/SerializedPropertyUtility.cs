@@ -22,6 +22,12 @@ namespace Editor.MovementEditor {
             Debug.LogError("Couldn't find element in array!");
             return -1;
         }
+
+        public static void RemoveArrayElement(this SerializedProperty target, SerializedProperty p) {
+            int i = target.GetArrayIndex(p);
+            if(i == -1) return;
+            target.DeleteArrayElementAtIndex(i);
+        }
         
         public static void RemoveArrayElement(this SerializedProperty target, Func<SerializedProperty, bool> predicate) {
             for (int i = 0; i < target.arraySize; i++) {

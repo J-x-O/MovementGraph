@@ -16,9 +16,9 @@ namespace Editor.MovementEditor {
         private readonly GraphView _view;
         private readonly List<BaseNode> _nodes = new List<BaseNode>();
 
-        public NodeManager(GraphView view, SerializedObject linkObject) {
+        public NodeManager(GraphView view, SerializedProperty layer) {
             _view = view;
-            _statesProperty = linkObject?.FindProperty("_states");
+            _statesProperty = layer.FindPropertyRelative("_states");
         }
 
         public void LoadExistingNodes() {

@@ -12,15 +12,13 @@ using Edge = UnityEditor.Experimental.GraphView.Edge;
 
 namespace Editor.MovementEditor {
     public class MovementGraphView : GraphView {
-
-        private readonly MovementSystem _link;
-        private readonly SerializedObject _linkObject;
+        
+        private readonly SerializedProperty _layer;
         private readonly NodeManager _nodeManager;
         
-        public MovementGraphView(MovementSystem link) {
-            _link = link;
-            _linkObject = _link ? new SerializedObject(_link) : null;
-            _nodeManager = new NodeManager(this, _linkObject);
+        public MovementGraphView(SerializedProperty layer) {
+            _layer = layer;
+            _nodeManager = new NodeManager(this, _layer);
             _nodeManager.LoadExistingNodes();
 
             AddGridBackground();
@@ -65,9 +63,6 @@ namespace Editor.MovementEditor {
         private void AddManipulators() {
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new ContentZoomer());
-            CameraBinder binder = new CameraBinder(_linkObject);
-            this.AddManipulator(binder);
-            binder.RestoreCamera();
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
         }
@@ -86,10 +81,13 @@ namespace Editor.MovementEditor {
         }
 
         private void AddStyles() {
-            StyleSheet graphSheet = (StyleSheet) EditorGUIUtility.Load("MovementGraph/MovementGraph.uss");
-            styleSheets.Add(graphSheet);
-            StyleSheet nodeSheet = (StyleSheet) EditorGUIUtility.Load("MovementGraph/NodeStyles.uss");
-            styleSheets.Add(nodeSheet);
+            styleSheets.Add(LoadStyleSheet("MovementGraph.uss"));
+            styleSheets.Add(LoadStyleSheet("NodeStyles.uss"));
+        }
+
+        public static StyleSheet LoadStyleSheet(string localPath) {
+            const string resourcePath = "Packages/com.j-x-o.movement-graph/EditorResources/";
+            return (StyleSheet)EditorGUIUtility.Load(resourcePath + localPath);
         }
     }
 }

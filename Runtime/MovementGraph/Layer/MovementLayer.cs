@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Entities.Movement;
 using Entities.Movement.States;
+using Gameplay.Movement.Layer;
 using JescoDev.MovementGraph.States;
 using Movement;
 using Movement.States;
-using UnityEditor.Graphs;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
-namespace Gameplay.Movement.Layer {
+namespace JescoDev.MovementGraph.Layer {
     
     [Serializable]
     public class MovementLayer {

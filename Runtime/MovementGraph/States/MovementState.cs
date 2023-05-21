@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Gameplay.Movement.Layer;
+using JescoDev.MovementGraph.Layer;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using JescoDev.Utility.Condition;

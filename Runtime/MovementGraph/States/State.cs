@@ -5,6 +5,7 @@ using System.Reflection;
 using Entities.Movement;
 using Entities.Movement.States;
 using Gameplay.Movement.Layer;
+using JescoDev.MovementGraph.Layer;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
