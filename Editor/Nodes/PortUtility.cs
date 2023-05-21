@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using JescoDev.MovementGraph.MovementGraph.StateTransition;
 using JescoDev.MovementGraph.States;
+using JescoDev.MovementGraph.StateTransition;
 using Movement.States;
 
 namespace Editor.MovementEditor {
@@ -16,7 +16,7 @@ namespace Editor.MovementEditor {
         public static IEnumerable<string> GetAllPorts(this State state) {
             return state.GetType()
                 .GetFields(BindingFlags)
-                .Where(field => field.GetValue(state) is Port)
+                .Where(field => field.GetValue(state) is MovementPort)
                 .Select(field => field.Name);
         }
         
@@ -24,7 +24,7 @@ namespace Editor.MovementEditor {
             return state.GetType()
                 .GetFields(BindingFlags)
                 .Where(predicate)
-                .Where(field => field.GetValue(state) is Port)
+                .Where(field => field.GetValue(state) is MovementPort)
                 .Select(field => field.Name);
         }
         

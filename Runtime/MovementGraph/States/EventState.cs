@@ -1,21 +1,18 @@
 ﻿using System;
-using JescoDev.MovementGraph.MovementGraph.StateTransition;
 using JescoDev.MovementGraph.States;
+using JescoDev.MovementGraph.StateTransition;
+using UnityEngine;
 
 namespace Entities.Movement.States {
     
     [Serializable]
     public class EventState : NamedState {
         
-        [OutputPort] private Port OutputPort;
+        [field: SerializeField, OutputPort] public MovementPort OutputPort { get; private set; }
 
-        public EventState() {
-            OutputPort = new Port { State = this };
-        }
-        
         public override bool ValidActivation() => true;
 
-        public override MovementState ResolveActivation(Port incomingPort = null)
+        public override MovementState ResolveActivation(MovementPort incomingPort = null)
             => OutputPort.FindFirstValidTransition();
     }
 }

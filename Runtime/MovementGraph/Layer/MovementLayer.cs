@@ -37,7 +37,7 @@ namespace Gameplay.Movement.Layer {
         
         private readonly Dictionary<string, NamedState> _stateDictionary = new Dictionary<string, NamedState>();
 
-        private Port _exitQueued;
+        private MovementPort _exitQueued;
         
         public MovementState PreviousState { get; private set; }
         public MovementState CurrentState { get; private set; }
@@ -134,7 +134,7 @@ namespace Gameplay.Movement.Layer {
             System.Events.InvokeStart(CurrentState, true);
         }
 
-        public void QueueExit(Port port) {
+        public void QueueExit(MovementPort port) {
             if (!CurrentState.GetOutputPorts().Contains(port)) {
                 Debug.LogWarning("Trying to exit a state with a port that is not connected to it!");
                 return;

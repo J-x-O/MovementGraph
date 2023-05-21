@@ -10,11 +10,9 @@ using UnityEngine.UIElements;
 namespace Editor.MovementEditor {
     public class RedirectNode : BaseNode{
 
-        public RedirectNode(SerializedProperty state, RedirectState stateObject) : base(state, stateObject) { }
+        public RedirectNode(GraphView view, SerializedProperty state, RedirectState stateObject) : base(view, state, stateObject) { }
 
         protected override void Rebuild(List<FieldInfo> fieldInfos) {
-            this.RebuildInput("");
-            this.RebuildOutput("");
             mainContainer.AddToClassList("RedirectNode");
             titleContainer.Clear();
         }

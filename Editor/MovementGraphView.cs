@@ -55,21 +55,10 @@ namespace Editor.MovementEditor {
                         case BaseNode node:
                             _nodeManager.DeleteNode(node);
                             break;
-                        case Edge edge:
-                            NodeManager.RemoveConnection(edge.input, edge.output);
-                            break;
                     }
                 }
             }
-            
-            if (graphViewChange.edgesToCreate != null) {
-                foreach (Edge edge in graphViewChange.edgesToCreate) {
-                    if (edge.output.node is not (IConnectOut and BaseNode start)) break;
-                    if (edge.input.node is not (IConnectIn and BaseNode end)) break;
-                    NodeManager.CreateConnection(start, end);
-                }
-            }
-            
+
             return graphViewChange;
         }
         

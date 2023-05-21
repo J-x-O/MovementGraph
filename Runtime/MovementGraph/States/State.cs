@@ -5,8 +5,8 @@ using System.Reflection;
 using Entities.Movement;
 using Entities.Movement.States;
 using Gameplay.Movement.Layer;
-using JescoDev.MovementGraph.MovementGraph.StateTransition;
 using JescoDev.MovementGraph.States;
+using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
 
 namespace Movement.States {
@@ -32,33 +32,28 @@ namespace Movement.States {
         
         /// <summary> This function decides if the state can be activated or not </summary>
         /// <returns> The resolved movement state for activation, or null if we cant activate </returns>
-        public abstract MovementState ResolveActivation(Port incomingPort = null);
+        public abstract MovementState ResolveActivation(MovementPort incomingPort = null);
 
         private const BindingFlags BindingFlags = System.Reflection.BindingFlags.Instance |
                                                   System.Reflection.BindingFlags.NonPublic |
                                                   System.Reflection.BindingFlags.Public;
         
-        public IEnumerable<Port> GetAllPorts() {
+        public IEnumerable<MovementPort> GetAllPorts() {
             return GetType()
                 .GetFields(BindingFlags)
                 .Select(field => field.GetValue(this))
-                .OfType<Port>();
+                .OfType<MovementPort>();
         }
         
-        private IEnumerable<Port> GetFilteredPorts(Func<FieldInfo ,bool> predicate) {
+        private IEnumerable<MovementPort> GetFilteredPorts(Func<FieldInfo ,bool> predicate) {
             return GetType()
                 .GetFields(BindingFlags)
                 .Where(predicate)
                 .Select(field => field.GetValue(this))
-                .OfType<Port>();
+                .OfType<MovementPort>();
         }
         
-        public IEnumerable<Port> GetInputPorts() {
-            return GetFilteredPorts(field => field.GetCustomAttribute<PortType>()?.IsInput ?? false);
-        }
-        
-        public IEnumerable<Port> GetOutputPorts() {
-            return GetFilteredPorts(field => field.GetCustomAttribute<PortType>()?.IsOutput ?? false);
-        }
+        public IEnumerable<MovementPort> GetInputPorts() => GetFilteredPorts(field => field.IsInputPort());
+        public IEnumerable<MovementPort> GetOutputPorts() => GetFilteredPorts(field => field.IsOutputPort());
     }
 }

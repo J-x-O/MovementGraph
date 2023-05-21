@@ -6,17 +6,17 @@ namespace JescoDev.MovementGraph.States {
     [Serializable]
     public class Transition {
 
-        [field: SerializeReference] public Port From { get; private set; }
+        [field: SerializeReference] public MovementPort From { get; private set; }
 
-        [field: SerializeReference] public Port To { get; private set; }
+        [field: SerializeReference] public MovementPort To { get; private set; }
 
         public Transition() { }
         
-        public Transition(Port from, Port to) {
+        public Transition(MovementPort from, MovementPort to) {
             From = from;
             To = to;
         }
 
-        public Port NotMe(Port me) => From != me ? From : To;
+        public MovementPort NotMe(MovementPort me) => From != me ? From : To;
     }
 }

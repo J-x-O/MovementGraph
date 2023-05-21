@@ -3,6 +3,7 @@ using System.Reflection;
 using Entities.Movement.States;
 using Movement.States;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 
 namespace Editor.MovementEditor {
@@ -10,7 +11,8 @@ namespace Editor.MovementEditor {
         
         protected PropertyField NodeHeader { get; private set; }
         
-        public NamedNode(SerializedProperty state, State stateObject) : base(state, stateObject) { }
+        public NamedNode(GraphView view, SerializedProperty state, State stateObject)
+            : base(view, state, stateObject) { }
 
         protected void RebuildHeader(List<FieldInfo> fieldInfos) {
             titleContainer.Clear();

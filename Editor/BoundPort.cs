@@ -12,41 +12,51 @@ using Port = UnityEditor.Experimental.GraphView.Port;
 
 namespace Editor.MovementEditor {
     public class BoundPort : Port, IEdgeConnectorListener {
-        
-        private readonly SerializedProperty _baseProperty;
-        private readonly SerializedProperty _portProperty;
 
-        public BoundPort(SerializedProperty baseProperty, string portName, bool showName, Direction direction)
+        public string PropertyName => PortProperty.name;
+        
+        public readonly BaseNode BaseNode;
+        public readonly SerializedProperty PortProperty;
+
+        private bool IsInput => direction == Direction.Input;
+        
+        public BoundPort(BaseNode baseNode, string portName, bool showName, Direction direction)
             : base(Orientation.Horizontal, direction, Capacity.Multi, typeof(bool)) {
-            _baseProperty = baseProperty;
-            _portProperty = baseProperty.FindPropertyRelative(portName);
+            BaseNode = baseNode;
+            PortProperty = baseNode.State.FindPropertyRelative(portName);
             this.portName = showName ? portName : "";
             m_EdgeConnector = new EdgeConnector<Edge>(this);
             this.AddManipulator(m_EdgeConnector);
         }
 
-        public void LoadConnection(List<BaseNode> allNodes) {
-            for (int i = 0; i < _portProperty.arraySize; i++) {
-                SerializedProperty element = _portProperty.GetArrayElementAtIndex(i);
-                State target = element.managedReferenceValue as State;
-                if (target == null) continue;
+        public void LoadConnection() {
+            List<BaseNode> nodes = BaseNode.View.nodes.OfType<BaseNode>().ToList();
+
+            for (int i = 0; i < PortProperty.arraySize; i++) {
+                SerializedProperty transition = PortProperty.GetArrayElementAtIndex(i);
                 
-                BaseNode targetNode = allNodes.Find(baseNode => baseNode.StateObject == target);
-                if (targetNode == null) continue;
+                // find connected State
+                SerializedProperty other = transition.FindPropertyRelative(IsInput ? "_from" : "_to");
+                MovementPort otherPort = other.managedReferenceValue as MovementPort;
+                State otherNode = otherPort?.State;
+                if (otherNode == null) {
+                    PortProperty.DeleteArrayElementAtIndex(i);
+                    i--;
+                    continue;
+                }
                 
-                Port start = FindPort(this, Direction.Output);
-                Port end = FindPort(targetNode, Direction.Input);
-                if (start == null || end == null) continue;
-                _view.AddElement(start.ConnectTo(end));
+                // remap state to visual element
+                BaseNode targetNode = nodes.Find(compare => compare.StateObject == otherNode);
+                BoundPort targetPort = (IsInput ? targetNode.OutputPorts : targetNode.InputPorts)
+                    .FirstOrDefault(port => SerializedProperty.EqualContents(port.PortProperty, other));
+                if (targetPort == null) {
+                    PortProperty.DeleteArrayElementAtIndex(i);
+                    i--;
+                    continue;
+                }
+                
+                BaseNode.View.AddElement(ConnectTo(targetPort));
             }
-        }
-        
-        private static Port FindPort(Node node, Direction target) {
-            return node switch {
-                IConnectOut outNode when target == Direction.Output => outNode.OutputPort,
-                IConnectIn inNode when target == Direction.Input => inNode.InputPort,
-                _ => null
-            };
         }
 
         public void OnDropOutsidePort(Edge edge, Vector2 position) { }
@@ -57,7 +67,7 @@ namespace Editor.MovementEditor {
             edge.output.Connect(edge);
             edge.RegisterCallback<DetachFromPanelEvent>(HandleDeletion);
             
-            _portProperty.AppendArrayElement(element => {
+            PortProperty.AppendArrayElement(element => {
                 State target = (edge.input.node as BaseNode)?.StateObject;
                 element.managedReferenceValue = target;
             });
@@ -69,7 +79,7 @@ namespace Editor.MovementEditor {
             if(edge.output.node is not BaseNode output) return;
             
             // find the correct element to remove
-            _portProperty.RemoveArrayElement(element => {
+            PortProperty.RemoveArrayElement(element => {
                 if(element.managedReferenceValue is not Transition transition) return false;
                 return transition.From.State == input.StateObject
                        && transition.To.State == output.StateObject;

@@ -15,15 +15,13 @@ namespace Editor.MovementEditor {
 
         protected TagView TagView { get; private set; }
         
-        public BoundNode(SerializedProperty state, MovementState stateObject) : base(state, stateObject) {
+        public BoundNode(GraphView view, SerializedProperty state, MovementState stateObject) : base(view, state, stateObject) {
             StateObject = stateObject;
         }
 
         protected override void Rebuild(List<FieldInfo> fieldInfos) {
             RebuildHeader(fieldInfos);
             RebuildTagView(fieldInfos);
-            this.RebuildInput();
-            this.RebuildOutput();
             RebuildProperties(fieldInfos);
         }
 

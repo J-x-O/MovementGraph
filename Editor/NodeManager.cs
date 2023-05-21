@@ -22,16 +22,15 @@ namespace Editor.MovementEditor {
         }
 
         public void LoadExistingNodes() {
-            LoadNodes();
-            LoadConnections();
-        }
-
-        private void LoadNodes() {
             for (int i = 0; i < _statesProperty.arraySize; i++) {
                 SerializedProperty property = _statesProperty.GetArrayElementAtIndex(i);
                 SerializedProperty position = property.FindPropertyRelative("_position");
                 State state = property.managedReferenceValue as State;
                 _view.AddElement(CreateNode(position?.vector2Value, property, state));
+            }
+
+            foreach (BaseNode node in _nodes) {
+                node.LoadConnections();
             }
         }
 
@@ -44,10 +43,10 @@ namespace Editor.MovementEditor {
         
         private BaseNode CreateNode(Vector2? position, SerializedProperty property, State state) {
             BaseNode node = state switch {
-                LimitedEventState limitedEventState => new LimitedEventNode(property, limitedEventState),
-                EventState eventState => new EventNode(property, eventState),
-                RedirectState redirectState => new RedirectNode(property, redirectState),
-                MovementState movementState => new BoundNode(property, movementState),
+                LimitedEventState limitedEventState => new LimitedEventNode(_view, property, limitedEventState),
+                EventState eventState => new EventNode(_view, property, eventState),
+                RedirectState redirectState => new RedirectNode(_view, property, redirectState),
+                MovementState movementState => new BoundNode(_view, property, movementState),
                 _ => null
             };
             if (node == null) return null;

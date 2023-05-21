@@ -9,16 +9,16 @@ using UnityEngine;
 namespace JescoDev.MovementGraph.States {
     
     [Serializable]
-    public class Port {
+    public class MovementPort {
 
         public IReadOnlyList<Transition> Transitions => _transitions;
         [SerializeField] private List<Transition> _transitions = new List<Transition>();
 
-        public State State;
+        [field:SerializeReference] public State State { get; private set; }
         
         public MovementState FindFirstValidTransition() {
             foreach (Transition transition in _transitions) {
-                Port compare = transition.NotMe(this);
+                MovementPort compare = transition.NotMe(this);
                 MovementState resolve = compare.ResolveActivation();
                 if (resolve != null) return resolve;
             }
@@ -27,7 +27,7 @@ namespace JescoDev.MovementGraph.States {
 
         private MovementState ResolveActivation() => State.ResolveActivation(this);
 
-        public void ConnectTo(Port other) {
+        public void ConnectTo(MovementPort other) {
             if (other == null) return;
             if (HasDirectTransition(other)) return;
             
@@ -51,11 +51,11 @@ namespace JescoDev.MovementGraph.States {
             }
             
             foreach (Transition transition in Transitions) {
-                Port compare = transition.NotMe(this);
+                MovementPort compare = transition.NotMe(this);
                 if (compare.State == target) return true;
                 if (compare.State is not IFastForward redirect) continue;
                 
-                Port continuePort = redirect.GetNextPort(compare);
+                MovementPort continuePort = redirect.GetNextPort(compare);
                 if(continuePort == null) continue;
                 if (continuePort.HasDirectTransition(target, recursionDepth + 1)) return true;
             }
@@ -63,9 +63,9 @@ namespace JescoDev.MovementGraph.States {
             return false;
         }
 
-        public bool HasDirectTransition(Port port) {
+        public bool HasDirectTransition(MovementPort port) {
             foreach (Transition transition in Transitions) {
-                Port compare = transition.NotMe(this);
+                MovementPort compare = transition.NotMe(this);
                 if (compare == port) return true;
             }
             return false;

@@ -16,14 +16,13 @@ namespace Editor.MovementEditor {
         
         public new EventState StateObject { get; protected set; }
 
-        public EventNode(SerializedProperty state, EventState stateObject) : base(state, stateObject) {
+        public EventNode(GraphView view, SerializedProperty state, EventState stateObject) : base(view, state, stateObject) {
             StateObject = stateObject;
         }
 
         protected override void Rebuild(List<FieldInfo> fieldInfos) {
             RebuildHeader(fieldInfos);
             NodeHeader.RegisterValueChangeCallback(TestForSpecialName);
-            this.RebuildOutput();
         }
 
         private void TestForSpecialName(SerializedPropertyChangeEvent evt) {
