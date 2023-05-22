@@ -27,6 +27,7 @@ namespace Editor.MovementEditor {
             int i = target.GetArrayIndex(p);
             if(i == -1) return;
             target.DeleteArrayElementAtIndex(i);
+            target.serializedObject.ApplyModifiedProperties();
         }
         
         public static void RemoveArrayElement(this SerializedProperty target, Func<SerializedProperty, bool> predicate) {

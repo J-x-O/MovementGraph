@@ -15,7 +15,7 @@ namespace Entities.Movement.States {
         [field: SerializeField, InputPort] public MovementPort InputPort { get; private set; }
         [field: SerializeField, OutputPort] public MovementPort RegularExit { get; private set; }
         [field: SerializeField, OutputPort] public MovementPort EventExit { get; private set; }
-        
+
         [Tooltip("The Condition that needs to be true so this can be activated")]
         [SubclassSelector] [SerializeReference] protected ICondition _activationCondition;
 

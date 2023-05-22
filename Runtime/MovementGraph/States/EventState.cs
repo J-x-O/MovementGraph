@@ -8,7 +8,7 @@ namespace Entities.Movement.States {
     [Serializable]
     public class EventState : NamedState {
         
-        [field: SerializeField, OutputPort] public MovementPort OutputPort { get; private set; }
+        [field: SerializeField, OutputPort] public MovementPort OutputPort { get; protected set; }
 
         public override bool ValidActivation() => true;
 

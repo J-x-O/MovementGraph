@@ -32,7 +32,7 @@ namespace Editor.MovementEditor {
         
         public void Rebuild() {
             List<FieldInfo> fieldInfos = StateObject.GetType()
-                .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .ExtractFields()
                 .OrderBy(field => field.MetadataToken)
                 .ToList();
             

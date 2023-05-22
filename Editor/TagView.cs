@@ -16,7 +16,7 @@ namespace Editor.MovementEditor {
             _addButton = new Button(AddItem) { text = "Add" };
             _addButton.AddToClassList("tag-list-add-button");
             
-            styleSheets.Add(MovementGraphView.LoadStyleSheet("TagView.uss"));
+            styleSheets.Add(MovementLayerView.LoadStyleSheet("TagView.uss"));
         }
         
         // Get the reference to the bound serialized object.

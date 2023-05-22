@@ -31,8 +31,8 @@ namespace Editor.MovementEditor {
 
         public void LoadConnection() {
             List<BaseNode> nodes = BaseNode.View.nodes.OfType<BaseNode>().ToList();
-
-            for (int i = 0; i < PortProperty.arraySize; i++) {
+            SerializedProperty transitions = PortProperty.FindPropertyRelative("_transitions");
+            for (int i = 0; i < transitions.arraySize; i++) {
                 SerializedProperty transition = PortProperty.GetArrayElementAtIndex(i);
                 
                 // find connected State

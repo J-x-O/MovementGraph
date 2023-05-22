@@ -1,0 +1,20 @@
+#LayerContainer, #GraphHeader {
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+
+#GraphHeader{
+    padding: 5px;
+}
+
+#LayerContainer > #LayerSelector {
+    flex-grow: 1;
+    background-color: rgba(0,0,0,0);
+    border-width: 0;
+}
+
+#LayerContainer.selected > #LayerSelector {
+    background-color: #44C0FF;
+    color: black;
+}

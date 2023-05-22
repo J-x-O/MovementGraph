@@ -1,14 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Entities.Movement;
-using Entities.Movement.States;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine;
 using UnityEngine.UIElements;
-using Edge = UnityEditor.Experimental.GraphView.Edge;
+using static Editor.MovementEditor.MovementLayerView;
 
 namespace Editor.MovementEditor {
     public class MovementGraphView : GraphView {
@@ -22,8 +17,8 @@ namespace Editor.MovementEditor {
             _nodeManager.LoadExistingNodes();
 
             AddGridBackground();
-            AddStyles();
             AddManipulators();
+            styleSheets.Add(LoadStyleSheet("MovementGraph.uss"));
             graphViewChanged = OnGraphViewChanged;
         }
 
@@ -78,16 +73,6 @@ namespace Editor.MovementEditor {
             element.AddManipulator(_nodeManager.CreateNodeContextualMenu());
             element.AddManipulator(_nodeManager.CreateDebugContextMenu());
             Insert(1, element);
-        }
-
-        private void AddStyles() {
-            styleSheets.Add(LoadStyleSheet("MovementGraph.uss"));
-            styleSheets.Add(LoadStyleSheet("NodeStyles.uss"));
-        }
-
-        public static StyleSheet LoadStyleSheet(string localPath) {
-            const string resourcePath = "Packages/com.j-x-o.movement-graph/EditorResources/";
-            return (StyleSheet)EditorGUIUtility.Load(resourcePath + localPath);
         }
     }
 }

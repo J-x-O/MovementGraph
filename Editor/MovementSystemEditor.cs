@@ -36,7 +36,7 @@ namespace Editor.MovementEditor {
             rootVisualElement.Clear();
             MovementSystem system = Selection.activeGameObject.GetComponent<MovementSystem>();
             if (system != null) {
-                MovementGraphView view = new MovementGraphView(system);
+                MovementLayerView view = new MovementLayerView(system);
                 view.StretchToParentSize();
                 rootVisualElement.Add(view);
             }

@@ -35,20 +35,14 @@ namespace Movement.States {
         /// <returns> The resolved movement state for activation, or null if we cant activate </returns>
         public abstract MovementState ResolveActivation(MovementPort incomingPort = null);
 
-        private const BindingFlags BindingFlags = System.Reflection.BindingFlags.Instance |
-                                                  System.Reflection.BindingFlags.NonPublic |
-                                                  System.Reflection.BindingFlags.Public;
-        
         public IEnumerable<MovementPort> GetAllPorts() {
-            return GetType()
-                .GetFields(BindingFlags)
+            return GetType().ExtractFields()
                 .Select(field => field.GetValue(this))
                 .OfType<MovementPort>();
         }
         
         private IEnumerable<MovementPort> GetFilteredPorts(Func<FieldInfo ,bool> predicate) {
-            return GetType()
-                .GetFields(BindingFlags)
+            return GetType().ExtractFields()
                 .Where(predicate)
                 .Select(field => field.GetValue(this))
                 .OfType<MovementPort>();
