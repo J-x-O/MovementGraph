@@ -10,8 +10,8 @@ namespace JescoDev.MovementGraph.States {
     [Serializable]
     public class RedirectState : State, IFastForward {
         
-        [field: SerializeField, OutputPort] public MovementPort OutputPort { get; private set; }
-        [field: SerializeField, InputPort] public MovementPort InputPort { get; private set; }
+        [field: SerializeReference, OutputPort] public MovementPort OutputPort { get; private set; }
+        [field: SerializeReference, InputPort] public MovementPort InputPort { get; private set; }
 
         public override bool ValidActivation() => InputPort.HasActiveTransition(true);
 

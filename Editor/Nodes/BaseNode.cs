@@ -53,13 +53,13 @@ namespace Editor.MovementEditor {
             inputContainer.Clear();
             bool multiple = inputPorts.Count > 1;
             foreach (FieldInfo port in inputPorts) {
-                inputContainer.Add(new BoundPort(this, port.Name, multiple, Direction.Input));
+                inputContainer.Add(BoundPort.Create(this, port.Name, multiple, Direction.Input));
             }
             
             outputContainer.Clear();
             multiple = outputPorts.Count > 1;
             foreach (FieldInfo port in outputPorts) {
-                outputContainer.Add(new BoundPort(this, port.Name, multiple, Direction.Output));
+                outputContainer.Add(BoundPort.Create(this, port.Name, multiple, Direction.Output));
             }
         }
 
@@ -67,7 +67,7 @@ namespace Editor.MovementEditor {
 
         public void LoadConnections() {
             foreach (BoundPort port in InputPorts) port.LoadConnection();
-            foreach (BoundPort port in OutputPorts) port.LoadConnection();
+            //foreach (BoundPort port in OutputPorts) port.LoadConnection();
         }
         
         public IEnumerable<BoundPort> InputPorts => inputContainer.Children().OfType<BoundPort>();

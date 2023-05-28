@@ -12,22 +12,17 @@ namespace Entities.Movement.States {
     [Serializable]
     public abstract class MovementState : NamedState {
 
-        [field: SerializeField, InputPort] public MovementPort InputPort { get; private set; }
-        [field: SerializeField, OutputPort] public MovementPort RegularExit { get; private set; }
-        [field: SerializeField, OutputPort] public MovementPort EventExit { get; private set; }
+        [field: SerializeReference, InputPort] public MovementPort InputPort { get; private set; }
+        [field: SerializeReference, OutputPort] public MovementPort RegularExit { get; private set; }
+        [field: SerializeReference, OutputPort] public MovementPort EventExit { get; private set; }
 
         [Tooltip("The Condition that needs to be true so this can be activated")]
         [SubclassSelector] [SerializeReference] protected ICondition _activationCondition;
 
         public IReadOnlyList<string> Tags => _tags;
         [HideInInspector] [SerializeField] private List<string> _tags = new List<string>();
-        
-        public override void Awake(MovementLayer layer) {
-            base.Awake(layer);
-            Awake();
-        }
-        
-        protected virtual void Awake() {}
+
+        public virtual void Awake() { }
         
         public virtual void Destroy() {}
 

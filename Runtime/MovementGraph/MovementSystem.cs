@@ -10,11 +10,10 @@ using Movement.States;
 using Player.Movement;
 using TNRD;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Entities.Movement {
     [DefaultExecutionOrder(-1)]
-    public class MovementSystem : MonoBehaviour {
+    public class MovementSystem : MonoBehaviour, ISerializationCallbackReceiver {
 
         public readonly MovementEvents Events = new MovementEvents();
 
@@ -69,11 +68,20 @@ namespace Entities.Movement {
                 layer.OnDrawGizmos();
             }
         }
+        
+        public void OnBeforeSerialize() {
+            foreach (MovementLayer layer in _layer) layer.OnBeforeSerialize();
+        }
 
+        public void OnAfterDeserialize() {
+            foreach (MovementLayer layer in _layer) layer.OnAfterDeserialize();
+        }
+        
 #if UNITY_EDITOR
         //[SerializeField] private List<Tuple<string, Color>> _tags;
         [SerializeField, HideInInspector] private Vector2 _cameraPosition;
         [SerializeField, HideInInspector] private float _cameraZoom = 1;
+        [SerializeField, HideInInspector] private int _selectedLayer = 0;
 #endif
     }
 }

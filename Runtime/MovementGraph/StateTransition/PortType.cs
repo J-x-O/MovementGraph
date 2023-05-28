@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using JescoDev.MovementGraph.States;
 using Movement.States;
+using UnityEngine;
 
 namespace JescoDev.MovementGraph.StateTransition {
 
@@ -12,7 +13,7 @@ namespace JescoDev.MovementGraph.StateTransition {
         public bool IsOutput => !IsInput;
 
         public readonly bool IsInput;
-
+        
         public PortType(bool isInput) {
             IsInput = isInput;
         }

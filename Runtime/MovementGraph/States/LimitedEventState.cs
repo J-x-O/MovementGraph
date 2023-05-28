@@ -8,7 +8,7 @@ namespace Entities.Movement.States {
     [Serializable]
     public class LimitedEventState : EventState {
 
-        [field: SerializeField, InputPort] public MovementPort InputPort { get; private set; }
+        [field: SerializeReference, InputPort] public MovementPort InputPort { get; private set; }
 
         public override bool ValidActivation() => InputPort.HasActiveTransition(true);
     }

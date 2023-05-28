@@ -3,23 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using Entities.Movement.States;
 using Gameplay.Movement.States;
+using JescoDev.MovementGraph.Attributes;
+using JescoDev.MovementGraph.StateTransition;
 using Movement.States;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace JescoDev.MovementGraph.States {
     
     [Serializable]
     public class MovementPort {
 
-        public IReadOnlyList<Transition> Transitions => _transitions;
-        [SerializeField] private List<Transition> _transitions = new List<Transition>();
-
-        [field:SerializeReference] public State State { get; private set; }
+        public State State { get; private set; }
+        public string Identifier { get; private set; }
         
+        public IReadOnlyList<Transition> Transitions => _transitions;
+        private List<Transition> _transitions = new List<Transition>();
+
+
         public MovementState FindFirstValidTransition() {
             foreach (Transition transition in _transitions) {
-                MovementPort compare = transition.NotMe(this);
-                MovementState resolve = compare.ResolveActivation();
+                MovementState resolve = transition.Target.ResolveActivation();
                 if (resolve != null) return resolve;
             }
             return null;
@@ -31,9 +35,8 @@ namespace JescoDev.MovementGraph.States {
             if (other == null) return;
             if (HasDirectTransition(other)) return;
             
-            Transition transition = new Transition(this, other);
-            _transitions.Add(transition);
-            other._transitions.Add(transition);
+            _transitions.Add(new Transition(other));
+            other._transitions.Add(new Transition(this));
         }
 
         /// <summary> Checks if there is a valid transition from this state to the provided target state </summary>
@@ -51,11 +54,10 @@ namespace JescoDev.MovementGraph.States {
             }
             
             foreach (Transition transition in Transitions) {
-                MovementPort compare = transition.NotMe(this);
-                if (compare.State == target) return true;
-                if (compare.State is not IFastForward redirect) continue;
+                if (transition.Target.State == target) return true;
+                if (transition.Target.State is not IFastForward redirect) continue;
                 
-                MovementPort continuePort = redirect.GetNextPort(compare);
+                MovementPort continuePort = redirect.GetNextPort(transition.Target);
                 if(continuePort == null) continue;
                 if (continuePort.HasDirectTransition(target, recursionDepth + 1)) return true;
             }
@@ -64,11 +66,7 @@ namespace JescoDev.MovementGraph.States {
         }
 
         public bool HasDirectTransition(MovementPort port) {
-            foreach (Transition transition in Transitions) {
-                MovementPort compare = transition.NotMe(this);
-                if (compare == port) return true;
-            }
-            return false;
+            return Transitions.Any(transition => transition.Target == port);
         }
 
         /// <summary> Check if there is a valid transition from the currently active state of the system </summary>
@@ -78,6 +76,23 @@ namespace JescoDev.MovementGraph.States {
             return useAnyState 
                    && State.Layer.TryGetState("Any State", out NamedState anyState)
                    && HasTransition(anyState);
+        }
+
+        public void OnBeforeSerialize(State state) {
+            foreach (Transition transition in _transitions) {
+                transition.OnBeforeSerialize(state);
+            }
+        }
+
+        public void OnAfterDeserialize(State state, string identifier) {
+            State = state;
+            Identifier = identifier;
+        }
+
+        public void OnLateDeserialize(State state) {
+            foreach (Transition transition in _transitions) {
+                transition.OnLateDeserialize(state);
+            }
         }
     }
 }

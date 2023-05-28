@@ -44,8 +44,8 @@ namespace JescoDev.MovementGraph.Layer {
         public void Awake(MovementSystem system) {
             System = system;
             foreach (State state in _states) {
-                state.Awake(this);
                 if(state is not NamedState namedState) continue;
+                if (state is MovementState movementState) movementState.Awake();
                 _stateDictionary.Add(namedState.Identifier, namedState);
             }
             
@@ -177,6 +177,15 @@ namespace JescoDev.MovementGraph.Layer {
         
         #endregion
 
+        internal int GetStateID(State state) => _states.IndexOf(state);
         
+        public void OnBeforeSerialize() {
+            foreach (State state in _states) state.OnBeforeSerialize();
+        }
+
+        public void OnAfterDeserialize() {
+            foreach (State state in _states) state.OnAfterDeserialize(this);
+            foreach (State state in _states) state.OnLateDeserialize();
+        }
     }
 }
