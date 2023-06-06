@@ -9,7 +9,7 @@ namespace Editor.MovementEditor {
         
         public new LimitedEventState StateObject { get; protected set; }
 
-        public LimitedEventNode(GraphView view, SerializedProperty state, LimitedEventState stateObject) : base(view, state, stateObject) {
+        public LimitedEventNode(MovementGraphView view, SerializedProperty state, LimitedEventState stateObject) : base(view, state, stateObject) {
             StateObject = stateObject;
         }
         protected override void Rebuild(List<FieldInfo> fieldInfos) {

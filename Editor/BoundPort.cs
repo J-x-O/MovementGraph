@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Codice.CM.Common.Merge;
+using Editor.MovementEditor.PropertyUtility;
+using Entities.Movement.States;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using Movement.States;
@@ -14,12 +16,10 @@ using Port = UnityEditor.Experimental.GraphView.Port;
 namespace Editor.MovementEditor {
     public class BoundPort : Port {
 
-        public string PropertyName => PortProperty.name;
+        public string Identifier => PortProperty.Identifier;
         
         public readonly BaseNode BaseNode;
-        public readonly MovementPort PortInstance;
-        public readonly SerializedProperty PortProperty;
-        private readonly SerializedProperty _transitionProperty;
+        public readonly SerializedPropertyMovementPort PortProperty;
         private readonly SerializedProperty _baseNodeProperty;
 
         private bool IsInput => direction == Direction.Input;
@@ -36,46 +36,26 @@ namespace Editor.MovementEditor {
         private BoundPort(BaseNode baseNode, string portName, bool showName, Direction direction)
             : base(Orientation.Horizontal, direction, Capacity.Multi, typeof(bool)) {
             BaseNode = baseNode;
-            PortProperty = baseNode.State.FindPropertyRelative(portName);
-            PortProperty.managedReferenceValue ??= new MovementPort();
-            PortInstance = PortProperty.managedReferenceValue as MovementPort;
-            
-            _transitionProperty = PortProperty.FindPropertyRelative("_transitions");
-            _baseNodeProperty = PortProperty.FindPropertyRelative("_state");
-            _baseNodeProperty.managedReferenceValue = baseNode.StateObject;
-            PortProperty.serializedObject.ApplyModifiedProperties();
-            
+            PortProperty = new SerializedPropertyMovementPort(baseNode.State.FindPropertyRelative(portName));
             this.portName = showName ? portName : "";
         }
+        
+        
 
         public void LoadConnection() {
-            List<BaseNode> nodes = BaseNode.View.nodes.OfType<BaseNode>().ToList();
-            
-            for (int i = 0; i < _transitionProperty.arraySize; i++) {
-                SerializedProperty transition = _transitionProperty.GetArrayElementAtIndex(i);
-                
-                // find connected State
-                SerializedProperty other = transition.FindPropertyRelative(IsInput ? "_from" : "_to");
-                MovementPort otherPort = other.managedReferenceValue as MovementPort;
-                State otherNode = otherPort?.State;
-                if (otherNode == null) {
-                    _transitionProperty.DeleteArrayElementAtIndex(i);
-                    continue;
-                }
-                
-                // remap state to visual element
-                BaseNode targetNode = nodes.Find(compare => compare.StateObject == otherNode);
-                BoundPort targetPort = (IsInput ? targetNode.OutputPorts : targetNode.InputPorts)
-                    .FirstOrDefault(port => port.PortInstance == otherPort);
+
+            foreach (SerializedPropertyTransition transition in PortProperty.GetTransitions()) {
+               
+                BaseNode targetNode = BaseNode.View.FindNode(transition.StateIndex, transition.StateIdentifier);
+                BoundPort targetPort = targetNode?.FindPort(transition.PortIdentifier);
                 if (targetPort == null) {
-                    _transitionProperty.DeleteArrayElementAtIndex(i);
+                    PortProperty.RemoveTransition(transition);
                     continue;
                 }
-                
                 BaseNode.View.AddElement(ConnectTo(targetPort));
             }
 
-            PortProperty.serializedObject.ApplyModifiedProperties();
+            PortProperty.ApplyModifiedProperties();
         }
 
         public override void Connect(Edge edge) {
@@ -83,32 +63,23 @@ namespace Editor.MovementEditor {
             //edge.RegisterCallback<DetachFromPanelEvent>(HandleDeletion);
             
             BoundPort other = (IsInput ? edge.output : edge.input) as BoundPort; 
-            if (other != null) AppendEdge(other.PortInstance);
+            if (other != null) AppendEdge(other);
         }
 
         private void HandleDeletion(DetachFromPanelEvent evt) {
             if(evt.target is not Edge edge) return;
             
             BoundPort other = (IsInput ? edge.output : edge.input) as BoundPort;
-            if (other != null)  DeleteEdge(other.PortInstance);
+            if (other != null) DeleteEdge(other);
         }
         
-        private void AppendEdge(MovementPort to) {
-            if(_transitionProperty.Any(element => IsConnectionTo(element, to))) return;
-            _transitionProperty.AppendArrayElement(element => {
-                element.FindPropertyRelative("_from").managedReferenceValue = PortInstance;
-                element.FindPropertyRelative("_to").managedReferenceValue = to;
-            });
+        private void AppendEdge(BoundPort to) {
+            if(PortProperty.HasTransitionTo(to)) return;
+            PortProperty.AddTransition(to);
         }
         
-        private void DeleteEdge(MovementPort to) {
-            _transitionProperty.RemoveArrayElement(element => IsConnectionTo(element, to));
-        }
-
-        private bool IsConnectionTo(SerializedProperty element, MovementPort to) {
-            if(element.FindPropertyRelative("_from").managedReferenceValue is not MovementPort fromCompare) return false;
-            if(element.FindPropertyRelative("_to").managedReferenceValue is not MovementPort toCompare) return false;
-            return fromCompare == PortInstance && toCompare == to;
+        private void DeleteEdge(BoundPort to) {
+            PortProperty.RemoveTransition(to.BaseNode.GetIdentifier(), to.BaseNode.Index, to.Identifier);
         }
 
         private class DefaultEdgeConnectorListener : IEdgeConnectorListener {

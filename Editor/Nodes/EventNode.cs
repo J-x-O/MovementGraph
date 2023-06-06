@@ -16,7 +16,7 @@ namespace Editor.MovementEditor {
         
         public new EventState StateObject { get; protected set; }
 
-        public EventNode(GraphView view, SerializedProperty state, EventState stateObject) : base(view, state, stateObject) {
+        public EventNode(MovementGraphView view, SerializedProperty state, EventState stateObject) : base(view, state, stateObject) {
             StateObject = stateObject;
         }
 

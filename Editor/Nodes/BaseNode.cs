@@ -6,18 +6,19 @@ using JescoDev.MovementGraph.StateTransition;
 using Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 
 
 namespace Editor.MovementEditor {
 
     public abstract class BaseNode : Node {
         
-        public GraphView View { get; protected set; }
+        public MovementGraphView View { get; protected set; }
         public SerializedProperty State { get; protected set; }
-        
+        public int Index => View.StatesProperty.GetArrayIndex(State);
         public State StateObject { get; protected set; }
 
-        protected BaseNode(GraphView view, SerializedProperty state, State stateObject) {
+        protected BaseNode(MovementGraphView view, SerializedProperty state, State stateObject) {
             View = view;
             State = state;
             StateObject = stateObject;
@@ -72,6 +73,20 @@ namespace Editor.MovementEditor {
         
         public IEnumerable<BoundPort> InputPorts => inputContainer.Children().OfType<BoundPort>();
         public IEnumerable<BoundPort> OutputPorts => outputContainer.Children().OfType<BoundPort>();
+
+        public BoundPort FindPort(string portIdentifier) {
+
+            foreach (BoundPort inputPort in InputPorts.Concat(OutputPorts))
+                if (inputPort.Identifier == portIdentifier) 
+                    return inputPort;
+
+            string log = $"Could not find requested port with identifier {portIdentifier} in node with "
+                + (this is NamedNode namedNode ? $"identifier {namedNode.Identifier}" : $"index {Index}")
+                + $" in layer {View.LayerProperty.Identifier}!";
+            Debug.LogWarning(log);
+            return null;
+        }
+        
     }
     
     

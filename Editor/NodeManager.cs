@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
 using JescoDev.MovementGraph.States;
 using Movement.States;
@@ -12,18 +13,18 @@ using UnityEngine.UIElements;
 namespace Editor.MovementEditor {
     public partial class NodeManager {
         
-        private readonly SerializedProperty _statesProperty;
-        private readonly GraphView _view;
-        private readonly List<BaseNode> _nodes = new List<BaseNode>();
+        public readonly SerializedProperty StatesProperty;
+        public readonly MovementGraphView _view;
+        public readonly List<BaseNode> _nodes = new List<BaseNode>();
 
-        public NodeManager(GraphView view, SerializedProperty layer) {
+        public NodeManager(MovementGraphView view, SerializedPropertyMovementLayer layer) {
             _view = view;
-            _statesProperty = layer.FindPropertyRelative("_states");
+            StatesProperty = layer.Property.FindPropertyRelative("_states");
         }
 
         public void LoadExistingNodes() {
-            for (int i = 0; i < _statesProperty.arraySize; i++) {
-                SerializedProperty property = _statesProperty.GetArrayElementAtIndex(i);
+            for (int i = 0; i < StatesProperty.arraySize; i++) {
+                SerializedProperty property = StatesProperty.GetArrayElementAtIndex(i);
                 SerializedProperty position = property.FindPropertyRelative("_position");
                 State state = property.managedReferenceValue as State;
                 _view.AddElement(CreateNode(position?.vector2Value, property, state));
@@ -37,7 +38,7 @@ namespace Editor.MovementEditor {
         public void UpdatePosition(BaseNode node) {
             SerializedProperty position = node.State.FindPropertyRelative("_position");
             position.vector2Value = node.GetPosition().position;
-            _statesProperty.serializedObject.ApplyModifiedProperties();
+            StatesProperty.serializedObject.ApplyModifiedProperties();
         }
 
         
@@ -88,14 +89,14 @@ namespace Editor.MovementEditor {
         
         private BaseNode CreateNode(Vector2 position, Func<State> createInstance) {
             State instance = createInstance();
-            SerializedProperty newElement = _statesProperty.AppendArrayElement(element => element.managedReferenceValue = instance);
+            SerializedProperty newElement = StatesProperty.AppendArrayElement(element => element.managedReferenceValue = instance);
             return CreateNode(position, newElement, instance);
         }
 
         public void DeleteNode(BaseNode node) {
-            int index = _statesProperty.GetArrayIndex(node.State);
-            _statesProperty.DeleteArrayElementAtIndex(index);
-            _statesProperty.serializedObject.ApplyModifiedProperties();
+            int index = StatesProperty.GetArrayIndex(node.State);
+            StatesProperty.DeleteArrayElementAtIndex(index);
+            StatesProperty.serializedObject.ApplyModifiedProperties();
             _nodes.Remove(node);
             
             // rebuild All

@@ -1,20 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Editor.MovementEditor.PropertyUtility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.UIElements;
 using static Editor.MovementEditor.MovementLayerView;
 
 namespace Editor.MovementEditor {
     public class MovementGraphView : GraphView {
         
-        private readonly SerializedProperty _layer;
-        private readonly NodeManager _nodeManager;
+        public readonly SerializedPropertyMovementLayer LayerProperty;
+        public SerializedProperty StatesProperty => NodeManager.StatesProperty;
+        public readonly NodeManager NodeManager;
         
-        public MovementGraphView(SerializedProperty layer) {
-            _layer = layer;
-            _nodeManager = new NodeManager(this, _layer);
-            _nodeManager.LoadExistingNodes();
+        public MovementGraphView(SerializedProperty layerProperty) {
+            LayerProperty = new SerializedPropertyMovementLayer(layerProperty);
+            NodeManager = new NodeManager(this, LayerProperty);
+            NodeManager.LoadExistingNodes();
 
             AddGridBackground();
             AddManipulators();
@@ -38,7 +42,7 @@ namespace Editor.MovementEditor {
             if (graphViewChange.movedElements != null) {
                 foreach (GraphElement element in graphViewChange.movedElements) {
                     if (element is not BaseNode node) continue;
-                    _nodeManager.UpdatePosition(node);
+                    NodeManager.UpdatePosition(node);
                 }
             }
 
@@ -46,7 +50,7 @@ namespace Editor.MovementEditor {
                 foreach (GraphElement element in graphViewChange.elementsToRemove) {
                     switch (element) {
                         case BaseNode node:
-                            _nodeManager.DeleteNode(node);
+                            NodeManager.DeleteNode(node);
                             break;
                     }
                 }
@@ -70,9 +74,23 @@ namespace Editor.MovementEditor {
             // Context menu for nodes should only be at the background
             VisualElement element = new VisualElement { name = "HitBoxContextMenu"};
             element.StretchToParentSize();
-            element.AddManipulator(_nodeManager.CreateNodeContextualMenu());
-            element.AddManipulator(_nodeManager.CreateDebugContextMenu());
+            element.AddManipulator(NodeManager.CreateNodeContextualMenu());
+            element.AddManipulator(NodeManager.CreateDebugContextMenu());
             Insert(1, element);
         }
+
+        public BaseNode FindNode(int index, string identifier) {
+            foreach (BaseNode node in NodeManager._nodes) {
+                if (node is NamedNode named) {
+                    if(!string.IsNullOrEmpty(identifier) && named.Identifier == identifier) return node;
+                }
+                else if (node.Index == index) return node;
+            }
+            Debug.LogWarning($"Could not find node with index {index} and identifier {identifier}" +
+                             $"in layer {LayerProperty.Identifier}!");
+            return null;
+        }
+        
+        
     }
 }

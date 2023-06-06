@@ -15,7 +15,7 @@ namespace Editor.MovementEditor {
 
         protected TagView TagView { get; private set; }
         
-        public BoundNode(GraphView view, SerializedProperty state, MovementState stateObject) : base(view, state, stateObject) {
+        public BoundNode(MovementGraphView view, SerializedProperty state, MovementState stateObject) : base(view, state, stateObject) {
             StateObject = stateObject;
         }
 
