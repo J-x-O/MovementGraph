@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JescoDev.MovementGraph.Layer;
 using UnityEngine;
 
 namespace Entities.Movement.States {
     public abstract class MovementStateCoroutine : MovementState {
 
         /// <summary> Overwrite this to still use the normal movement </summary>
-        protected Func<float, Vector3> _handleMovementAction;
+        protected Func<MovementDefinition> _handleMovementAction;
 
         protected Coroutine _routine;
         
@@ -26,8 +27,8 @@ namespace Entities.Movement.States {
 
         protected abstract IEnumerator RunRoutine();
 
-        public override Vector3 HandleMovement(float input) {
-            return _handleMovementAction?.Invoke(input) ?? Vector3.zero;
+        public override MovementDefinition HandleMovement() {
+            return _handleMovementAction?.Invoke() ?? MovementDefinition.None;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace JescoDev.MovementGraph.States {
         public string Identifier { get; private set; }
         
         public IReadOnlyList<Transition> Transitions => _transitions;
-        private List<Transition> _transitions = new List<Transition>();
+        [SerializeField] private List<Transition> _transitions = new List<Transition>();
 
 
         public MovementState FindFirstValidTransition() {
@@ -48,8 +48,7 @@ namespace JescoDev.MovementGraph.States {
         private bool HasDirectTransition(State target, int recursionDepth) {
             const int recursionLimit = 10;
             if (recursionDepth >= recursionLimit) {
-                string name = State is NamedState casted ? casted.Identifier : "Unnamed";
-                Debug.LogWarning($"Hit Recursion Limit for TransitionSearch, starting at Node {name}", State.GameObject);
+                Debug.LogWarning($"Hit Recursion Limit for TransitionSearch, starting at Node {State.Identifier}", State.GameObject);
                 return false;
             }
             
@@ -74,7 +73,7 @@ namespace JescoDev.MovementGraph.States {
         public bool HasActiveTransition(bool useAnyState) {
             if (HasTransition(State.Layer.CurrentState)) return true;
             return useAnyState 
-                   && State.Layer.TryGetState("Any State", out NamedState anyState)
+                   && State.Layer.TryGetState("Any State", out State anyState)
                    && HasTransition(anyState);
         }
 

@@ -44,12 +44,20 @@ namespace JescoDev.MovementGraph.StateTransition {
                                                   System.Reflection.BindingFlags.Public;
         
         public static IEnumerable<FieldInfo> ExtractFields(this object obj) => ExtractFields(obj.GetType());
-        public static IEnumerable<FieldInfo> ExtractFields(this Type type) {
+        public static IEnumerable<FieldInfo> ExtractFields(this Type target) {
 
+            List<Type> inheritance = new() { target };
+            while (target.BaseType != null) {
+                target = target.BaseType;
+                inheritance.Add(target);
+            }
+            inheritance.Reverse();
+            
             List<FieldInfo> collected = new List<FieldInfo>();
-            while (type.BaseType != null) { 
-                collected.AddRange(type.GetFields(BindingFlags));
-                type = type.BaseType;
+            foreach (Type type in inheritance) {
+                foreach (FieldInfo field in type.GetFields(BindingFlags)) {
+                    if(collected.All(compare => compare.FieldHandle != field.FieldHandle)) collected.Add(field);
+                }
             }
             return collected;
         }

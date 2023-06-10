@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
 using Movement.States;
 using UnityEditor;
@@ -9,13 +11,12 @@ using UnityEditor.UIElements;
 namespace Editor.MovementEditor {
     public abstract class NamedNode : BaseNode {
         
-        public string Identifier => _identifier.stringValue;
-        private readonly SerializedProperty _identifier;
+        
         protected PropertyField NodeHeader { get; private set; }
+        private string _oldIdentifier;
 
-        public NamedNode(MovementGraphView view, SerializedProperty state, State stateObject)
+        public NamedNode(MovementGraphView view, SerializedPropertyState state, State stateObject)
             : base(view, state, stateObject) {
-            _identifier = State.FindPropertyRelative("_identifier");
         }
 
         protected void RebuildHeader(List<FieldInfo> fieldInfos) {
@@ -26,15 +27,28 @@ namespace Editor.MovementEditor {
         }
         
         private void CreateHeader() {
-            NodeHeader = new PropertyField(_identifier, "");
-            NodeHeader.BindProperty(_identifier);
+            // this is called from the parent constructor => _identifier not yet initialized
+            SerializedProperty identifier = State.FindPropertyRelative("_identifier");
+            NodeHeader = new PropertyField(identifier, "");
+            NodeHeader.BindProperty(identifier);
+            _oldIdentifier = identifier.stringValue;
+            NodeHeader.RegisterValueChangeCallback(HandleChange);
             NodeHeader.AddToClassList("NodeHeader");
         }
-    }
-    
-    public static class BaseNodeUtility {
-        public static string GetIdentifier(this BaseNode node) {
-            return node is NamedNode namedNode ? namedNode.Identifier : "";
+        
+        private void HandleChange(SerializedPropertyChangeEvent evt) {
+            string newIdentifier = evt.changedProperty.stringValue;
+            foreach (SerializedPropertyTransition transition in
+                     from node in View.NodeManager._nodes
+                     from port in node.Ports
+                     from transition in port.PortProperty.GetTransitions()
+                     where transition.StateIdentifier == _oldIdentifier select transition) {
+                transition.StateIdentifier = newIdentifier;
+            }
+            View.LayerProperty.ApplyModifiedProperties();
+            _oldIdentifier = newIdentifier;
         }
+        
+        
     }
 }

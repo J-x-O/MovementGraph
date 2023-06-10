@@ -16,11 +16,11 @@ namespace Editor.MovementEditor {
                             return;
                         }
                         
-                        if(node.StateObject is NamedState namedStart) Debug.Log("Start: " + namedStart.Identifier);
+                        Debug.Log("Start: " + node.StateObject.Identifier);
                         foreach (BaseNode compare in _nodes) {
                             if (!node.StateObject.GetAllPorts().Any(port => port.HasTransition(compare.StateObject))) continue;
-                            if (compare.StateObject is NamedState namedCompare)
-                                Debug.Log(namedCompare.Identifier);
+                            Debug.Log(node.StateObject.Identifier);
+                                
                         }
                     });
             });

@@ -4,6 +4,7 @@ using System.Linq;
 using Codice.Client.Common.TreeGrouper;
 using Entities.Movement;
 using Entities.Movement.States;
+using JescoDev.MovementGraph;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;

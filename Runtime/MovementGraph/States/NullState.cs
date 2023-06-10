@@ -1,4 +1,5 @@
 using Entities.Movement.States;
+using JescoDev.MovementGraph.Layer;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
@@ -11,8 +12,8 @@ namespace JescoDev.MovementGraph.MovementGraph.States {
 
         [InputPort] public readonly MovementPort In = new MovementPort();
 
-        public override Vector3 HandleMovement(float input) {
-            return Vector3.zero;
+        public override MovementDefinition HandleMovement() {
+            return MovementDefinition.None;
         }
     }
 }

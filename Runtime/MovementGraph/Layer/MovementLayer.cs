@@ -24,6 +24,8 @@ namespace JescoDev.MovementGraph.Layer {
         [SerializeReference] private LayerIn _inNode;
         
         [SerializeField] private bool _autoplay = true;
+        
+        public LayerComposition Composition => _composition;
         [SerializeField] private LayerComposition _composition;
 
         public MovementSystem System { get; private set; }
@@ -34,7 +36,7 @@ namespace JescoDev.MovementGraph.Layer {
         [Tooltip("All possible states this character can use")]
         [SerializeReference] private List<State> _states = new List<State>();
         
-        private readonly Dictionary<string, NamedState> _stateDictionary = new Dictionary<string, NamedState>();
+        private readonly Dictionary<string, State> _stateDictionary = new Dictionary<string, State>();
 
         private MovementPort _exitQueued;
         
@@ -44,9 +46,8 @@ namespace JescoDev.MovementGraph.Layer {
         public void Awake(MovementSystem system) {
             System = system;
             foreach (State state in _states) {
-                if(state is not NamedState namedState) continue;
                 if (state is MovementState movementState) movementState.Awake();
-                _stateDictionary.Add(namedState.Identifier, namedState);
+                _stateDictionary.Add(state.Identifier, state);
             }
             
             // connect the layer in and out nodes
@@ -62,7 +63,7 @@ namespace JescoDev.MovementGraph.Layer {
             ActivateState(_inNode.ResolveActivation());
         }
 
-        public Vector3 Update(float input) {
+        public MovementDefinition Update() {
 
             if (_exitQueued != null) {
                 _exitQueued = null;
@@ -74,11 +75,11 @@ namespace JescoDev.MovementGraph.Layer {
                 Restart();
             }
 
-            return CurrentState?.HandleMovement(input) ?? Vector3.zero;
+            return CurrentState?.HandleMovement() ?? MovementDefinition.None;
         }
 
         public void OnDestroy() {
-            foreach (NamedState baseState in _stateDictionary.Values) {
+            foreach (State baseState in _stateDictionary.Values) {
                 if (baseState is MovementState state) state.Destroy();
             }
         }
@@ -90,20 +91,20 @@ namespace JescoDev.MovementGraph.Layer {
         /// <summary> Sets the state to a new one of the provided type </summary>
         /// <returns> if the state was activated successfully </returns>
         public bool SendEvent<T>(bool ignoreActiveCheck = false) where T : MovementState
-            => SendEvent(NamedState.GetName<T>(), ignoreActiveCheck);
+            => SendEvent(MovementState.GetName<T>(), ignoreActiveCheck);
         
         /// <inheritdoc cref="SendEvent{T}"/>
         public bool SendEvent(string t, bool ignoreActiveCheck = false) {
-            if (!TryGetState(t, out NamedState state)) return false;
+            if (!TryGetState(t, out State state)) return false;
             if (!ignoreActiveCheck && IsStateActive(t)) return false;
             if (CurrentState != null
                 && state.GetInputPorts().Any()
-                && !CurrentState.EventExit.HasTransition(state)) return false;
+                && !CurrentState.RegularExit.HasTransition(state)) return false;
             
             return ActivateState(state);
         }
 
-        private bool ActivateState(NamedState state) {
+        private bool ActivateState(State state) {
             if (!state.ValidActivation()) return false;
             
             // resolve the movement state (this includes a check if it can be activated)
@@ -147,14 +148,14 @@ namespace JescoDev.MovementGraph.Layer {
         }
 
         public T GetState<T>() where T : MovementState {
-            string stateName = NamedState.GetName<T>();
-            return _stateDictionary.TryGetValue(stateName, out NamedState value)
+            string stateName = MovementState.GetName<T>();
+            return _stateDictionary.TryGetValue(stateName, out State value)
                 ? value as T
                 : null;
         }
 
-        public NamedState GetState(string identifier) {
-            return _stateDictionary.TryGetValue(identifier, out NamedState value)
+        public State GetState(string identifier) {
+            return _stateDictionary.TryGetValue(identifier, out State value)
                 ? value
                 : null;
         }
@@ -167,12 +168,12 @@ namespace JescoDev.MovementGraph.Layer {
             return movementState != null;
         }
         
-        public bool TryGetState(string identifier, out NamedState movementState){
+        public bool TryGetState(string identifier, out State movementState){
             movementState = GetState(identifier);
             return movementState != null;
         }
 
-        public bool IsStateActive<T>() where T : MovementState => IsStateActive(NamedState.GetName<T>());
+        public bool IsStateActive<T>() where T : MovementState => IsStateActive(MovementState.GetName<T>());
         public bool IsStateActive(string identifier) => CurrentState != null && CurrentState.Identifier == identifier;
         
         #endregion

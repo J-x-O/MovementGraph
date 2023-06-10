@@ -3,7 +3,7 @@ using Entities.Movement.States;
 using GameProgramming.Utility.TypeBasedEventSystem;
 using JescoDev.Utility.EventUtility.EventUtility;
 
-namespace Movement {
+namespace JescoDev.MovementGraph {
     public class MovementEvents {
         
         public event Action<MovementState> OnAnyStateActivated;

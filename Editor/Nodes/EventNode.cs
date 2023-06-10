@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -16,7 +17,7 @@ namespace Editor.MovementEditor {
         
         public new EventState StateObject { get; protected set; }
 
-        public EventNode(MovementGraphView view, SerializedProperty state, EventState stateObject) : base(view, state, stateObject) {
+        public EventNode(MovementGraphView view, SerializedPropertyState state, EventState stateObject) : base(view, state, stateObject) {
             StateObject = stateObject;
         }
 

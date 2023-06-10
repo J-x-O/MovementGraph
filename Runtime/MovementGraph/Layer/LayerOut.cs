@@ -12,15 +12,15 @@ namespace Gameplay.Movement.Layer {
     [Serializable]
     public class LayerOut : State, IFastForward {
         
-        public MovementPort OutStop => _outStop;
-        [SerializeField, OutputPort] private MovementPort _outStop = new MovementPort();
-        
         public MovementPort OutReplay => _outReplay;
-        [SerializeField, OutputPort] public MovementPort _outReplay = new MovementPort();
+        [SerializeField, InputPort] public MovementPort _outReplay = new MovementPort();
+        
+        public MovementPort OutStop => _outStop;
+        [SerializeField, InputPort] private MovementPort _outStop = new MovementPort();
 
         private NullState _exitState = new NullState();
         public LayerIn _in;
-        public LayerOut() {
+        public LayerOut() : base("LayerOut") {
             _outStop.ConnectTo(_exitState.In);
         }
 

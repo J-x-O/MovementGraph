@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -15,7 +16,7 @@ namespace Editor.MovementEditor {
 
         protected TagView TagView { get; private set; }
         
-        public BoundNode(MovementGraphView view, SerializedProperty state, MovementState stateObject) : base(view, state, stateObject) {
+        public BoundNode(MovementGraphView view, SerializedPropertyState state, MovementState stateObject) : base(view, state, stateObject) {
             StateObject = stateObject;
         }
 

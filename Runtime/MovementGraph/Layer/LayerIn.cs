@@ -11,7 +11,7 @@ namespace Gameplay.Movement.Layer {
     public class LayerIn : State {
         
         public MovementPort In => _in;
-        [SerializeField, InputPort] private MovementPort _in = new MovementPort();
+        [SerializeField, OutputPort] private MovementPort _in = new MovementPort();
 
         public override bool ValidActivation() {
             return true;
@@ -20,5 +20,7 @@ namespace Gameplay.Movement.Layer {
         public override MovementState ResolveActivation(MovementPort incomingPort = null) {
             return _in.FindFirstValidTransition();
         }
+
+        public LayerIn() : base("LayerOut") { }
     }
 }

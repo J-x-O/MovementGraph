@@ -5,16 +5,16 @@ using JescoDev.MovementGraph.Layer;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using JescoDev.Utility.Condition;
+using Movement.States;
 using UnityEngine;
 
 namespace Entities.Movement.States {
     
     [Serializable]
-    public abstract class MovementState : NamedState {
+    public abstract class MovementState : State {
 
-        [field: SerializeReference, InputPort] public MovementPort InputPort { get; private set; }
-        [field: SerializeReference, OutputPort] public MovementPort RegularExit { get; private set; }
-        [field: SerializeReference, OutputPort] public MovementPort EventExit { get; private set; }
+        [field: SerializeField, InputPort] public MovementPort InputPort { get; private set; }
+        [field: SerializeField, OutputPort] public MovementPort RegularExit { get; private set; }
 
         [Tooltip("The Condition that needs to be true so this can be activated")]
         [SubclassSelector] [SerializeReference] protected ICondition _activationCondition;
@@ -22,6 +22,13 @@ namespace Entities.Movement.States {
         public IReadOnlyList<string> Tags => _tags;
         [HideInInspector] [SerializeField] private List<string> _tags = new List<string>();
 
+        public MovementState() : base("") {
+            _identifier = GetName(GetType());
+        }
+        
+        public static string GetName<T> () where T : MovementState => GetName(typeof(T));
+        public static string GetName(Type t) => t.Name.Replace("MovementState", "");
+        
         public virtual void Awake() { }
         
         public virtual void Destroy() {}
@@ -34,7 +41,7 @@ namespace Entities.Movement.States {
         
         public virtual void Deactivate() {}
 
-        public abstract Vector3 HandleMovement(float input);
+        public abstract MovementDefinition HandleMovement();
         
         public bool HasTag(string tag) => _tags.Contains(tag);
 

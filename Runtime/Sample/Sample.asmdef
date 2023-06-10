@@ -1,0 +1,17 @@
+{
+    "name": "JescoDev.MovementGraph.Sample",
+    "rootNamespace": "JescoDev.MovementGraph.Sample",
+    "references": [
+        "GUID:3c2495c3febf0ec408eab489fecdbe82",
+        "GUID:18cb67baf6fafd34988e69e547d9022f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

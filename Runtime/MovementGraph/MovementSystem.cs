@@ -1,60 +1,60 @@
-using System;
 using System.Collections.Generic;
-using Entities.Movement.States;
-using Gameplay;
 using Gameplay.Movement.Layer;
-using GameProgramming.Utility.TypeBasedEventSystem;
 using JescoDev.MovementGraph.Layer;
 using Movement;
-using Movement.States;
-using Player.Movement;
-using TNRD;
 using UnityEngine;
 
-namespace Entities.Movement {
+namespace JescoDev.MovementGraph {
     [DefaultExecutionOrder(-1)]
     public class MovementSystem : MonoBehaviour, ISerializationCallbackReceiver {
 
         public readonly MovementEvents Events = new MovementEvents();
 
-        public CharacterController CharController => _charController;
-        [SerializeField] private CharacterController _charController;
-
-        public GroundedManager FloorManager => _floorManager;
-        [SerializeField] private GroundedManager _floorManager;
+        public CustomMovement CustomMovement => _customMovement;
+        [SerializeField] private CustomMovement _customMovement;
 
         [Tooltip("All possible states this character can use")]
         [SerializeField] private List<MovementLayer> _layer = new List<MovementLayer>();
 
-        public float MovementInput => InputSource?.MovementValue ?? 0;
-        public IMovementSource InputSource => _source.Value;
-        [SerializeField] private SerializableInterface<IMovementSource> _source;
-        
         private bool _exitQueued;
 
         private void Awake() {
             foreach (MovementLayer state in _layer) {
                 state.Awake(this);
             }
-            CharController.enabled = false;
         }
 
-        // wait for everything to initialize
         private void Start() {
             foreach (MovementLayer layer in _layer) {
                 layer.Restart();
             }
-            CharController.enabled = true;
         }
 
         private void Update() {
-            Vector3 movement = Vector3.zero;
+            Vector3 localMovement = Vector3.zero;
             foreach (MovementLayer layer in _layer) {
-                //TODO account for layer mode
-                movement += layer.Update(MovementInput);
+                
+                MovementDefinition move = layer.Update();
+                switch (move.Context) {
+                    case MovementContext.Global:
+                        move.Movement = transform.InverseTransformPoint(move.Movement);
+                        break;
+                    case MovementContext.Teleport:
+                        CustomMovement.TeleportTo(move.Movement);
+                        continue;
+                }
+
+                switch (layer.Composition) {
+                    case LayerComposition.Overwrite:
+                        localMovement = move.Movement;
+                        break;
+                    case LayerComposition.Additive:
+                        localMovement += move.Movement;
+                        break;
+                }
             }
 
-            CharController.Move(movement);
+            CustomMovement.MoveBy(localMovement);
         }
 
         private void OnDestroy() {

@@ -12,7 +12,6 @@ namespace Editor.MovementEditor {
     public class MovementGraphView : GraphView {
         
         public readonly SerializedPropertyMovementLayer LayerProperty;
-        public SerializedProperty StatesProperty => NodeManager.StatesProperty;
         public readonly NodeManager NodeManager;
         
         public MovementGraphView(SerializedProperty layerProperty) {
@@ -52,6 +51,10 @@ namespace Editor.MovementEditor {
                         case BaseNode node:
                             NodeManager.DeleteNode(node);
                             break;
+                        case Edge edge:
+                            if (edge.input is BoundPort boundInput) boundInput.HandleDeletion(edge);
+                            if (edge.output is BoundPort boundOutput) boundOutput.HandleDeletion(edge);
+                            break;
                     }
                 }
             }
@@ -79,15 +82,11 @@ namespace Editor.MovementEditor {
             Insert(1, element);
         }
 
-        public BaseNode FindNode(int index, string identifier) {
+        public BaseNode FindNode(string identifier) {
             foreach (BaseNode node in NodeManager._nodes) {
-                if (node is NamedNode named) {
-                    if(!string.IsNullOrEmpty(identifier) && named.Identifier == identifier) return node;
-                }
-                else if (node.Index == index) return node;
+                if(node.Identifier == identifier) return node;
             }
-            Debug.LogWarning($"Could not find node with index {index} and identifier {identifier}" +
-                             $"in layer {LayerProperty.Identifier}!");
+            Debug.LogWarning($"Could not find node \"{identifier}\" in layer \"{LayerProperty.Identifier}\"!");
             return null;
         }
         

@@ -15,23 +15,23 @@ namespace Editor.MovementEditor {
             return newElement;
         }
         
-        public static int GetArrayIndex(this SerializedProperty target, SerializedProperty p) {
+        public static int GetArrayIndex(this SerializedProperty target, SerializedProperty p, bool hideLog = false) {
             
             for (int i = 0; i < target.arraySize; i++) {
                 SerializedProperty element = target.GetArrayElementAtIndex(i);
                 if (SerializedProperty.EqualContents(element, p)) return i;
             }
-            Debug.LogError("Couldn't find element in array!");
+            if(!hideLog) Debug.LogError("Couldn't find element in array!");
             return -1;
         }
         
-        public static SerializedProperty GetArrayElement(this SerializedProperty target, Func<SerializedProperty, bool> predicate) {
+        public static SerializedProperty GetArrayElement(this SerializedProperty target, Func<SerializedProperty, bool> predicate, bool hideLog = false) {
             
             for (int i = 0; i < target.arraySize; i++) {
                 SerializedProperty element = target.GetArrayElementAtIndex(i);
                 if (predicate.Invoke(element)) return element;
             }
-            Debug.LogError("Couldn't find element in array!");
+            if(!hideLog) Debug.LogError("Couldn't find element in array!");
             return null;
         }
 

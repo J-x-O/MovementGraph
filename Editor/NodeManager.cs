@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
+using Gameplay.Movement.Layer;
 using JescoDev.MovementGraph.States;
 using Movement.States;
 using UnityEditor;
@@ -13,21 +14,18 @@ using UnityEngine.UIElements;
 namespace Editor.MovementEditor {
     public partial class NodeManager {
         
-        public readonly SerializedProperty StatesProperty;
         public readonly MovementGraphView _view;
+        public readonly SerializedPropertyMovementLayer _layer;
         public readonly List<BaseNode> _nodes = new List<BaseNode>();
 
         public NodeManager(MovementGraphView view, SerializedPropertyMovementLayer layer) {
             _view = view;
-            StatesProperty = layer.Property.FindPropertyRelative("_states");
+            _layer = layer;
         }
 
         public void LoadExistingNodes() {
-            for (int i = 0; i < StatesProperty.arraySize; i++) {
-                SerializedProperty property = StatesProperty.GetArrayElementAtIndex(i);
-                SerializedProperty position = property.FindPropertyRelative("_position");
-                State state = property.managedReferenceValue as State;
-                _view.AddElement(CreateNode(position?.vector2Value, property, state));
+            foreach (SerializedPropertyState property in _layer.GetStates()) {
+                _view.AddElement(CreateNode(property.Position, property, property.State));
             }
 
             foreach (BaseNode node in _nodes) {
@@ -36,22 +34,23 @@ namespace Editor.MovementEditor {
         }
 
         public void UpdatePosition(BaseNode node) {
-            SerializedProperty position = node.State.FindPropertyRelative("_position");
-            position.vector2Value = node.GetPosition().position;
-            StatesProperty.serializedObject.ApplyModifiedProperties();
+            node.State.Position = node.GetPosition().position;
+            node.State.ApplyModifiedProperties();
         }
 
         
-        private BaseNode CreateNode(Vector2? position, SerializedProperty property, State state) {
+        private BaseNode CreateNode(Vector2 position, SerializedPropertyState property, State state) {
             BaseNode node = state switch {
                 LimitedEventState limitedEventState => new LimitedEventNode(_view, property, limitedEventState),
                 EventState eventState => new EventNode(_view, property, eventState),
                 RedirectState redirectState => new RedirectNode(_view, property, redirectState),
                 MovementState movementState => new BoundNode(_view, property, movementState),
+                LayerIn inState => new LayerInNode(_view, property, inState),
+                LayerOut outState => new LayerOutNode(_view, property, outState),
                 _ => null
             };
             if (node == null) return null;
-            if(position.HasValue) node.SetPosition(new Rect(position.Value, Vector2.zero));
+            node.SetPosition(new Rect(position, Vector2.zero));
             _nodes.Add(node);
             return node;
         }
@@ -73,7 +72,7 @@ namespace Editor.MovementEditor {
                         Attribute.IsDefined(p,typeof(SerializableAttribute))
                     );
                     foreach (Type type in enumerable) {
-                        menuEvent.menu.AppendAction($"Movement States/{NamedState.GetName(type)}", 
+                        menuEvent.menu.AppendAction($"Movement States/{MovementState.GetName(type)}", 
                             action => _view.AddElement(CreateNode(action, type)));
                     }
                 });
@@ -89,14 +88,14 @@ namespace Editor.MovementEditor {
         
         private BaseNode CreateNode(Vector2 position, Func<State> createInstance) {
             State instance = createInstance();
-            SerializedProperty newElement = StatesProperty.AppendArrayElement(element => element.managedReferenceValue = instance);
+            SerializedPropertyState newElement = _layer.AddState(instance);
+            _layer.ApplyModifiedProperties();
             return CreateNode(position, newElement, instance);
         }
 
         public void DeleteNode(BaseNode node) {
-            int index = StatesProperty.GetArrayIndex(node.State);
-            StatesProperty.DeleteArrayElementAtIndex(index);
-            StatesProperty.serializedObject.ApplyModifiedProperties();
+            _layer.RemoveState(node.State.State);
+            _layer.ApplyModifiedProperties();
             _nodes.Remove(node);
             
             // rebuild All

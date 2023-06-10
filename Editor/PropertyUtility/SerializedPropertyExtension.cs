@@ -10,6 +10,8 @@ namespace Editor.MovementEditor.PropertyUtility {
         }
         
         public void ApplyModifiedProperties() => Property.serializedObject.ApplyModifiedProperties();
+        public SerializedProperty FindPropertyRelative(string relativePropertyPath)
+            => Property.FindPropertyRelative(relativePropertyPath);
         
         public static implicit operator SerializedProperty(SerializedPropertyExtension d) => d.Property;
     }

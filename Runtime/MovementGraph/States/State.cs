@@ -22,10 +22,16 @@ namespace Movement.States {
         
         public MovementLayer Layer { get; private set; }
         
+        public string Identifier => _identifier;
+        [SerializeField] protected string _identifier;
+        
         public Transform Transform => Layer.System.transform;
         public GameObject GameObject => Layer.System.gameObject;
-        protected float _movementInput => Layer.System.MovementInput;
 
+        public State(string identifier) {
+            _identifier = identifier;
+        }
+        
         public abstract bool ValidActivation();
         
         /// <summary> This function decides if the state can be activated or not </summary>

@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Editor.MovementEditor.PropertyUtility;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using Movement.States;
@@ -14,19 +16,19 @@ namespace Editor.MovementEditor {
     public abstract class BaseNode : Node {
         
         public MovementGraphView View { get; protected set; }
-        public SerializedProperty State { get; protected set; }
-        public int Index => View.StatesProperty.GetArrayIndex(State);
+        public SerializedPropertyState State { get; protected set; }
         public State StateObject { get; protected set; }
+        
+        public string Identifier => State.Identifier;
 
-        protected BaseNode(MovementGraphView view, SerializedProperty state, State stateObject) {
+        protected BaseNode(MovementGraphView view, SerializedPropertyState state, State stateObject) {
             View = view;
             State = state;
             StateObject = stateObject;
-
             Rebuild();
         }
 
-        public void Rebuild(SerializedProperty property) {
+        public void Rebuild(SerializedPropertyState property) {
             State = property;
             Rebuild();
         }
@@ -34,21 +36,25 @@ namespace Editor.MovementEditor {
         public void Rebuild() {
             List<FieldInfo> fieldInfos = StateObject.GetType()
                 .ExtractFields()
-                .OrderBy(field => field.MetadataToken)
                 .ToList();
             
             fieldInfos.RemoveAll(element => element.Name is "_position");
-            List<FieldInfo> ports = fieldInfos.Where(element => typeof(MovementPort).IsAssignableFrom(element.FieldType)).ToList();
+            
+            List<FieldInfo> ports = fieldInfos.Where(IsMovementPort).ToList();
             List<FieldInfo> inputPorts = ports.Where(element => element.IsInputPort()).ToList();
             List<FieldInfo> outputPorts = ports.Where(element => element.IsOutputPort()).ToList();
             RebuildPorts(inputPorts, outputPorts);
 
+            fieldInfos.RemoveAll(IsMovementPort);
             Rebuild(fieldInfos);
             
             mainContainer.AddToClassList("NodeMainContainer");
             extensionContainer.AddToClassList("NodeExtensionContainer");
             RefreshExpandedState();
         }
+
+        private static bool IsMovementPort(FieldInfo element)
+            => typeof(MovementPort).IsAssignableFrom(element.FieldType);
 
         private void RebuildPorts(List<FieldInfo> inputPorts, List<FieldInfo> outputPorts) {
             inputContainer.Clear();
@@ -71,6 +77,7 @@ namespace Editor.MovementEditor {
             //foreach (BoundPort port in OutputPorts) port.LoadConnection();
         }
         
+        public IEnumerable<BoundPort> Ports => InputPorts.Concat(OutputPorts);
         public IEnumerable<BoundPort> InputPorts => inputContainer.Children().OfType<BoundPort>();
         public IEnumerable<BoundPort> OutputPorts => outputContainer.Children().OfType<BoundPort>();
 
@@ -80,9 +87,8 @@ namespace Editor.MovementEditor {
                 if (inputPort.Identifier == portIdentifier) 
                     return inputPort;
 
-            string log = $"Could not find requested port with identifier {portIdentifier} in node with "
-                + (this is NamedNode namedNode ? $"identifier {namedNode.Identifier}" : $"index {Index}")
-                + $" in layer {View.LayerProperty.Identifier}!";
+            string log = $"Could not find requested port \"{portIdentifier}\" in node \"{Identifier}\" "
+                + $"in layer {View.LayerProperty.Identifier}!";
             Debug.LogWarning(log);
             return null;
         }

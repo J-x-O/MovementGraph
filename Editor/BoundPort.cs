@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Codice.CM.Common.Merge;
 using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
@@ -22,9 +23,10 @@ namespace Editor.MovementEditor {
         public readonly SerializedPropertyMovementPort PortProperty;
         private readonly SerializedProperty _baseNodeProperty;
 
-        private bool IsInput => direction == Direction.Input;
+        public bool IsInput => direction == Direction.Input;
         
         public static BoundPort Create(BaseNode baseNode, string portName, bool showName, Direction direction) {
+
             DefaultEdgeConnectorListener listener = new DefaultEdgeConnectorListener();
             BoundPort ele = new BoundPort(baseNode, portName, showName, direction) {
                 m_EdgeConnector = new EdgeConnector<Edge>(listener)
@@ -37,16 +39,23 @@ namespace Editor.MovementEditor {
             : base(Orientation.Horizontal, direction, Capacity.Multi, typeof(bool)) {
             BaseNode = baseNode;
             PortProperty = new SerializedPropertyMovementPort(baseNode.State.FindPropertyRelative(portName));
-            this.portName = showName ? portName : "";
+
+            if (!showName) this.portName = "";
+            else {
+                portName = Regex.Replace(portName, @"<(.*)>k__BackingField", "$1");
+                portName = portName.TrimStart('_');
+                portName = char.ToUpper(portName[0]) + portName[1..];
+                portName = Regex.Replace(portName, @"(\p{Lu})", " $1");
+                this.portName = portName;
+            }
         }
-        
-        
+
 
         public void LoadConnection() {
 
             foreach (SerializedPropertyTransition transition in PortProperty.GetTransitions()) {
                
-                BaseNode targetNode = BaseNode.View.FindNode(transition.StateIndex, transition.StateIdentifier);
+                BaseNode targetNode = BaseNode.View.FindNode(transition.StateIdentifier);
                 BoundPort targetPort = targetNode?.FindPort(transition.PortIdentifier);
                 if (targetPort == null) {
                     PortProperty.RemoveTransition(transition);
@@ -60,26 +69,18 @@ namespace Editor.MovementEditor {
 
         public override void Connect(Edge edge) {
             base.Connect(edge);
-            //edge.RegisterCallback<DetachFromPanelEvent>(HandleDeletion);
             
             BoundPort other = (IsInput ? edge.output : edge.input) as BoundPort; 
-            if (other != null) AppendEdge(other);
+            if (other != null) PortProperty.AddTransition(other);
         }
 
-        private void HandleDeletion(DetachFromPanelEvent evt) {
-            if(evt.target is not Edge edge) return;
-            
+        
+        internal void HandleDeletion(Edge edge) {
             BoundPort other = (IsInput ? edge.output : edge.input) as BoundPort;
-            if (other != null) DeleteEdge(other);
+            if (other != null) HandleDeletion(other);;
         }
-        
-        private void AppendEdge(BoundPort to) {
-            if(PortProperty.HasTransitionTo(to)) return;
-            PortProperty.AddTransition(to);
-        }
-        
-        private void DeleteEdge(BoundPort to) {
-            PortProperty.RemoveTransition(to.BaseNode.GetIdentifier(), to.BaseNode.Index, to.Identifier);
+        internal void HandleDeletion(BoundPort other) {
+            PortProperty.RemoveTransition(other);;
         }
 
         private class DefaultEdgeConnectorListener : IEdgeConnectorListener {

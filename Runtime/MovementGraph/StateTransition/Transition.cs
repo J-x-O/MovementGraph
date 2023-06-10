@@ -10,9 +10,8 @@ namespace JescoDev.MovementGraph.StateTransition {
     [Serializable]
     public class Transition {
         
-        public MovementPort Target { get; private set; }
+        [field:NonSerialized] public MovementPort Target { get; private set; }
         
-        [SerializeField] private int _stateIndex;
         [SerializeField] private string _stateIdentifier;
         [SerializeField] private string _portIdentifier;
 
@@ -23,25 +22,16 @@ namespace JescoDev.MovementGraph.StateTransition {
         }
 
         public void OnBeforeSerialize(State state) {
-            _stateIdentifier = Target.State is NamedState namedState ? namedState.Identifier : "";
-            _stateIndex = state.Layer.GetStateID(Target.State);
+            if(Target?.State == null) return;
+            _stateIdentifier = Target.State.Identifier;
             _portIdentifier = Target.Identifier;
         }
         
         public void OnLateDeserialize(State state) {
-            State otherState = ByIdentifier(state.Layer) ?? ByIndex(state.Layer);
+            State otherState = state.Layer.GetState(_stateIdentifier);
             if(otherState == null) return;
             Target = otherState.GetPort(_portIdentifier);
         }
 
-        private State ByIndex(MovementLayer layer) {
-            if(_stateIndex < 0 || _stateIndex >= layer.States.Count) return null;
-            return layer.States[_stateIndex];
-        }
-        
-        private State ByIdentifier(MovementLayer layer) {
-            return layer.GetState(_stateIdentifier);
-        }
-        
     }
 }
