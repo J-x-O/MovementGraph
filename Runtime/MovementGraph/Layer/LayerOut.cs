@@ -11,17 +11,19 @@ namespace Gameplay.Movement.Layer {
     
     [Serializable]
     public class LayerOut : State, IFastForward {
-        
+
         public MovementPort OutReplay => _outReplay;
         [SerializeField, InputPort] public MovementPort _outReplay = new MovementPort();
         
         public MovementPort OutStop => _outStop;
         [SerializeField, InputPort] private MovementPort _outStop = new MovementPort();
 
-        private NullState _exitState = new NullState();
+        public NullState ExitState { get; private set; }
+
         public LayerIn _in;
-        public LayerOut() : base("LayerOut") {
-            _outStop.ConnectTo(_exitState.In);
+        public LayerOut() : base("Layer Out") {
+            ExitState = new NullState(Layer);
+            _outStop.ConnectTo(ExitState.In);
         }
 
         public MovementPort GetNextPort(MovementPort port) {
@@ -35,7 +37,8 @@ namespace Gameplay.Movement.Layer {
 
         public override MovementState ResolveActivation(MovementPort incomingPort = null) {
             if (incomingPort == _outReplay) return _in.ResolveActivation(_outReplay);
-            return _exitState;
+            return ExitState;
         }
+        
     }
 }

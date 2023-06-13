@@ -22,6 +22,7 @@ namespace JescoDev.MovementGraph {
         
         public void InvokeEnd(MovementState oldState, bool fullPath) {
             OnAnyStateDeactivated.TryInvoke(oldState);
+            if(oldState == null) return;
             string identifier = fullPath ? oldState.Layer.Identifier + "/" + oldState.Identifier : oldState.Identifier;
             ID.InvokeVarBasedEventEnd(identifier, oldState);
             foreach (string tag in oldState.Tags) {

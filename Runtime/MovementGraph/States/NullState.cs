@@ -12,6 +12,12 @@ namespace JescoDev.MovementGraph.MovementGraph.States {
 
         [InputPort] public readonly MovementPort In = new MovementPort();
 
+        public NullState(MovementLayer layer) {
+            _identifier = "Layer Exit";
+            OnAfterDeserialize(layer);
+            OnLateDeserialize();
+        }
+        
         public override MovementDefinition HandleMovement() {
             return MovementDefinition.None;
         }

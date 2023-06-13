@@ -32,38 +32,30 @@ namespace JescoDev.MovementGraph.Layer {
         
         public readonly MovementEvents Events = new MovementEvents();
         
-        public IReadOnlyList<State> States => _states;
+        public IEnumerable<State> States => _states.Concat(new State[] {_inNode, _outNode, _outNode.ExitState});
         [Tooltip("All possible states this character can use")]
         [SerializeReference] private List<State> _states = new List<State>();
-        
-        private readonly Dictionary<string, State> _stateDictionary = new Dictionary<string, State>();
 
         private MovementPort _exitQueued;
         
         public MovementState PreviousState { get; private set; }
         public MovementState CurrentState { get; private set; }
 
-        public void Awake(MovementSystem system) {
+        internal void Awake(MovementSystem system) {
             System = system;
-            foreach (State state in _states) {
-                if (state is MovementState movementState) movementState.Awake();
-                _stateDictionary.Add(state.Identifier, state);
-            }
-            
+
             // connect the layer in and out nodes
             _outNode._in = _inNode;
+            _inNode._out = _outNode;
         }
 
-        public void Start() {
+        
+        internal void Start() {
             // activate the first valid state and start this layer
-            if(_autoplay) ActivateState(_inNode.ResolveActivation());
+            if(_autoplay) Restart();
         }
 
-        public void Restart() {
-            ActivateState(_inNode.ResolveActivation());
-        }
-
-        public MovementDefinition Update() {
+        internal MovementDefinition Update() {
 
             if (_exitQueued != null) {
                 _exitQueued = null;
@@ -78,16 +70,19 @@ namespace JescoDev.MovementGraph.Layer {
             return CurrentState?.HandleMovement() ?? MovementDefinition.None;
         }
 
-        public void OnDestroy() {
-            foreach (State baseState in _stateDictionary.Values) {
-                if (baseState is MovementState state) state.Destroy();
+        internal void OnDestroy() {
+            foreach (State state in States) {
+                if (state is MovementState movementState) movementState.Destroy();
             }
         }
         
-        public void OnDrawGizmos() => CurrentState?.DrawGizmo();
+        internal void OnDrawGizmos() => CurrentState?.DrawGizmo();
 
         #region API
 
+        public void Restart() => ActivateState(_inNode.ResolveActivation());
+        public void Stop() => ActivateState(_outNode.ExitState);
+        
         /// <summary> Sets the state to a new one of the provided type </summary>
         /// <returns> if the state was activated successfully </returns>
         public bool SendEvent<T>(bool ignoreActiveCheck = false) where T : MovementState
@@ -147,19 +142,12 @@ namespace JescoDev.MovementGraph.Layer {
             if(state != null) ActivateState(state);
         }
 
-        public T GetState<T>() where T : MovementState {
-            string stateName = MovementState.GetName<T>();
-            return _stateDictionary.TryGetValue(stateName, out State value)
-                ? value as T
-                : null;
-        }
+        public T GetState<T>() where T : MovementState
+            => GetState(MovementState.GetName<T>()) as T;
 
-        public State GetState(string identifier) {
-            return _stateDictionary.TryGetValue(identifier, out State value)
-                ? value
-                : null;
-        }
-        
+        public State GetState(string identifier)
+            => States.FirstOrDefault(state => state.Identifier == identifier);
+
         public bool HasState<T>() where T : MovementState => GetState<T>() != null;
         public bool HasState(string identifier) => GetState(identifier) != null;
 
@@ -178,15 +166,13 @@ namespace JescoDev.MovementGraph.Layer {
         
         #endregion
 
-        internal int GetStateID(State state) => _states.IndexOf(state);
-        
         public void OnBeforeSerialize() {
-            foreach (State state in _states) state.OnBeforeSerialize();
+            foreach (State state in States) state.OnBeforeSerialize();
         }
 
         public void OnAfterDeserialize() {
-            foreach (State state in _states) state.OnAfterDeserialize(this);
-            foreach (State state in _states) state.OnLateDeserialize();
+            foreach (State state in States) state.OnAfterDeserialize(this);
+            foreach (State state in States) state.OnLateDeserialize();
         }
     }
 }

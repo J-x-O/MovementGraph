@@ -29,7 +29,10 @@ namespace JescoDev.MovementGraph.StateTransition {
         
         public void OnLateDeserialize(State state) {
             State otherState = state.Layer.GetState(_stateIdentifier);
-            if(otherState == null) return;
+            if (otherState == null) {
+                Debug.LogWarning($"Couldn't find State {_stateIdentifier} in Transition on state {state.Identifier}");
+                return;
+            }
             Target = otherState.GetPort(_portIdentifier);
         }
 

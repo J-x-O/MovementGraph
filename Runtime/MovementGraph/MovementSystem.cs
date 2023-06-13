@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using Gameplay.Movement.Layer;
 using JescoDev.MovementGraph.Layer;
-using Movement;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph {
@@ -13,7 +13,7 @@ namespace JescoDev.MovementGraph {
         public CustomMovement CustomMovement => _customMovement;
         [SerializeField] private CustomMovement _customMovement;
 
-        [Tooltip("All possible states this character can use")]
+        public IReadOnlyList<MovementLayer> Layers => _layer;
         [SerializeField] private List<MovementLayer> _layer = new List<MovementLayer>();
 
         private bool _exitQueued;
@@ -77,11 +77,21 @@ namespace JescoDev.MovementGraph {
             foreach (MovementLayer layer in _layer) layer.OnAfterDeserialize();
         }
         
+        public MovementLayer GetLayer(string identifier) {
+            return Layers.FirstOrDefault(layer => layer.Identifier == identifier);
+        }
+
+        public bool TryGetLayer(string identifier, out MovementLayer layer) {
+            layer = GetLayer(identifier);
+            return layer != null;
+        }
+
 #if UNITY_EDITOR
         //[SerializeField] private List<Tuple<string, Color>> _tags;
         [SerializeField, HideInInspector] private Vector2 _cameraPosition;
         [SerializeField, HideInInspector] private float _cameraZoom = 1;
         [SerializeField, HideInInspector] private int _selectedLayer = 0;
 #endif
+        
     }
 }

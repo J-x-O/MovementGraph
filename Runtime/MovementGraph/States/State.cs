@@ -20,7 +20,7 @@ namespace Movement.States {
         [HideInInspector] [SerializeField] protected Vector2 _position;
 #endif
         
-        public MovementLayer Layer { get; private set; }
+        public MovementLayer Layer { get; protected set; }
         
         public string Identifier => _identifier;
         [SerializeField] protected string _identifier;
