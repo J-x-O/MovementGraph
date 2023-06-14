@@ -35,7 +35,6 @@ namespace Editor.MovementEditor.PropertyUtility {
                 return transition.StateIdentifier == nodeIdentifier
                     && transition.PortIdentifier == portIdentifier;
             });
-            ApplyModifiedProperties();
         }
 
         public void AddTransition(BoundPort port)

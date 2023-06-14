@@ -45,11 +45,11 @@ namespace Entities.Movement.States {
         
         public bool HasTag(string tag) => _tags.Contains(tag);
 
-        public override bool ValidActivation() => InputPort.HasActiveTransition(true);
+        public override bool ValidActivation() => CanBeActivated();
         
         /// <summary> It is important that only an state which can be activated results in a valid return </summary>
         public override MovementState ResolveActivation(MovementPort incomingPort = null) {
-            return CanBeActivated() ? this : null;
+            return this;
         }
         
         public void QueueRegularExit() => Layer.QueueExit(RegularExit);

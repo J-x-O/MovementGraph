@@ -11,13 +11,10 @@ namespace JescoDev.MovementGraph.MovementGraph.States {
     public class NullState : MovementState {
 
         [InputPort] public readonly MovementPort In = new MovementPort();
+        [OutputPort] public readonly MovementPort Restart = new MovementPort();
 
-        public NullState(MovementLayer layer) {
-            _identifier = "Layer Exit";
-            OnAfterDeserialize(layer);
-            OnLateDeserialize();
-        }
-        
+        public NullState() => _identifier = "Layer Exit";
+
         public override MovementDefinition HandleMovement() {
             return MovementDefinition.None;
         }

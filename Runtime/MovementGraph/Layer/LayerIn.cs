@@ -5,6 +5,7 @@ using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using Movement.States;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Gameplay.Movement.Layer {
     
@@ -14,12 +15,12 @@ namespace Gameplay.Movement.Layer {
         public MovementPort In => _in;
         [SerializeField, OutputPort] private MovementPort _in = new MovementPort();
 
-        public LayerOut _out;
-        
+        public LayerOut Out { get; internal set; }
+
         public override bool ValidActivation() {
             return true;
         }
-
+        
         public override MovementState ResolveActivation(MovementPort incomingPort = null) {
             return _in.FindFirstValidTransition();
         }
@@ -27,6 +28,6 @@ namespace Gameplay.Movement.Layer {
         public LayerIn() : base("Layer In") { }
         
         
-        public MovementPort GetNextPort(MovementPort port) => _out.OutReplay;
+        public MovementPort GetNextPort(MovementPort port) => Out.OutReplay;
     }
 }

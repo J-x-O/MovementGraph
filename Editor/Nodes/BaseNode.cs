@@ -74,7 +74,7 @@ namespace Editor.MovementEditor {
 
         public void LoadConnections() {
             foreach (BoundPort port in InputPorts) port.LoadConnection();
-            //foreach (BoundPort port in OutputPorts) port.LoadConnection();
+            foreach (BoundPort port in OutputPorts) port.LoadConnection();
         }
         
         public IEnumerable<BoundPort> Ports => InputPorts.Concat(OutputPorts);
