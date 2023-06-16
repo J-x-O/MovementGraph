@@ -2,7 +2,6 @@
 using System.Reflection;
 using Editor.MovementEditor.PropertyUtility;
 using Gameplay.Movement.Layer;
-using Movement.States;
 using UnityEngine.UIElements;
 
 namespace Editor.MovementEditor {

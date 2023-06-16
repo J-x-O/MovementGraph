@@ -1,7 +1,6 @@
 ﻿using System;
 using Gameplay.Movement.Layer;
-using JescoDev.MovementGraph.MovementGraph.States;
-using Movement.States;
+using JescoDev.MovementGraph.States;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.Layer {

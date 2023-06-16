@@ -3,7 +3,7 @@ using JescoDev.MovementGraph.Layer;
 using JescoDev.MovementGraph.States;
 using UnityEngine;
 
-namespace JescoDev.MovementGraph.Sample.Sample {
+namespace JescoDev.MovementGraphSample {
     
     // very similar to walk
     [Serializable]

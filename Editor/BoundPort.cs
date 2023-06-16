@@ -7,7 +7,6 @@ using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
-using Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;

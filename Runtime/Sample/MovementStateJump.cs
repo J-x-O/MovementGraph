@@ -3,7 +3,7 @@ using JescoDev.MovementGraph.Layer;
 using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
 
-namespace JescoDev.MovementGraph.Sample.Sample {
+namespace JescoDev.MovementGraphSample {
     
     // you can recycle variables and behaviour by just inheriting from another existing class
     [Serializable]

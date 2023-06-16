@@ -1,10 +1,8 @@
 ﻿using System;
 using Entities.Movement.States;
 using Gameplay.Movement.States;
-using JescoDev.MovementGraph.MovementGraph.States;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
-using Movement.States;
 using UnityEngine;
 using UnityEngine.Serialization;
 

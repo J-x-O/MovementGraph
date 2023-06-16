@@ -5,7 +5,6 @@ using Entities.Movement.States;
 using Gameplay.Movement.States;
 using JescoDev.MovementGraph.Attributes;
 using JescoDev.MovementGraph.StateTransition;
-using Movement.States;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

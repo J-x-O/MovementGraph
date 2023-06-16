@@ -5,6 +5,7 @@ using JescoDev.MovementGraph.Layer;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph {
+    
     [DefaultExecutionOrder(-1)]
     public class MovementSystem : MonoBehaviour, ISerializationCallbackReceiver {
 

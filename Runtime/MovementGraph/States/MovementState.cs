@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Gameplay.Movement.Layer;
 using JescoDev.MovementGraph.Layer;
-using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using JescoDev.Utility.Condition;
-using Movement.States;
 using UnityEngine;
 
-namespace Entities.Movement.States {
+namespace JescoDev.MovementGraph.States {
     
     [Serializable]
     public abstract class MovementState : State {

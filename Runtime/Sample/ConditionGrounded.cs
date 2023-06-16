@@ -2,7 +2,7 @@
 using JescoDev.Utility.Condition;
 using UnityEngine;
 
-namespace JescoDev.MovementGraph.Sample.Sample {
+namespace JescoDev.MovementGraphSample {
     
     [Serializable]
     public class ConditionGrounded : ICondition {

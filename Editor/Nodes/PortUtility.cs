@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
-using Movement.States;
 
 namespace Editor.MovementEditor {
     public static class PortUtility {

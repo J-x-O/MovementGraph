@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Entities.Movement;
-using Entities.Movement.States;
 using Gameplay.Movement.Layer;
-using JescoDev.MovementGraph.MovementGraph.States;
 using JescoDev.MovementGraph.States;
-using Movement;
-using Movement.States;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.Layer {
