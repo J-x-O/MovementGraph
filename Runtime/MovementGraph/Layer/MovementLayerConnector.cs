@@ -9,12 +9,12 @@ namespace JescoDev.MovementGraph.Layer {
     public class MovementLayerConnector {
         
         public LayerOut OutNode => _outNode;
-        [SerializeReference] private LayerOut _outNode = new LayerOut();
+        [SerializeReference] private LayerOut _outNode;
         
         public LayerIn InNode => _inNode;
-        [SerializeReference] private LayerIn _inNode = new LayerIn();
+        [SerializeReference] private LayerIn _inNode;
 
-        public NullState NullState { get; private set; } = new NullState();
+        public NullState NullState { get; private set; } = new();
 
         public State[] Nodes => new State[] { _inNode, _outNode, NullState };
         

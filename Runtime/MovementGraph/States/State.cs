@@ -15,13 +15,13 @@ namespace JescoDev.MovementGraph.States {
         [HideInInspector] [SerializeField] protected Vector2 _position;
 #endif
         
-        public MovementLayer Layer { get; protected set; }
+        [field:NonSerialized] public MovementLayer Layer { get; protected set; }
         
         public string Identifier => _identifier;
         [SerializeField] protected string _identifier;
         
-        public Transform Transform => Layer.System.transform;
-        public GameObject GameObject => Layer.System.gameObject;
+        public Transform Transform => Layer?.System.transform;
+        public GameObject GameObject => Layer?.System.gameObject;
 
         public State(string identifier) {
             _identifier = identifier;

@@ -71,6 +71,7 @@ namespace Editor.MovementEditor {
                 flexedPane.Clear();
             }
             _layer.RemoveArrayElement(layer.Layer);
+            _layer.serializedObject.ApplyModifiedProperties();
             RebuildLayers();
         }
 

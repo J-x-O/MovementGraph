@@ -17,8 +17,8 @@ namespace Gameplay.Movement.Layer {
         public MovementPort OutStop => _outStop;
         [SerializeField, InputPort] private MovementPort _outStop = new MovementPort();
 
-        public NullState NullState { get; internal set; }
-        public LayerIn In { get; internal set; }
+        [field:NonSerialized] public NullState NullState { get; internal set; }
+        [field:NonSerialized] public LayerIn In { get; internal set; }
         
         public LayerOut() : base("Layer Out") { }
 

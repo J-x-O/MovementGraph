@@ -32,6 +32,8 @@ namespace Editor.MovementEditor.PropertyUtility {
             _inNodeProperty.managedReferenceValue ??= new LayerIn();
             _outNodeProperty = connectorProperty.FindPropertyRelative("_outNode");
             _outNodeProperty.managedReferenceValue ??= new LayerOut();
+
+            property.serializedObject.ApplyModifiedProperties();
         }
 
         public SerializedPropertyState AddState(object instance) {

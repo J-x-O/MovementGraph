@@ -14,7 +14,7 @@ namespace Gameplay.Movement.Layer {
         public MovementPort In => _in;
         [SerializeField, OutputPort] private MovementPort _in = new MovementPort();
 
-        public LayerOut Out { get; internal set; }
+        [field:NonSerialized] public LayerOut Out { get; internal set; }
 
         public override bool ValidActivation() {
             return true;
