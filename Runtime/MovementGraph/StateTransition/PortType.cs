@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using JescoDev.MovementGraph.States;
-using Movement.States;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.StateTransition {

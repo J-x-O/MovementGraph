@@ -1,10 +1,8 @@
 ﻿using System;
-using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
-using Movement.States;
 using UnityEngine;
 
-namespace Entities.Movement.States {
+namespace JescoDev.MovementGraph.States {
     
     [Serializable]
     public class EventState : State {

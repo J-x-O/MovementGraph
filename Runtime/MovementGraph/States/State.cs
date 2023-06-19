@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Entities.Movement;
-using Entities.Movement.States;
-using Gameplay.Movement.Layer;
 using JescoDev.MovementGraph.Layer;
-using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
-namespace Movement.States {
+namespace JescoDev.MovementGraph.States {
     
     [Serializable]
     public abstract class State {
@@ -20,13 +15,13 @@ namespace Movement.States {
         [HideInInspector] [SerializeField] protected Vector2 _position;
 #endif
         
-        public MovementLayer Layer { get; protected set; }
+        [field:NonSerialized] public MovementLayer Layer { get; protected set; }
         
         public string Identifier => _identifier;
         [SerializeField] protected string _identifier;
         
-        public Transform Transform => Layer.System.transform;
-        public GameObject GameObject => Layer.System.gameObject;
+        public Transform Transform => Layer?.System.transform;
+        public GameObject GameObject => Layer?.System.gameObject;
 
         public State(string identifier) {
             _identifier = identifier;

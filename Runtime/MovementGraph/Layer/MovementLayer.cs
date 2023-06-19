@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Entities.Movement;
-using Entities.Movement.States;
 using Gameplay.Movement.Layer;
 using JescoDev.MovementGraph.States;
-using Movement;
-using Movement.States;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.Layer {
@@ -16,12 +12,8 @@ namespace JescoDev.MovementGraph.Layer {
         
         public string Identifier => _identifier;
         [SerializeReference] private string _identifier;
-        
-        public LayerOut OutNode => _outNode;
-        [SerializeReference] private LayerOut _outNode;
-        
-        public LayerIn InNode => _inNode;
-        [SerializeReference] private LayerIn _inNode;
+
+        [SerializeField] private MovementLayerConnector _connector;
         
         [SerializeField] private bool _autoplay = true;
         
@@ -32,7 +24,7 @@ namespace JescoDev.MovementGraph.Layer {
         
         public readonly MovementEvents Events = new MovementEvents();
         
-        public IEnumerable<State> States => _states.Concat(new State[] {_inNode, _outNode, _outNode.ExitState});
+        public IEnumerable<State> States => _states.Concat(_connector.Nodes);
         [Tooltip("All possible states this character can use")]
         [SerializeReference] private List<State> _states = new List<State>();
 
@@ -43,10 +35,7 @@ namespace JescoDev.MovementGraph.Layer {
 
         internal void Awake(MovementSystem system) {
             System = system;
-
-            // connect the layer in and out nodes
-            _outNode._in = _inNode;
-            _inNode._out = _outNode;
+            _connector.Awake();
         }
 
         
@@ -80,8 +69,8 @@ namespace JescoDev.MovementGraph.Layer {
 
         #region API
 
-        public void Restart() => ActivateState(_inNode.ResolveActivation());
-        public void Stop() => ActivateState(_outNode.ExitState);
+        public void Restart() => ActivateState(_connector.InNode.ResolveActivation());
+        public void Stop() => ActivateState(_connector.NullState);
         
         /// <summary> Sets the state to a new one of the provided type </summary>
         /// <returns> if the state was activated successfully </returns>
@@ -167,12 +156,12 @@ namespace JescoDev.MovementGraph.Layer {
         #endregion
 
         public void OnBeforeSerialize() {
-            foreach (State state in States) state.OnBeforeSerialize();
+            foreach (State state in States) state?.OnBeforeSerialize();
         }
 
         public void OnAfterDeserialize() {
-            foreach (State state in States) state.OnAfterDeserialize(this);
-            foreach (State state in States) state.OnLateDeserialize();
+            foreach (State state in States) state?.OnAfterDeserialize(this);
+            foreach (State state in States) state?.OnLateDeserialize();
         }
     }
 }

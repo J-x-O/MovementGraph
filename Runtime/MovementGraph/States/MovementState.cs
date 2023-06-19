@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Gameplay.Movement.Layer;
 using JescoDev.MovementGraph.Layer;
-using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using JescoDev.Utility.Condition;
-using Movement.States;
 using UnityEngine;
 
-namespace Entities.Movement.States {
+namespace JescoDev.MovementGraph.States {
     
     [Serializable]
     public abstract class MovementState : State {
@@ -45,11 +42,11 @@ namespace Entities.Movement.States {
         
         public bool HasTag(string tag) => _tags.Contains(tag);
 
-        public override bool ValidActivation() => InputPort.HasActiveTransition(true);
+        public override bool ValidActivation() => CanBeActivated();
         
         /// <summary> It is important that only an state which can be activated results in a valid return </summary>
         public override MovementState ResolveActivation(MovementPort incomingPort = null) {
-            return CanBeActivated() ? this : null;
+            return this;
         }
         
         public void QueueRegularExit() => Layer.QueueExit(RegularExit);

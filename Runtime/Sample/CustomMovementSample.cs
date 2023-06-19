@@ -1,7 +1,7 @@
-﻿using System;
+﻿using JescoDev.MovementGraph;
 using UnityEngine;
 
-namespace JescoDev.MovementGraph.Sample.Sample {
+namespace JescoDev.MovementGraphSample {
     public class CustomMovementSample : CustomMovementCharacterController {
 
         [SerializeField] private MovementSystem _movement;

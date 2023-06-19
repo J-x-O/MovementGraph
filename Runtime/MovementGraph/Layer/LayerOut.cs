@@ -1,11 +1,10 @@
 ﻿using System;
 using Entities.Movement.States;
 using Gameplay.Movement.States;
-using JescoDev.MovementGraph.MovementGraph.States;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
-using Movement.States;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Gameplay.Movement.Layer {
     
@@ -18,17 +17,14 @@ namespace Gameplay.Movement.Layer {
         public MovementPort OutStop => _outStop;
         [SerializeField, InputPort] private MovementPort _outStop = new MovementPort();
 
-        public NullState ExitState { get; private set; }
-
-        public LayerIn _in;
-        public LayerOut() : base("Layer Out") {
-            ExitState = new NullState(Layer);
-            _outStop.ConnectTo(ExitState.In);
-        }
+        [field:NonSerialized] public NullState NullState { get; internal set; }
+        [field:NonSerialized] public LayerIn In { get; internal set; }
+        
+        public LayerOut() : base("Layer Out") { }
 
         public MovementPort GetNextPort(MovementPort port) {
             // this node will forward the output to the input, so the whole system loops
-            return port == OutReplay ? _in.In : null;
+            return port == OutReplay ? In.In : null;
         }
 
         public override bool ValidActivation() {
@@ -36,8 +32,8 @@ namespace Gameplay.Movement.Layer {
         }
 
         public override MovementState ResolveActivation(MovementPort incomingPort = null) {
-            if (incomingPort == _outReplay) return _in.ResolveActivation(_outReplay);
-            return ExitState;
+            if (incomingPort == _outReplay) return In.ResolveActivation(_outReplay);
+            return NullState;
         }
         
     }

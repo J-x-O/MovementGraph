@@ -39,7 +39,6 @@ namespace Editor.MovementEditor {
             int i = target.GetArrayIndex(p);
             if(i == -1) return;
             target.DeleteArrayElementAtIndex(i);
-            target.serializedObject.ApplyModifiedProperties();
         }
         
         

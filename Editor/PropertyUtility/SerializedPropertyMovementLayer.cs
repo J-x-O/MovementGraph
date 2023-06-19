@@ -26,10 +26,14 @@ namespace Editor.MovementEditor.PropertyUtility {
             _identifierProperty = property.FindPropertyRelative("_identifier");
             _compositionProperty = property.FindPropertyRelative("_composition");
             _statesProperty = property.FindPropertyRelative("_states");
-            _inNodeProperty = property.FindPropertyRelative("_inNode");
+            
+            SerializedProperty connectorProperty = property.FindPropertyRelative("_connector");
+            _inNodeProperty = connectorProperty.FindPropertyRelative("_inNode");
             _inNodeProperty.managedReferenceValue ??= new LayerIn();
-            _outNodeProperty = property.FindPropertyRelative("_outNode");
+            _outNodeProperty = connectorProperty.FindPropertyRelative("_outNode");
             _outNodeProperty.managedReferenceValue ??= new LayerOut();
+
+            property.serializedObject.ApplyModifiedProperties();
         }
 
         public SerializedPropertyState AddState(object instance) {

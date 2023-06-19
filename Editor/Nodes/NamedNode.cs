@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
-using Movement.States;
+using JescoDev.MovementGraph.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;

@@ -7,7 +7,6 @@ using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
-using Movement.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -50,20 +49,27 @@ namespace Editor.MovementEditor {
             }
         }
 
-
         public void LoadConnection() {
-
+            List<SerializedPropertyTransition> toBeRemoved = new();
             foreach (SerializedPropertyTransition transition in PortProperty.GetTransitions()) {
                
                 BaseNode targetNode = BaseNode.View.FindNode(transition.StateIdentifier);
                 BoundPort targetPort = targetNode?.FindPort(transition.PortIdentifier);
+
                 if (targetPort == null) {
-                    PortProperty.RemoveTransition(transition);
+                    toBeRemoved.Add(transition);
                     continue;
                 }
+                
+                // check if we are already connected
+                if(connections.Any(edge => edge.input == targetPort || edge.output == targetPort)) continue;
                 BaseNode.View.AddElement(ConnectTo(targetPort));
             }
 
+            if (!toBeRemoved.Any()) return;
+            foreach (SerializedPropertyTransition transition in toBeRemoved) {
+                PortProperty.RemoveTransition(transition);
+            }
             PortProperty.ApplyModifiedProperties();
         }
 
@@ -80,7 +86,8 @@ namespace Editor.MovementEditor {
             if (other != null) HandleDeletion(other);;
         }
         internal void HandleDeletion(BoundPort other) {
-            PortProperty.RemoveTransition(other);;
+            PortProperty.RemoveTransition(other);
+            PortProperty.ApplyModifiedProperties();
         }
 
         private class DefaultEdgeConnectorListener : IEdgeConnectorListener {

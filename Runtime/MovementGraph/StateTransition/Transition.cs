@@ -2,7 +2,6 @@
 using Entities.Movement.States;
 using JescoDev.MovementGraph.Layer;
 using JescoDev.MovementGraph.States;
-using Movement.States;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.StateTransition {

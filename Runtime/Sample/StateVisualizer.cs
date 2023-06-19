@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Entities.Movement.States;
+﻿using System.Collections;
+using JescoDev.MovementGraph;
 using JescoDev.MovementGraph.Layer;
+using JescoDev.MovementGraph.States;
 using TMPro;
 using UnityEngine;
 
-namespace JescoDev.MovementGraph.Sample.Sample {
-    [DefaultExecutionOrder(5)]
+namespace JescoDev.MovementGraphSample {
+    
     public class StateVisualizer : MonoBehaviour {
 
         [SerializeField] private MovementSystem _system;
@@ -30,6 +29,8 @@ namespace JescoDev.MovementGraph.Sample.Sample {
             _text.text = _layer.CurrentState.Identifier;
         }
 
-        private void HandleStateChange(MovementState obj) => _text.text = obj.Identifier;
+        private void HandleStateChange(MovementState obj) {
+            _text.text = obj.Identifier;
+        }
     }
 }

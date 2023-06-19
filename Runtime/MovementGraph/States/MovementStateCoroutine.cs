@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using JescoDev.MovementGraph.Layer;
+using JescoDev.MovementGraph.States;
 using UnityEngine;
 
 namespace Entities.Movement.States {
