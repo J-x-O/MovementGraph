@@ -10,6 +10,8 @@ namespace JescoDev.MovementGraphSample {
     [Serializable]
     public class MovementStateWalk : MovementState<CustomMovementSample> {
         
+        [SerializeField, OutputPort] private MovementPort _onAirborne;
+        
         // you can expose scene references, utilizing dependency injection
         [SerializeField] private GroundedManager _floorManager;
         
@@ -24,7 +26,7 @@ namespace JescoDev.MovementGraphSample {
         public override void Deactivate() => _floorManager.OnUngrounded.RemoveListener(SwitchToAir);
 
         // you can exit a state through a custom port like this
-        private void SwitchToAir() => QueueRegularExit();
+        private void SwitchToAir() => Layer.QueueExit(_onAirborne);
 
         public override MovementDefinition HandleMovement() {
             

@@ -1,6 +1,7 @@
 ﻿using System;
 using JescoDev.MovementGraph.Layer;
 using JescoDev.MovementGraph.States;
+using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
 
 namespace JescoDev.MovementGraphSample {
@@ -8,6 +9,8 @@ namespace JescoDev.MovementGraphSample {
     // very similar to walk
     [Serializable]
     public class MovementStateAirborne : MovementState<CustomMovementSample> {
+
+        [SerializeField, OutputPort] private MovementPort _onGrounded;
         
         [SerializeField] private GroundedManager _floorManager;
         [SerializeField] private float _movementSpeed;
@@ -27,7 +30,7 @@ namespace JescoDev.MovementGraphSample {
         }
 
         public override void Deactivate() => _floorManager.OnGrounded.RemoveListener(SwitchToAir);
-        private void SwitchToAir() => QueueRegularExit();
+        private void SwitchToAir() => Layer.QueueExit(_onGrounded);
 
         public override MovementDefinition HandleMovement() {
             

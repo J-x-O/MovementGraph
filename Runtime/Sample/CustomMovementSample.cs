@@ -1,4 +1,5 @@
 ﻿using JescoDev.MovementGraph;
+using JescoDev.MovementGraph.Layer;
 using UnityEngine;
 
 namespace JescoDev.MovementGraphSample {
@@ -9,16 +10,20 @@ namespace JescoDev.MovementGraphSample {
         public float Input { get; private set; }
 
         private bool _exited = false;
-        
+
+        private MovementLayer _target;
+
+        private void Awake() => _target = _movement.Layers[0];
+
         public void Update() {
             Input = UnityEngine.Input.GetAxis("Horizontal");
             if (UnityEngine.Input.GetKeyDown(KeyCode.Space)) {
-                _movement.Layers[0].SendEvent<MovementStateJump>();
+                _target.SendEvent<MovementStateJump>();
             }
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.P)) {
-                if(_exited) _movement.Layers[0].Restart();
-                else _movement.Layers[0].Stop();
+                if(!_target.IsActive) _target.Restart();
+                else _target.Stop();
             }
         }
     }

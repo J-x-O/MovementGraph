@@ -26,8 +26,8 @@ namespace JescoDev.MovementGraph.Layer {
             _outNode.NullState = NullState;
             
             // connect the null state to the layer in and out nodes, since this node only exists at runtime
-            NullState.Restart.ConnectTo(InNode.In);
-            OutNode.OutStop.ConnectTo(NullState.In);
+            NullState.RegularExit.ConnectTo(InNode.In);
+            OutNode.OutStop.ConnectTo(NullState.InputPort);
         }
     }
 }

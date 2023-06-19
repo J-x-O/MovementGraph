@@ -10,8 +10,8 @@ namespace JescoDev.MovementGraph.States {
     [Serializable]
     public abstract class MovementState : State {
 
-        [field: SerializeField, InputPort] public MovementPort InputPort { get; private set; }
-        [field: SerializeField, OutputPort] public MovementPort RegularExit { get; private set; }
+        [field: SerializeField, InputPort] public MovementPort InputPort { get; protected set; }
+        [field: SerializeField, OutputPort] public MovementPort RegularExit { get; protected set; }
 
         [Tooltip("The Condition that needs to be true so this can be activated")]
         [SubclassSelector] [SerializeReference] protected ICondition _activationCondition;

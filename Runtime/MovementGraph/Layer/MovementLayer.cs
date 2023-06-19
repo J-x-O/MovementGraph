@@ -23,7 +23,9 @@ namespace JescoDev.MovementGraph.Layer {
         public MovementSystem System { get; private set; }
         
         public readonly MovementEvents Events = new MovementEvents();
-        
+
+        public bool IsActive => CurrentState is not NullState;
+
         public IEnumerable<State> States => _states.Concat(_connector.Nodes);
         [Tooltip("All possible states this character can use")]
         [SerializeReference] private List<State> _states = new List<State>();
@@ -47,7 +49,6 @@ namespace JescoDev.MovementGraph.Layer {
         internal MovementDefinition Update() {
 
             if (_exitQueued != null) {
-                _exitQueued = null;
                 ExitCurrentState();
             }
             
@@ -127,8 +128,10 @@ namespace JescoDev.MovementGraph.Layer {
         }
 
         private void ExitCurrentState() {
-            MovementState state = CurrentState.RegularExit.FindFirstValidTransition();
-            if(state != null) ActivateState(state);
+            MovementPort target = _exitQueued ?? CurrentState.RegularExit;
+            MovementState state = target.FindFirstValidTransition();
+            if (state != null) ActivateState(state);
+            _exitQueued = null;
         }
 
         public T GetState<T>() where T : MovementState
