@@ -70,7 +70,7 @@ namespace Editor.MovementEditor {
             flexedPane.Clear();
             flexedPane.Add(new MovementGraphHeader(layer));
             
-            MovementGraphView view = new MovementGraphView(layer.Layer);
+            MovementGraphView view = new MovementGraphView(layer.Layer, () => SelectLayer(layer));
             CameraBinder binder = new CameraBinder(_linkObject);
             view.AddManipulator(binder);
             binder.RestoreCamera();

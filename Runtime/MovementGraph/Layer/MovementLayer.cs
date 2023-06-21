@@ -27,6 +27,7 @@ namespace JescoDev.MovementGraph.Layer {
         public bool IsActive => CurrentState is not NullState;
 
         public IEnumerable<State> States => _states.Concat(_connector.Nodes);
+        public IEnumerable<MovementState> MovementStates => _states.OfType<MovementState>();
         [Tooltip("All possible states this character can use")]
         [SerializeReference] private List<State> _states = new List<State>();
 
@@ -38,8 +39,16 @@ namespace JescoDev.MovementGraph.Layer {
         internal void Awake(MovementSystem system) {
             System = system;
             _connector.Awake();
+            foreach (MovementState state in MovementStates) state.Awake();
         }
 
+        internal void Activate() {
+            foreach (MovementState state in MovementStates) state.Activate();
+        }
+        
+        internal void Deactivate() {
+            foreach (MovementState state in MovementStates) state.Deactivate();
+        }
         
         internal void Start() {
             // activate the first valid state and start this layer

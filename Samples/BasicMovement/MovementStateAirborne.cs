@@ -4,7 +4,7 @@ using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
 
-namespace JescoDev.MovementGraphSample {
+namespace JescoDev.MovementGraph.Samples.BasicMovement {
     
     // very similar to walk
     [Serializable]

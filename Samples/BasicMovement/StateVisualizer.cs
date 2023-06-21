@@ -1,11 +1,10 @@
 ﻿using System.Collections;
-using JescoDev.MovementGraph;
 using JescoDev.MovementGraph.Layer;
 using JescoDev.MovementGraph.States;
 using TMPro;
 using UnityEngine;
 
-namespace JescoDev.MovementGraphSample {
+namespace JescoDev.MovementGraph.Samples.BasicMovement {
     
     public class StateVisualizer : MonoBehaviour {
 

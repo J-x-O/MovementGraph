@@ -58,16 +58,16 @@ namespace Editor.MovementEditor {
             return false;
         }
         
-        public static void RemoveArrayElement(this SerializedProperty target, Func<SerializedProperty, bool> predicate) {
+        public static bool RemoveArrayElement(this SerializedProperty target, Func<SerializedProperty, bool> predicate) {
             for (int i = 0; i < target.arraySize; i++) {
                 SerializedProperty element = target.GetArrayElementAtIndex(i);
                 if (!predicate(element)) continue;
                 
                 target.DeleteArrayElementAtIndex(i);
                 target.serializedObject.ApplyModifiedProperties();
-                return;
+                return true;
             }
-            Debug.LogError("Couldn't find element to remove!");
+            return false;
         }
         
         public static object GetValue(this SerializedProperty property) {

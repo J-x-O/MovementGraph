@@ -14,17 +14,20 @@ namespace Editor.MovementEditor {
         
         public readonly SerializedPropertyMovementLayer LayerProperty;
         public readonly NodeManager NodeManager;
+        private Action _rebuild;
         
-        public MovementGraphView(SerializedProperty layerProperty) {
+        public MovementGraphView(SerializedProperty layerProperty, Action rebuild) {
             LayerProperty = new SerializedPropertyMovementLayer(layerProperty);
             NodeManager = new NodeManager(this, LayerProperty);
             NodeManager.LoadExistingNodes();
-
+            _rebuild = rebuild;
             AddGridBackground();
             AddManipulators();
             styleSheets.Add(LoadStyleSheet("MovementGraph.uss"));
-            graphViewChanged = OnGraphViewChanged;
+            graphViewChanged += OnGraphViewChanged;
         }
+
+        public void Rebuild() => _rebuild();
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter) {
 

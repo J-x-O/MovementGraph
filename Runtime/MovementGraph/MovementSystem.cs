@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Movement.Layer;
@@ -26,9 +27,15 @@ namespace JescoDev.MovementGraph {
         }
 
         private void Start() {
-            foreach (MovementLayer layer in _layer) {
-                layer.Restart();
-            }
+            foreach (MovementLayer layer in _layer) layer.Start();
+        }
+
+        private void OnEnable() {
+            foreach (MovementLayer layer in _layer) layer.Activate();
+        }
+        
+        private void OnDisable() {
+            foreach (MovementLayer layer in _layer) layer.Deactivate();
         }
 
         private void Update() {

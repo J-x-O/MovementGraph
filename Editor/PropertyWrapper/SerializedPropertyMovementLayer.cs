@@ -53,7 +53,7 @@ namespace Editor.MovementEditor.PropertyUtility {
             return _statesProperty.GetArrayIndex(target);
         }
         
-        public void RemoveState(object instance) => _statesProperty.RemoveArrayElement(MatchingInstance(instance));
+        public bool RemoveState(object instance) => _statesProperty.RemoveArrayElement(MatchingInstance(instance));
 
         public void ClearStates() => _statesProperty.arraySize = 0;
         

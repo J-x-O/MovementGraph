@@ -1,8 +1,6 @@
-﻿using JescoDev.MovementGraph;
-using JescoDev.MovementGraph.Layer;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace JescoDev.MovementGraphSample {
+namespace JescoDev.MovementGraph.Samples.BasicMovement {
     public class CustomMovementSample : CustomMovementCharacterController {
 
         [SerializeField] private MovementSystem _movement;

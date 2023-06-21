@@ -24,6 +24,8 @@ namespace Editor.MovementEditor {
 
         public void LoadExistingNodes() {
             foreach (SerializedPropertyState property in _layer.GetStates()) {
+                if(property.State == null) continue;
+                // todo place imposter node
                 _view.AddElement(CreateNode(property.Position, property, property.State));
             }
 
@@ -93,12 +95,12 @@ namespace Editor.MovementEditor {
         }
 
         public void DeleteNode(BaseNode node) {
-            _layer.RemoveState(node.State.State);
-            _layer.ApplyModifiedProperties();
-            _nodes.Remove(node);
+            if (_layer.RemoveState(node.State.State)) {
+                _layer.ApplyModifiedProperties();
+                _nodes.Remove(node);
+            } 
             
-            // rebuild All
-            //MovementSystemEditor.GetWindow().Rebuild();
+            _view.Rebuild();
         }
         
     }

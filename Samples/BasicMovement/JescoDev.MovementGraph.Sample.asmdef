@@ -1,6 +1,6 @@
 {
-    "name": "JescoDev.MovementGraph.Sample",
-    "rootNamespace": "JescoDev.MovementGraphSample",
+    "name": "JescoDev.MovementGraph.Samples.BasicMovement",
+    "rootNamespace": "JescoDev.MovementGraph.Samples.BasicMovement",
     "references": [
         "GUID:3c2495c3febf0ec408eab489fecdbe82",
         "GUID:18cb67baf6fafd34988e69e547d9022f",
