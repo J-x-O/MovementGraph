@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
+using JescoDev.MovementGraph.Editor.Utility;
 using JescoDev.MovementGraph.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
+using UnityEngine.UIElements;
 
 namespace Editor.MovementEditor {
     
@@ -19,6 +21,7 @@ namespace Editor.MovementEditor {
         
         public BoundNode(MovementGraphView view, SerializedPropertyState state, MovementState stateObject) : base(view, state, stateObject) {
             StateObject = stateObject;
+            this.AddManipulator(new OpenScriptManipulator(stateObject.GetType()));
         }
 
         protected override void Rebuild(List<FieldInfo> fieldInfos) {

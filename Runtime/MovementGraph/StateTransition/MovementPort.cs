@@ -23,7 +23,7 @@ namespace JescoDev.MovementGraph.States {
         public MovementState FindFirstValidTransition() {
             foreach (Transition transition in _transitions) {
                 MovementState resolve = transition.Target.ResolveActivation();
-                if (resolve != null) return resolve;
+                if (resolve != null && resolve.CanBeActivated()) return resolve;
             }
             return null;
         }

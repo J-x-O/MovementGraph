@@ -37,6 +37,7 @@ namespace JescoDev.MovementGraphSample {
             
             // calculate our preferred movement value
             currentVelocity.x = Mathf.Lerp(currentVelocity.x, targetMovement, _drag);
+            currentVelocity.y = Custom.Gravity;
             
             // account for delta time
             return MovementDefinition.Local(currentVelocity * Time.deltaTime);

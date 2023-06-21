@@ -7,8 +7,10 @@ namespace JescoDev.MovementGraph.States {
     // its only used at runtime to indicate that a layer is paused
     public class NullState : MovementState {
 
+        public const string NullIdentifier = "Layer Exit";
+
         public NullState() {
-            _identifier = "Layer Exit";
+            _identifier = Identifier;
             InputPort = new MovementPort();
             RegularExit = new MovementPort();
         }

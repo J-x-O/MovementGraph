@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Editor.MovementEditor.PropertyUtility;
+using JescoDev.MovementGraph.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -86,6 +87,10 @@ namespace Editor.MovementEditor {
             foreach (BaseNode node in NodeManager._nodes) {
                 if(node.Identifier == identifier) return node;
             }
+            
+            // dont log for null state, its a runtime only node
+            if(identifier == NullState.NullIdentifier) return null;
+            
             Debug.LogWarning($"Could not find node \"{identifier}\" in layer \"{LayerProperty.Identifier}\"!");
             return null;
         }

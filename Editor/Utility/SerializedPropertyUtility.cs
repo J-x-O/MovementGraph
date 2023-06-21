@@ -15,6 +15,14 @@ namespace Editor.MovementEditor {
             return newElement;
         }
         
+        public static SerializedProperty AppendArrayElement<T>(this SerializedProperty target, Action<T> setData) {
+            target.arraySize++;
+            SerializedProperty newElement = target.GetArrayElementAtIndex(target.arraySize - 1);
+            setData((T) Activator.CreateInstance(typeof(T), newElement));
+            target.serializedObject.ApplyModifiedProperties();
+            return newElement;
+        }
+        
         public static int GetArrayIndex(this SerializedProperty target, SerializedProperty p, bool hideLog = false) {
             
             for (int i = 0; i < target.arraySize; i++) {

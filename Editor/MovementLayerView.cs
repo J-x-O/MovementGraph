@@ -1,4 +1,6 @@
-﻿using Entities.Movement;
+﻿using System.Linq;
+using Editor.MovementEditor.PropertyUtility;
+using Entities.Movement;
 using JescoDev.MovementGraph;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -10,13 +12,15 @@ namespace Editor.MovementEditor {
 
         private readonly MovementSystem _link;
         private readonly SerializedObject _linkObject;
-        private readonly SerializedProperty _layer;
+        private readonly SerializedProperty _layers;
+        private readonly SerializedProperty _selectionProperty;
         private LayerButton _selection;
         
         public MovementLayerView(MovementSystem link) : base(0, 150f, TwoPaneSplitViewOrientation.Horizontal) {
             _link = link;
             _linkObject = new SerializedObject(_link);
-            _layer = _linkObject.FindProperty("_layer");
+            _layers = _linkObject.FindProperty("_layer");
+            _selectionProperty = _linkObject.FindProperty("_selectedLayer");
             Add(new VisualElement());
             Add(new VisualElement());
             RegisterCallback(new EventCallback<GeometryChangedEvent>(RebuildLayers));
@@ -31,9 +35,11 @@ namespace Editor.MovementEditor {
 
         public void RebuildLayers() {
             fixedPane.Clear();
-            for (int i = 0; i < _layer.arraySize; i++) {
-                SerializedProperty layer = _layer.GetArrayElementAtIndex(i);
-                fixedPane.Add(new LayerButton(layer, SelectLayer, RemoveLayer));
+            for (int i = 0; i < _layers.arraySize; i++) {
+                SerializedProperty layer = _layers.GetArrayElementAtIndex(i);
+                LayerButton button = new LayerButton(layer, SelectLayer, RemoveLayer);
+                fixedPane.Add(button);
+                if(i == _selectionProperty.intValue) SelectLayer(button);
             }
 
             Button add = new Button(AddNewLayer);
@@ -43,17 +49,23 @@ namespace Editor.MovementEditor {
         }
 
         private void AddNewLayer() {
-            _layer.AppendArrayElement(property => {
-                property.FindPropertyRelative("_identifier").stringValue = "New Layer";
-                property.FindPropertyRelative("_states").arraySize = 0;
+            _layers.AppendArrayElement<SerializedPropertyMovementLayer>(property => {
+                property.Identifier = "New Layer";
+                property.ClearStates();
+                property.ResetInOut();
             });
             RebuildLayers();
+            LayerButton button = fixedPane.Children().OfType<LayerButton>().Last();
+            SelectLayer(button);
         }
 
         private void SelectLayer(LayerButton layer) {
             _selection?.SetSelected(false);
             _selection = layer;
             _selection.SetSelected(true);
+            
+            int index = _layers.GetArrayIndex(layer.Layer);
+            _selectionProperty.intValue = index;
             
             flexedPane.Clear();
             flexedPane.Add(new MovementGraphHeader(layer));
@@ -70,8 +82,8 @@ namespace Editor.MovementEditor {
                 _selection = null;
                 flexedPane.Clear();
             }
-            _layer.RemoveArrayElement(layer.Layer);
-            _layer.serializedObject.ApplyModifiedProperties();
+            _layers.RemoveArrayElement(layer.Layer);
+            _layers.serializedObject.ApplyModifiedProperties();
             RebuildLayers();
         }
 

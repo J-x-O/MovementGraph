@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Gameplay.Movement.Layer;
 using UnityEditor;
+using UnityEngine;
 
 namespace Editor.MovementEditor.PropertyUtility {
     public class SerializedPropertyMovementLayer : SerializedPropertyExtension {
@@ -15,6 +16,9 @@ namespace Editor.MovementEditor.PropertyUtility {
             get => (LayerComposition) _compositionProperty.enumValueIndex;
             set => _compositionProperty.enumValueIndex = (int) value;
         }
+        
+        public SerializedPropertyState InNode => new SerializedPropertyState(_inNodeProperty);
+        public SerializedPropertyState OutNode => new SerializedPropertyState(_outNodeProperty);
         
         private readonly SerializedProperty _identifierProperty;
         private readonly SerializedProperty _compositionProperty;
@@ -51,6 +55,14 @@ namespace Editor.MovementEditor.PropertyUtility {
         
         public void RemoveState(object instance) => _statesProperty.RemoveArrayElement(MatchingInstance(instance));
 
+        public void ClearStates() => _statesProperty.arraySize = 0;
+        
+        public void ResetInOut() {
+            _inNodeProperty.managedReferenceValue = new LayerIn();
+            _outNodeProperty.managedReferenceValue = new LayerOut();
+            OutNode.Position = new Vector2(250, 0);
+        }
+        
         private static Func<SerializedProperty, bool> MatchingInstance(object instance) {
             return property => property.managedReferenceValue == instance;
         }

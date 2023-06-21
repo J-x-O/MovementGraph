@@ -24,7 +24,6 @@ namespace Editor.MovementEditor.PropertyUtility {
             _identifierProperty = property.FindPropertyRelative("_identifier");
             _positionProperty = property.FindPropertyRelative("_position");
         }
-            
     }
 
     public class SerializedPropertyMovementState : SerializedPropertyState {

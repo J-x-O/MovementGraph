@@ -14,7 +14,6 @@ namespace JescoDev.MovementGraphSample {
         
         [SerializeField] private GroundedManager _floorManager;
         [SerializeField] private float _movementSpeed;
-        [SerializeField] private float _gravity;
         [SerializeField] private float _maxFallSpeed;
         [SerializeField, Range(0, 1)] private float _drag;
 
@@ -35,7 +34,7 @@ namespace JescoDev.MovementGraphSample {
         public override MovementDefinition HandleMovement() {
             
             // apply gravity, respective to the passed time
-            _downwardsVelocity -= _gravity * Time.deltaTime;
+            _downwardsVelocity += Custom.Gravity * Time.deltaTime;
             _downwardsVelocity = Mathf.Max(_downwardsVelocity, -_maxFallSpeed);
             
             // Custom and our data is accessible since we extend MovementState<CustomMovementSample>

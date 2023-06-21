@@ -34,7 +34,7 @@ namespace JescoDev.MovementGraph {
         private void Update() {
             Vector3 localMovement = Vector3.zero;
             foreach (MovementLayer layer in _layer) {
-                
+                if(!layer.IsActive) continue;
                 MovementDefinition move = layer.Update();
                 switch (move.Context) {
                     case MovementContext.Global:
