@@ -129,6 +129,7 @@ namespace JescoDev.MovementGraph.Layer {
         }
 
         public void QueueExit(MovementPort port) {
+            if(CurrentState == null) return;
             if (!CurrentState.GetOutputPorts().Contains(port)) {
                 Debug.LogWarning("Trying to exit a state with a port that is not connected to it!");
                 return;
