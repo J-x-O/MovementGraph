@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Gameplay.Movement.Layer;
 using JescoDev.MovementGraph.Layer;
+using JescoDev.MovementGraph.States;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph {
@@ -77,14 +79,8 @@ namespace JescoDev.MovementGraph {
             }
         }
         
-        public void OnBeforeSerialize() {
-            foreach (MovementLayer layer in _layer) layer.OnBeforeSerialize();
-        }
+        #region API
 
-        public void OnAfterDeserialize() {
-            foreach (MovementLayer layer in _layer) layer.OnAfterDeserialize();
-        }
-        
         public MovementLayer GetLayer(string identifier) {
             return Layers.FirstOrDefault(layer => layer.Identifier == identifier);
         }
@@ -92,6 +88,88 @@ namespace JescoDev.MovementGraph {
         public bool TryGetLayer(string identifier, out MovementLayer layer) {
             layer = GetLayer(identifier);
             return layer != null;
+        }
+
+        /// <summary> Sets the state to a new one of the provided type </summary>
+        /// <returns> if the state was activated successfully </returns>
+        public bool SendEvent<T>(bool ignoreActiveCheck = false) where T : MovementState
+            => SendEvent(MovementState.GetName<T>(), ignoreActiveCheck);
+        
+        /// <inheritdoc cref="SendEvent{T}"/>
+        public bool SendEvent(string identifier, bool ignoreActiveCheck = false) {
+            bool any = false;
+            ResolvePath(identifier,
+                (layer, localId) => any = layer.SendEvent(localId),
+                () => {
+                    foreach (MovementLayer layer in _layer) {
+                        if(layer.SendEvent(identifier, ignoreActiveCheck)) any = true;
+                    }
+                });
+            return any;
+        }
+
+        public T GetState<T>() where T : MovementState
+            => GetState(MovementState.GetName<T>()) as T;
+
+        public State GetState(string identifier) {
+            State state = null;
+            ResolvePath(identifier,
+                (layer, localId) => state = layer.GetState(localId),
+                () => {
+                    foreach (MovementLayer layer in _layer) {
+                        if (!layer.TryGetState(identifier, out State result)) continue;
+                        state = result;
+                        return;
+                    }
+                });
+            return state;
+        }
+
+        private void ResolvePath(string identifier, Action<MovementLayer, string> handleHit, Action handleDefault) {
+            Match match = Regex.Match(identifier, @"(.*)\/(.*)");
+            if (match.Success) {
+                MovementLayer target = GetLayer(match.Groups[0].Value);
+                if (target != null) handleHit(target, match.Groups[1].Value);
+                else Debug.LogWarning($"Could not find layer {match.Groups[0].Value}");
+            }
+            else handleDefault();
+        }
+        
+
+        public bool HasState<T>() where T : MovementState => GetState<T>() != null;
+        public bool HasState(string identifier) => GetState(identifier) != null;
+
+        public bool TryGetState<T>(out T movementState) where T : MovementState {
+            movementState = GetState<T>();
+            return movementState != null;
+        }
+        
+        public bool TryGetState(string identifier, out State movementState){
+            movementState = GetState(identifier);
+            return movementState != null;
+        }
+
+        public bool IsStateActive<T>() where T : MovementState => IsStateActive(MovementState.GetName<T>());
+        public bool IsStateActive(string identifier) {
+            bool any = false;
+            ResolvePath(identifier,
+                (layer, localId) => any = layer.SendEvent(localId),
+                () => {
+                    foreach (MovementLayer layer in _layer) {
+                        if(layer.IsStateActive(identifier)) any = true;
+                    }
+                });
+            return any;
+        }
+
+        #endregion
+        
+        public void OnBeforeSerialize() {
+            foreach (MovementLayer layer in _layer) layer.OnBeforeSerialize();
+        }
+
+        public void OnAfterDeserialize() {
+            foreach (MovementLayer layer in _layer) layer.OnAfterDeserialize();
         }
 
 #if UNITY_EDITOR
