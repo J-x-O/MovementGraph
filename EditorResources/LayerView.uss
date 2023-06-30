@@ -4,7 +4,12 @@
     flex-wrap: nowrap;
 }
 
-#GraphHeader{
+#GraphHeader > * {
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+#GraphHeader {
     padding: 5px;
 }
 

@@ -53,6 +53,7 @@ namespace JescoDev.MovementGraph.Layer {
         internal void Start() {
             // activate the first valid state and start this layer
             if(_autoplay) Restart();
+            else Stop();
         }
 
         internal MovementDefinition Update() {
