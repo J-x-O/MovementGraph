@@ -83,13 +83,15 @@ namespace JescoDev.MovementGraph.Layer {
         public void Restart() => ActivateState(_connector.InNode.ResolveActivation());
         public void Stop() => ActivateState(_connector.NullState);
         
+        public void SendEvent<T>(Action<T> action) => States.OfType<T>().ToList().ForEach(action);
+        
         /// <summary> Sets the state to a new one of the provided type </summary>
         /// <returns> if the state was activated successfully </returns>
-        public bool SendEvent<T>(bool ignoreActiveCheck = false) where T : MovementState
-            => SendEvent(MovementState.GetName<T>(), ignoreActiveCheck);
+        public bool SetState<T>(bool ignoreActiveCheck = false) where T : MovementState
+            => SetState(MovementState.GetName<T>(), ignoreActiveCheck);
         
-        /// <inheritdoc cref="SendEvent{T}"/>
-        public bool SendEvent(string t, bool ignoreActiveCheck = false) {
+        /// <inheritdoc cref="SetState{T}"/>
+        public bool SetState(string t, bool ignoreActiveCheck = false) {
             if (!TryGetState(t, out State state)) return false;
             if (!ignoreActiveCheck && IsStateActive(t)) return false;
             if (CurrentState != null

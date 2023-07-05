@@ -2,13 +2,20 @@
 using UnityEngine;
 
 namespace JescoDev.MovementGraph {
+    
+    public interface IOnControllerColliderHitReceiver {
+        void OnControllerColliderHit(ControllerColliderHit hit);
+    }
+    
     public class CustomMovementCharacterController : CustomMovement {
+        
+        public Vector3 Center => _charController.transform.TransformPoint(_charController.center);
         
         public CharacterController CharController => _charController;
         [SerializeField] private CharacterController _charController;
 
-        private void Awake() => CharController.enabled = false;
-        private void Start() => CharController.enabled = true;
+        protected virtual void Awake() => CharController.enabled = false;
+        protected virtual void Start() => CharController.enabled = true;
 
         public override void MoveBy(Vector3 movement) => _charController.Move(movement);
 
@@ -16,6 +23,10 @@ namespace JescoDev.MovementGraph {
             _charController.enabled = false;
             transform.position = targetWorld;
             _charController.enabled = true;
+        }
+
+        protected virtual void OnControllerColliderHit(ControllerColliderHit hit) {
+            MovementSystem.SendEvent<IOnControllerColliderHitReceiver>(receiver => receiver.OnControllerColliderHit(hit));
         }
     }
 }

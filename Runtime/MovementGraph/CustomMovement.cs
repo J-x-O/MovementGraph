@@ -3,6 +3,8 @@
 namespace JescoDev.MovementGraph {
     public abstract class CustomMovement : MonoBehaviour {
 
+        public MovementSystem MovementSystem { get; internal set; }
+        
         /// <summary> Moves the player along a vector </summary>
         /// <param name="movement"> the movement vector, applied relative to the current player position </param>
         public abstract void MoveBy(Vector3 movement);

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace JescoDev.MovementGraph {
     
-    [DefaultExecutionOrder(-1)]
+    [DefaultExecutionOrder(-5)]
     public class MovementSystem : MonoBehaviour, ISerializationCallbackReceiver {
 
         public readonly MovementEvents Events = new MovementEvents();
@@ -23,9 +23,8 @@ namespace JescoDev.MovementGraph {
         private bool _exitQueued;
 
         private void Awake() {
-            foreach (MovementLayer state in _layer) {
-                state.Awake(this);
-            }
+            CustomMovement.MovementSystem = this;
+            foreach (MovementLayer state in _layer) state.Awake(this);
         }
 
         private void Start() {
@@ -89,20 +88,26 @@ namespace JescoDev.MovementGraph {
             layer = GetLayer(identifier);
             return layer != null;
         }
+        
+        public void SendEvent<T>(Action<T> action) {
+            foreach (MovementLayer layer in _layer) {
+                layer.SendEvent(action);
+            }
+        }
 
         /// <summary> Sets the state to a new one of the provided type </summary>
         /// <returns> if the state was activated successfully </returns>
-        public bool SendEvent<T>(bool ignoreActiveCheck = false) where T : MovementState
-            => SendEvent(MovementState.GetName<T>(), ignoreActiveCheck);
+        public bool SetState<T>(bool ignoreActiveCheck = false) where T : MovementState
+            => SetState(MovementState.GetName<T>(), ignoreActiveCheck);
         
-        /// <inheritdoc cref="SendEvent{T}"/>
-        public bool SendEvent(string identifier, bool ignoreActiveCheck = false) {
+        /// <inheritdoc cref="SetState{T}"/>
+        public bool SetState(string identifier, bool ignoreActiveCheck = false) {
             bool any = false;
             ResolvePath(identifier,
-                (layer, localId) => any = layer.SendEvent(localId),
+                (layer, localId) => any = layer.SetState(localId),
                 () => {
                     foreach (MovementLayer layer in _layer) {
-                        if(layer.SendEvent(identifier, ignoreActiveCheck)) any = true;
+                        if(layer.SetState(identifier, ignoreActiveCheck)) any = true;
                     }
                 });
             return any;
@@ -153,7 +158,7 @@ namespace JescoDev.MovementGraph {
         public bool IsStateActive(string identifier) {
             bool any = false;
             ResolvePath(identifier,
-                (layer, localId) => any = layer.SendEvent(localId),
+                (layer, localId) => any = layer.SetState(localId),
                 () => {
                     foreach (MovementLayer layer in _layer) {
                         if(layer.IsStateActive(identifier)) any = true;
