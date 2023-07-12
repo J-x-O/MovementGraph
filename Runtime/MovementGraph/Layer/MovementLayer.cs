@@ -26,7 +26,7 @@ namespace JescoDev.MovementGraph.Layer {
 
         public MovementSystem System { get; private set; }
         
-        public readonly MovementEvents Events = new MovementEvents();
+        public readonly MovementLayerEvents Events = new MovementLayerEvents();
 
         public bool IsActive => CurrentState is not MovementStateNull;
         public bool WasActive => PreviousState is not MovementStateNull;
@@ -121,13 +121,13 @@ namespace JescoDev.MovementGraph.Layer {
             // clear the old one
             if (PreviousState != null) {
                 PreviousState.Deactivate();
-                Events.InvokeEnd(PreviousState, false);
-                System.Events.InvokeStart(CurrentState, true);
+                Events.InvokeEnd(PreviousState);
+                System.Events.InvokeStart(CurrentState);
             }
             
             CurrentState.Activate();
-            Events.InvokeStart(CurrentState, false);
-            System.Events.InvokeStart(CurrentState, true);
+            Events.InvokeStart(CurrentState);
+            System.Events.InvokeStart(CurrentState);
         }
 
         public void ExitCurrentState(MovementPort port) {
