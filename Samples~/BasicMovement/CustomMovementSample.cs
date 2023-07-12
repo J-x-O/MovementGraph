@@ -15,7 +15,7 @@ namespace JescoDev.MovementGraph.Samples.BasicMovement {
         public void Update() {
             Input = UnityEngine.Input.GetAxis("Horizontal");
             if (UnityEngine.Input.GetKeyDown(KeyCode.Space)) {
-                _movement.Layers[0].SendEvent<MovementStateJump>();
+                _movement.Layers[0].SetState<MovementStateJump>();
             }
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.P)) {

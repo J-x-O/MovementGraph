@@ -955,10 +955,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _customMovement: {fileID: 1919187032}
-  _layer: []
+  _layer:
+  - _identifier: New Layer
+    _connector:
+      _outNode:
+        rid: 1952420676067917827
+      _inNode:
+        rid: 1952420676067917826
+    _playIfInactive: 0
+    _autoplay: 0
+    _composition: 0
+    _states: []
   _cameraPosition: {x: 10.4, y: 108}
   _cameraZoom: 0.8695652
   _selectedLayer: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 1952420676067917826
+      type: {class: LayerIn, ns: Gameplay.Movement.Layer, asm: JescoDev.MovementGraph}
+      data:
+        _position: {x: 0, y: 0}
+        _identifier: Layer In
+        _in:
+          _transitions: []
+    - rid: 1952420676067917827
+      type: {class: LayerOut, ns: Gameplay.Movement.Layer, asm: JescoDev.MovementGraph}
+      data:
+        _position: {x: 250, y: 0}
+        _identifier: Layer Out
+        _outReplay:
+          _transitions: []
+        _outStop:
+          _transitions: []

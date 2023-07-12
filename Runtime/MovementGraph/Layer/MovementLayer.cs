@@ -14,6 +14,10 @@ namespace JescoDev.MovementGraph.Layer {
         [SerializeReference] private string _identifier;
 
         [SerializeField] private MovementLayerConnector _connector;
+
+        public bool PlayIfInactive => _playIfInactive;
+        [SerializeField] private bool _playIfInactive = true;
+        
         
         [SerializeField] private bool _autoplay = true;
         

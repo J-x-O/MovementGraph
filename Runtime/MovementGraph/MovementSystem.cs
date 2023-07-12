@@ -41,8 +41,17 @@ namespace JescoDev.MovementGraph {
 
         private void Update() {
             Vector3 localMovement = Vector3.zero;
+
+            List<MovementLayer> activeLayers = new List<MovementLayer>();
             foreach (MovementLayer layer in _layer) {
                 if(!layer.IsActive) continue;
+                if (layer.Composition == LayerComposition.Overwrite) {
+                    activeLayers.RemoveAll(test => !test.PlayIfInactive);
+                }
+                activeLayers.Add(layer);
+            }
+            
+            foreach (MovementLayer layer in activeLayers) {
                 MovementDefinition move = layer.Update();
                 switch (move.Context) {
                     case MovementContext.Global:

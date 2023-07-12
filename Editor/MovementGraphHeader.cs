@@ -1,3 +1,4 @@
+using JescoDev.MovementGraph.Layer;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -8,29 +9,26 @@ namespace Editor.MovementEditor {
         public MovementGraphHeader(LayerButton selectedLayer) {
             name = "GraphHeader";
             
-            SerializedProperty layerIdentifier = selectedLayer.Layer.FindPropertyRelative("_identifier");
-            TextField field = new TextField();
-            field.name = "LayerIdentifier";
-            field.BindProperty(layerIdentifier);
-            field.RegisterValueChangedCallback(_ => selectedLayer.ReloadName());
-            CreatePseudoLabel(field, "Identifier");
+            TextField textField = CreatePseudoElement<TextField>(selectedLayer.Layer, "LayerIdentifier", "_identifier", "Identifier");
+            textField.RegisterValueChangedCallback(_ => selectedLayer.ReloadName());
 
-            Toggle toggle = new Toggle();
-            toggle.name = "LayerAutoplay";
-            SerializedProperty autoplay = selectedLayer.Layer.FindPropertyRelative("_autoplay");
-            toggle.BindProperty(autoplay);
-            CreatePseudoLabel(toggle, "Autoplay");
-
-            SerializedProperty composition = selectedLayer.Layer.FindPropertyRelative("_composition");
-            EnumField enumField = new EnumField();
-            enumField.name = "LayerComposition";
-            enumField.BindProperty(composition);
-            CreatePseudoLabel(enumField, "Composition");
+            CreatePseudoElement<Toggle>(selectedLayer.Layer, "LayerAutoplay", "_autoplay", "Autoplay");
+            CreatePseudoElement<Toggle>(selectedLayer.Layer, "LayerPlayIfInactive", "_playIfInactive", "Play If Inactive");
+            CreatePseudoElement<EnumField>(selectedLayer.Layer, "LayerComposition", "_composition", "Composition");
+        }
+        
+        private T CreatePseudoElement<T>(SerializedProperty layer, string identifier, string property, string label) where T : VisualElement, IBindable, new() {
+            T element = new T();
+            element.name = identifier;
+            SerializedProperty playIfInactive = layer.FindPropertyRelative(property);
+            element.BindProperty(playIfInactive);
+            CreatePseudoLabel(element, label);
+            return element;
         }
 
-        public void CreatePseudoLabel(VisualElement target, string identifier) {
+        private void CreatePseudoLabel(VisualElement target, string label) {
             VisualElement element = new VisualElement();
-            element.Add(new Label(identifier));
+            element.Add(new Label(label));
             element.Add(target);
             Add(element);
         }
