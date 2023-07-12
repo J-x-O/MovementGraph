@@ -17,7 +17,7 @@ namespace Gameplay.Movement.Layer {
         public MovementPort OutStop => _outStop;
         [SerializeField, InputPort] private MovementPort _outStop = new MovementPort();
 
-        [field:NonSerialized] public NullState NullState { get; internal set; }
+        [field:NonSerialized] public MovementStateNull MovementStateNull { get; internal set; }
         [field:NonSerialized] public LayerIn In { get; internal set; }
         
         public LayerOut() : base("Layer Out") { }
@@ -33,7 +33,7 @@ namespace Gameplay.Movement.Layer {
 
         public override MovementState ResolveActivation(MovementPort incomingPort = null) {
             if (incomingPort == _outReplay) return In.ResolveActivation(_outReplay);
-            return NullState;
+            return MovementStateNull;
         }
         
     }

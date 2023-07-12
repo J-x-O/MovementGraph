@@ -28,7 +28,8 @@ namespace JescoDev.MovementGraph.Layer {
         
         public readonly MovementEvents Events = new MovementEvents();
 
-        public bool IsActive => CurrentState is not NullState;
+        public bool IsActive => CurrentState is not MovementStateNull;
+        public bool WasActive => PreviousState is not MovementStateNull;
 
         public IEnumerable<State> States => _states.Concat(_connector.Nodes);
         public IEnumerable<MovementState> MovementStates => _states.OfType<MovementState>();
@@ -85,7 +86,7 @@ namespace JescoDev.MovementGraph.Layer {
         #region API
 
         public void Restart() => ActivateState(_connector.InNode.ResolveActivation());
-        public void Stop() => ActivateState(_connector.NullState);
+        public void Stop() => ActivateState(_connector.MovementStateNull);
         
         public void SendEvent<T>(Action<T> action) => States.OfType<T>().ToList().ForEach(action);
         

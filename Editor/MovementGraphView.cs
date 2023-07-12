@@ -92,7 +92,7 @@ namespace Editor.MovementEditor {
             }
             
             // dont log for null state, its a runtime only node
-            if(identifier == NullState.NullIdentifier) return null;
+            if(identifier == MovementStateNull.NullIdentifier) return null;
             
             Debug.LogWarning($"Could not find node \"{identifier}\" in layer \"{LayerProperty.Identifier}\"!");
             return null;

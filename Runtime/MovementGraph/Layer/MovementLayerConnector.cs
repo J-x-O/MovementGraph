@@ -14,20 +14,20 @@ namespace JescoDev.MovementGraph.Layer {
         public LayerIn InNode => _inNode;
         [SerializeReference] private LayerIn _inNode;
 
-        public NullState NullState { get; private set; } = new();
+        public MovementStateNull MovementStateNull { get; private set; } = new();
 
-        public State[] Nodes => new State[] { _inNode, _outNode, NullState };
+        public State[] Nodes => new State[] { _inNode, _outNode, MovementStateNull };
         
         public void Awake() {
 
             // connect the layer in and out nodes
             _inNode.Out = OutNode;
             _outNode.In = InNode;
-            _outNode.NullState = NullState;
+            _outNode.MovementStateNull = MovementStateNull;
             
             // connect the null state to the layer in and out nodes, since this node only exists at runtime
-            NullState.RegularExit.ConnectTo(InNode.In);
-            OutNode.OutStop.ConnectTo(NullState.InputPort);
+            MovementStateNull.RegularExit.ConnectTo(InNode.In);
+            OutNode.OutStop.ConnectTo(MovementStateNull.InputPort);
         }
     }
 }
