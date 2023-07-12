@@ -49,6 +49,6 @@ namespace JescoDev.MovementGraph.States {
             return this;
         }
         
-        public void QueueRegularExit() => Layer.QueueExit(RegularExit);
+        public void QueueRegularExit() => Layer.ExitCurrentState(RegularExit);
     }
 }

@@ -18,7 +18,7 @@ namespace JescoDev.MovementGraph.Layer {
         public bool PlayIfInactive => _playIfInactive;
         [SerializeField] private bool _playIfInactive = true;
         
-        
+        public bool Autoplay => _autoplay;
         [SerializeField] private bool _autoplay = true;
         
         public LayerComposition Composition => _composition;
@@ -36,8 +36,6 @@ namespace JescoDev.MovementGraph.Layer {
         [Tooltip("All possible states this character can use")]
         [SerializeReference] private List<State> _states = new List<State>();
 
-        private MovementPort _exitQueued;
-        
         public MovementState PreviousState { get; private set; }
         public MovementState CurrentState { get; private set; }
 
@@ -63,10 +61,6 @@ namespace JescoDev.MovementGraph.Layer {
 
         internal MovementDefinition Update() {
 
-            if (_exitQueued != null) {
-                ExitCurrentState();
-            }
-            
             if (CurrentState == null) {
                 Debug.LogWarning("No State Active, Reevaluating!");
                 Restart();
@@ -136,20 +130,14 @@ namespace JescoDev.MovementGraph.Layer {
             System.Events.InvokeStart(CurrentState, true);
         }
 
-        public void QueueExit(MovementPort port) {
+        public void ExitCurrentState(MovementPort port) {
             if(CurrentState == null) return;
             if (!CurrentState.GetOutputPorts().Contains(port)) {
                 Debug.LogWarning("Trying to exit a state with a port that is not connected to it!");
                 return;
             }
-            _exitQueued = port;
-        }
-
-        private void ExitCurrentState() {
-            MovementPort target = _exitQueued ?? CurrentState.RegularExit;
-            MovementState state = target.FindFirstValidTransition();
+            MovementState state = port.FindFirstValidTransition();
             if (state != null) ActivateState(state);
-            _exitQueued = null;
         }
 
         public T GetState<T>() where T : MovementState
