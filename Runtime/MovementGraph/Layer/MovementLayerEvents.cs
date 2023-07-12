@@ -11,16 +11,18 @@ namespace JescoDev.MovementGraph.Layer {
     
         public event Action<MovementState> OnAnyStateActivated;
         public event Action<MovementState> OnAnyStateDeactivated;
-    
-        public readonly VarBasedEventsSystem<string, MovementState> ID = new();
-        public readonly VarBasedEventsSystem<string, MovementState> Tags = new();
+
+        public IReadOnlyVarBasedEventSystem<string, MovementState> ID => _id;
+        private readonly VarBasedEventSystem<string, MovementState> _id = new();
+        public IReadOnlyVarBasedEventSystem<string, MovementState> Tags => _tags;
+        private readonly VarBasedEventSystem<string, MovementState> _tags = new();
     
         internal void InvokeStart(MovementState newState) {
             OnAnyStateActivated.TryInvoke(newState);
             string identifier = newState.Identifier;
-            ID.InvokeVarBasedEventStart(identifier, newState);
+            _id.InvokeVarBasedEventStart(identifier, newState);
             foreach (string tag in newState.Tags) {
-                Tags.InvokeVarBasedEventStart(tag, newState);
+                _tags.InvokeVarBasedEventStart(tag, newState);
             }
         
             if(newState.Layer.IsActive && !newState.Layer.WasActive) {
@@ -32,9 +34,9 @@ namespace JescoDev.MovementGraph.Layer {
             OnAnyStateDeactivated.TryInvoke(oldState);
             if(oldState == null) return;
             string identifier = oldState.Identifier;
-            ID.InvokeVarBasedEventEnd(identifier, oldState);
+            _id.InvokeVarBasedEventEnd(identifier, oldState);
             foreach (string tag in oldState.Tags) {
-                Tags.InvokeVarBasedEventEnd(tag, oldState);
+                _tags.InvokeVarBasedEventEnd(tag, oldState);
             }
         
             if(!oldState.Layer.IsActive && oldState.Layer.WasActive) {

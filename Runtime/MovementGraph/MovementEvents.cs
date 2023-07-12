@@ -10,16 +10,18 @@ namespace JescoDev.MovementGraph {
         public event Action<MovementState> OnAnyStateActivated;
         public event Action<MovementState> OnAnyStateDeactivated;
         
-        public readonly VarBasedEventsSystem<string, MovementState> ID = new();
-        public readonly VarBasedEventsSystem<string, MovementState> Tags = new();
+        public IReadOnlyVarBasedEventSystem<string, MovementState> ID => _id;
+        private readonly VarBasedEventSystem<string, MovementState> _id = new();
+        public IReadOnlyVarBasedEventSystem<string, MovementState> Tags => _tags;
+        private readonly VarBasedEventSystem<string, MovementState> _tags = new();
         
         internal void InvokeStart(MovementState newState) {
             OnAnyStateActivated.TryInvoke(newState);
             string fullPath = newState.Layer.Identifier + "/" + newState.Identifier;
-            ID.InvokeVarBasedEventStart(fullPath, newState);
-            ID.InvokeVarBasedEventStart(newState.Identifier, newState);
+            _id.InvokeVarBasedEventStart(fullPath, newState);
+            _id.InvokeVarBasedEventStart(newState.Identifier, newState);
             foreach (string tag in newState.Tags) {
-                Tags.InvokeVarBasedEventStart(tag, newState);
+                _tags.InvokeVarBasedEventStart(tag, newState);
             }
         }
         
@@ -27,10 +29,10 @@ namespace JescoDev.MovementGraph {
             OnAnyStateDeactivated.TryInvoke(oldState);
             if(oldState == null) return;
             string fullPath = oldState.Layer.Identifier + "/" + oldState.Identifier;
-            ID.InvokeVarBasedEventEnd(fullPath, oldState);
-            ID.InvokeVarBasedEventEnd(oldState.Identifier, oldState);
+            _id.InvokeVarBasedEventEnd(fullPath, oldState);
+            _id.InvokeVarBasedEventEnd(oldState.Identifier, oldState);
             foreach (string tag in oldState.Tags) {
-                Tags.InvokeVarBasedEventEnd(tag, oldState);
+                _tags.InvokeVarBasedEventEnd(tag, oldState);
             }
         }
     }
