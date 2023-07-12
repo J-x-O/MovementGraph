@@ -21,8 +21,8 @@ namespace Editor.MovementEditor {
             _linkObject = new SerializedObject(_link);
             _layers = _linkObject.FindProperty("_layer");
             _selectionProperty = _linkObject.FindProperty("_selectedLayer");
-            Add(new VisualElement());
-            Add(new VisualElement());
+            Add(new VisualElement() { name = "FixedPane" });
+            Add(new VisualElement()  { name = "FlexedPane" });
             RegisterCallback(new EventCallback<GeometryChangedEvent>(RebuildLayers));
             styleSheets.Add(LoadStyleSheet("LayerView.uss"));
             styleSheets.Add(LoadStyleSheet("NodeStyles.uss"));
