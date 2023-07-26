@@ -45,14 +45,6 @@ namespace JescoDev.MovementGraph.Layer {
             foreach (MovementState state in MovementStates) state.Awake();
         }
 
-        internal void Activate() {
-            foreach (MovementState state in MovementStates) state.Activate();
-        }
-        
-        internal void Deactivate() {
-            foreach (MovementState state in MovementStates) state.Deactivate();
-        }
-        
         internal void Start() {
             // activate the first valid state and start this layer
             if(_autoplay) Restart();
@@ -122,7 +114,7 @@ namespace JescoDev.MovementGraph.Layer {
             if (PreviousState != null) {
                 PreviousState.Deactivate();
                 Events.InvokeEnd(PreviousState);
-                System.Events.InvokeStart(CurrentState);
+                System.Events.InvokeEnd(PreviousState);
             }
             
             CurrentState.Activate();

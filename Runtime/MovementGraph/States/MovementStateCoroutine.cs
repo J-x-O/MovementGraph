@@ -23,7 +23,7 @@ namespace Entities.Movement.States {
 
         private IEnumerator Coroutine() {
             yield return RunRoutine();
-            QueueRegularExit();
+            ExitCurrentState();
         }
 
         protected abstract IEnumerator RunRoutine();

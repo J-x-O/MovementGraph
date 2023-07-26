@@ -20,8 +20,6 @@ namespace JescoDev.MovementGraph {
         public IReadOnlyList<MovementLayer> Layers => _layer;
         [SerializeField] private List<MovementLayer> _layer = new List<MovementLayer>();
 
-        private bool _exitQueued;
-
         private void Awake() {
             CustomMovement.MovementSystem = this;
             foreach (MovementLayer state in _layer) state.Awake(this);
@@ -29,14 +27,6 @@ namespace JescoDev.MovementGraph {
 
         private void Start() {
             foreach (MovementLayer layer in _layer) layer.Start();
-        }
-
-        private void OnEnable() {
-            foreach (MovementLayer layer in _layer) layer.Activate();
-        }
-        
-        private void OnDisable() {
-            foreach (MovementLayer layer in _layer) layer.Deactivate();
         }
 
         private void Update() {
