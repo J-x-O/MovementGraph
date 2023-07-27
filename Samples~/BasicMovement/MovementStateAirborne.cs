@@ -34,7 +34,7 @@ namespace JescoDev.MovementGraph.Samples.BasicMovement {
         public override MovementDefinition HandleMovement() {
             
             // apply gravity, respective to the passed time
-            _downwardsVelocity += Custom.Gravity * Time.deltaTime;
+            _downwardsVelocity += Custom.Gravity * Time.fixedDeltaTime;
             _downwardsVelocity = Mathf.Max(_downwardsVelocity, -_maxFallSpeed);
             
             // Custom and our data is accessible since we extend MovementState<CustomMovementSample>
@@ -47,7 +47,7 @@ namespace JescoDev.MovementGraph.Samples.BasicMovement {
             currentVelocity.y = _downwardsVelocity;
             
             // account for delta time
-            return MovementDefinition.Local(currentVelocity * Time.deltaTime);
+            return MovementDefinition.Local(currentVelocity * Time.fixedDeltaTime);
         }
         
     }

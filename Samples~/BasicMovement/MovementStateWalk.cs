@@ -40,7 +40,7 @@ namespace JescoDev.MovementGraph.Samples.BasicMovement {
             currentVelocity.y = Custom.Gravity;
             
             // account for delta time
-            return MovementDefinition.Local(currentVelocity * Time.deltaTime);
+            return MovementDefinition.Local(currentVelocity * Time.fixedDeltaTime);
         }
     }
 }

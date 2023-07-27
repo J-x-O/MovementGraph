@@ -29,7 +29,7 @@ namespace JescoDev.MovementGraph {
             foreach (MovementLayer layer in _layer) layer.Start();
         }
 
-        private void Update() {
+        private void FixedUpdate() {
             Vector3 localMovement = Vector3.zero;
 
             List<MovementLayer> activeLayers = new List<MovementLayer>();
