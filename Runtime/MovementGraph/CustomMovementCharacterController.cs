@@ -17,9 +17,9 @@ namespace JescoDev.MovementGraph {
         protected virtual void Awake() => CharController.enabled = false;
         protected virtual void Start() => CharController.enabled = true;
 
-        public override void MoveBy(Vector3 movement) => _charController.Move(movement);
+        internal override void MoveBy(Vector3 movement) => _charController.Move(movement);
 
-        public override void TeleportTo(Vector3 targetWorld) {
+        internal override void TeleportTo(Vector3 targetWorld) {
             _charController.enabled = false;
             transform.position = targetWorld;
             _charController.enabled = true;
