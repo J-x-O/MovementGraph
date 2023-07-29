@@ -20,6 +20,13 @@ namespace JescoDev.MovementGraph {
         public IReadOnlyList<MovementLayer> Layers => _layer;
         [SerializeField] private List<MovementLayer> _layer = new List<MovementLayer>();
 
+        public MovementState CurrentState => _layer
+            .Where(layer => layer.Composition == LayerComposition.Overwrite)
+            .Where(layer => layer.CurrentState is not MovementStateNull)
+            .DefaultIfEmpty(_layer.FirstOrDefault())
+            .Select(layer => layer.CurrentState)
+            .FirstOrDefault();
+
         private void Awake() {
             CustomMovement.MovementSystem = this;
             foreach (MovementLayer state in _layer) state.Awake(this);

@@ -58,13 +58,13 @@ namespace JescoDev.MovementGraph.States {
                 .Where(field => typeof(MovementPort).IsAssignableFrom(field.FieldType));
         }
         
-        public void OnBeforeSerialize() {
+        internal void OnBeforeSerialize() {
             foreach (MovementPort port in GetAllPorts()) {
                 port.OnBeforeSerialize(this);
             }
         }
 
-        public void OnAfterDeserialize(MovementLayer layer) {
+        internal void OnAfterDeserialize(MovementLayer layer) {
             Layer = layer;
             foreach (FieldInfo portInfo in GetPortInfo()) {
                 MovementPort port = portInfo.GetValue(this) as MovementPort;
@@ -73,7 +73,7 @@ namespace JescoDev.MovementGraph.States {
             }
         }
 
-        public void OnLateDeserialize() {
+        internal void OnLateDeserialize() {
             foreach (MovementPort port in GetAllPorts()) {
                 port?.OnLateDeserialize(this);
             }

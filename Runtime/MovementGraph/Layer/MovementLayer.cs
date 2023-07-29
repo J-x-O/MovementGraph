@@ -156,11 +156,11 @@ namespace JescoDev.MovementGraph.Layer {
         
         #endregion
 
-        public void OnBeforeSerialize() {
+        internal void OnBeforeSerialize() {
             foreach (State state in States) state?.OnBeforeSerialize();
         }
 
-        public void OnAfterDeserialize() {
+        internal void OnAfterDeserialize() {
             foreach (State state in States) state?.OnAfterDeserialize(this);
             foreach (State state in States) state?.OnLateDeserialize();
         }
