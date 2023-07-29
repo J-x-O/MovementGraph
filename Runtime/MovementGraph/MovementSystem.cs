@@ -48,7 +48,7 @@ namespace JescoDev.MovementGraph {
                         move.Movement = transform.InverseTransformPoint(move.Movement);
                         break;
                     case MovementContext.Teleport:
-                        CustomMovement.TeleportTo(move.Movement);
+                        CustomMovement.TeleportToInternal(move.Movement);
                         continue;
                 }
 
@@ -62,7 +62,7 @@ namespace JescoDev.MovementGraph {
                 }
             }
 
-            CustomMovement.MoveBy(localMovement);
+            CustomMovement.MoveByInternal(localMovement);
         }
 
         private void OnDestroy() {
