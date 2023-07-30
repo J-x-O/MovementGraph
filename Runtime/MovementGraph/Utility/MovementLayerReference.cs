@@ -16,5 +16,6 @@ namespace JescoDev.MovementGraph.MovementGraph.Utility {
 
         public void OnAfterDeserialize() => Layer = MovementSystem.GetLayer(_layerName);
 
+        public static implicit operator MovementLayer(MovementLayerReference d) => d.Layer;
     }
 }

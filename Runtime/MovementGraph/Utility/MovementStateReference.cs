@@ -17,5 +17,6 @@ namespace JescoDev.MovementGraph.MovementGraph.Utility {
 
         public void OnAfterDeserialize() => MovementState = MovementSystem.GetState(_statePath) as T;
 
+        public static implicit operator T(MovementStateReference<T> d) => d.MovementState;
     }
 }

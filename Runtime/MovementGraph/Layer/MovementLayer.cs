@@ -122,6 +122,11 @@ namespace JescoDev.MovementGraph.Layer {
             System.Events.InvokeStart(CurrentState);
         }
 
+        public void ExitCurrentState() {
+            if(CurrentState == null) return;
+            ExitCurrentState(CurrentState.RegularExit);
+        }
+        
         public void ExitCurrentState(MovementPort port) {
             if(CurrentState == null) return;
             if (!CurrentState.GetOutputPorts().Contains(port)) {
