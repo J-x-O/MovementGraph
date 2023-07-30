@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace JescoDev.MovementGraph {
+namespace JescoDev.MovementGraph.MovementGraph.Utility {
     
     public interface IOnControllerColliderHitReceiver {
         void OnControllerColliderHit(ControllerColliderHit hit);
