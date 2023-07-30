@@ -12,9 +12,13 @@ namespace JescoDev.MovementGraph.MovementGraph.Utility {
         
         public MovementLayer Layer { get; private set; }
 
-        public void OnBeforeSerialize() => _layerName = Layer.Identifier;
+        public void OnBeforeSerialize() {
+            _layerName = Layer?.Identifier;
+        }
 
-        public void OnAfterDeserialize() => Layer = MovementSystem.GetLayer(_layerName);
+        public void OnAfterDeserialize() {
+            if(MovementSystem != null) Layer = MovementSystem.GetLayer(_layerName);
+        }
 
         public static implicit operator MovementLayer(MovementLayerReference d) => d.Layer;
     }

@@ -13,9 +13,13 @@ namespace JescoDev.MovementGraph.MovementGraph.Utility {
         
         public T MovementState { get; private set; }
 
-        public void OnBeforeSerialize() => _statePath = MovementState.Layer.Identifier + "/" + MovementState.Identifier;
+        public void OnBeforeSerialize() {
+            if(MovementState != null) _statePath = MovementState.Layer.Identifier + "/" + MovementState.Identifier;
+        }
 
-        public void OnAfterDeserialize() => MovementState = MovementSystem.GetState(_statePath) as T;
+        public void OnAfterDeserialize() {
+            if(MovementSystem != null) MovementState = MovementSystem.GetState(_statePath) as T;
+        }
 
         public static implicit operator T(MovementStateReference<T> d) => d.MovementState;
     }

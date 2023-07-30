@@ -20,16 +20,23 @@ namespace JescoDev.MovementGraph {
         public IReadOnlyList<MovementLayer> Layers => _layer;
         [SerializeField] private List<MovementLayer> _layer = new List<MovementLayer>();
 
-        public MovementState CurrentState => _layer
-            .Where(layer => layer.Composition == LayerComposition.Overwrite)
-            .Where(layer => layer.CurrentState is not MovementStateNull)
-            .DefaultIfEmpty(_layer.FirstOrDefault())
-            .Select(layer => layer.CurrentState)
-            .FirstOrDefault();
+        public MovementState CurrentState { get; private set; }
+        public MovementState PreviousState { get; private set; }
 
         private void Awake() {
             CustomMovement.MovementSystem = this;
             foreach (MovementLayer state in _layer) state.Awake(this);
+            Events.OnAnyStateActivated += UpdateCurrentState;
+        }
+
+        private void UpdateCurrentState(MovementState obj) {
+            PreviousState = CurrentState;
+            CurrentState = _layer
+                .Where(layer => layer.Composition == LayerComposition.Overwrite)
+                .Where(layer => layer.CurrentState is not MovementStateNull)
+                .DefaultIfEmpty(_layer.FirstOrDefault())
+                .Select(layer => layer.CurrentState)
+                .FirstOrDefault();
         }
 
         private void Start() {
@@ -76,6 +83,7 @@ namespace JescoDev.MovementGraph {
             foreach (MovementLayer layer in _layer) {
                 layer.OnDestroy();
             }
+            Events.OnAnyStateActivated -= UpdateCurrentState;
         }
 
         private void OnDrawGizmos() {
