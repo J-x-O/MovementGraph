@@ -44,7 +44,7 @@ namespace Editor.MovementEditor {
         private GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange) {
             if (graphViewChange.movedElements != null) {
                 foreach (GraphElement element in graphViewChange.movedElements) {
-                    if (element is not BaseNode node) continue;
+                    if (element is not MovementEditorNode node) continue;
                     NodeManager.UpdatePosition(node);
                 }
             }
@@ -52,7 +52,7 @@ namespace Editor.MovementEditor {
             if (graphViewChange.elementsToRemove != null) {
                 foreach (GraphElement element in graphViewChange.elementsToRemove) {
                     switch (element) {
-                        case BaseNode node:
+                        case MovementEditorNode node:
                             NodeManager.DeleteNode(node);
                             break;
                         case Edge edge:
@@ -86,15 +86,12 @@ namespace Editor.MovementEditor {
             Insert(1, element);
         }
 
-        public BaseNode FindNode(string identifier) {
-            foreach (BaseNode node in NodeManager._nodes) {
-                if(node.Identifier == identifier) return node;
+        public MovementEditorNode FindNode(string guid) {
+            foreach (MovementEditorNode node in NodeManager._nodes) {
+                if(node.Guid == guid) return node;
             }
-            
-            // dont log for null state, its a runtime only node
-            if(identifier == MovementStateNull.NullIdentifier) return null;
-            
-            Debug.LogWarning($"Could not find node \"{identifier}\" in layer \"{LayerProperty.Identifier}\"!");
+
+            Debug.LogWarning($"Could not find node \"{guid}\" in layer \"{LayerProperty.Identifier}\"!");
             return null;
         }
         

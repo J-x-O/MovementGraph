@@ -1,6 +1,8 @@
 ﻿using System;
 using Entities.Movement.States;
 using Gameplay.Movement.States;
+using JescoDev.MovementGraph.Editor.Attributes;
+using JescoDev.MovementGraph.MovementGraph.Attributes;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
@@ -8,7 +10,7 @@ using UnityEngine.Serialization;
 
 namespace Gameplay.Movement.Layer {
     
-    [Serializable]
+    [Serializable, FixedStateIdentifier("Layer Out"), MovementHideMenu]
     public class LayerOut : State, IFastForward {
 
         public MovementPort OutReplay => _outReplay;

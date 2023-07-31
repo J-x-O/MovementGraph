@@ -4,6 +4,8 @@ using System.Linq;
 using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
 using Gameplay.Movement.Layer;
+using JescoDev.MovementGraph.Editor.Editor.Utility;
+using JescoDev.MovementGraph.MovementGraph.Attributes;
 using JescoDev.MovementGraph.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -15,7 +17,7 @@ namespace Editor.MovementEditor {
         
         public readonly MovementGraphView _view;
         public readonly SerializedPropertyMovementLayer _layer;
-        public readonly List<BaseNode> _nodes = new List<BaseNode>();
+        public readonly List<MovementEditorNode> _nodes = new List<MovementEditorNode>();
 
         public NodeManager(MovementGraphView view, SerializedPropertyMovementLayer layer) {
             _view = view;
@@ -29,28 +31,19 @@ namespace Editor.MovementEditor {
                 _view.AddElement(CreateNode(property.Position, property, property.State));
             }
 
-            foreach (BaseNode node in _nodes) {
+            foreach (MovementEditorNode node in _nodes) {
                 node.LoadConnections();
             }
         }
 
-        public void UpdatePosition(BaseNode node) {
+        public void UpdatePosition(MovementEditorNode node) {
             node.State.Position = node.GetPosition().position;
             node.State.ApplyModifiedProperties();
         }
 
         
-        private BaseNode CreateNode(Vector2 position, SerializedPropertyState property, State state) {
-            BaseNode node = state switch {
-                LimitedEventState limitedEventState => new LimitedEventNode(_view, property, limitedEventState),
-                EventState eventState => new EventNode(_view, property, eventState),
-                RedirectState redirectState => new RedirectNode(_view, property, redirectState),
-                MovementState movementState => new BoundNode(_view, property, movementState),
-                LayerIn inState => new LayerInNode(_view, property, inState),
-                LayerOut outState => new LayerOutNode(_view, property, outState),
-                _ => null
-            };
-            if (node == null) return null;
+        private MovementEditorNode CreateNode(Vector2 position, SerializedPropertyState property, State state) {
+            MovementEditorNode node = new MovementEditorNode(_view, property, state);
             node.SetPosition(new Rect(position, Vector2.zero));
             _nodes.Add(node);
             return node;
@@ -59,42 +52,32 @@ namespace Editor.MovementEditor {
         public IManipulator CreateNodeContextualMenu() {
             return new ContextualMenuManipulator(
                 menuEvent => {
-                    menuEvent.menu.AppendAction("Basic Nodes/Event Node", 
-                        action => _view.AddElement(CreateNode<EventState>(action)));
-                    menuEvent.menu.AppendAction("Basic Nodes/Limited Event Node", 
-                        action => _view.AddElement(CreateNode<LimitedEventState>(action)));
-                    menuEvent.menu.AppendAction("Basic Nodes/Redirect Node", action => {
-                        _view.AddElement(CreateNode<RedirectState>(action));
-                    });
-                    
-                    IEnumerable<Type> enumerable = TypeCache.GetTypesDerivedFrom(typeof(MovementState)).Where(p =>
-                        (p.IsPublic || p.IsNestedPublic) && !p.IsAbstract && !p.IsGenericType &&
-                        !typeof(UnityEngine.Object).IsAssignableFrom(p) &&
-                        Attribute.IsDefined(p,typeof(SerializableAttribute))
-                    );
+                    IEnumerable<Type> enumerable = ReflectionUtility.GetInstantiableInheritors<MovementState>().Savable();
                     foreach (Type type in enumerable) {
+                        if(type.HasAttribute<MovementHideMenu>()) continue;
+                        
                         menuEvent.menu.AppendAction($"Movement States/{MovementState.GetName(type)}", 
                             action => _view.AddElement(CreateNode(action, type)));
                     }
                 });
         }
 
-        private BaseNode CreateNode<T> (DropdownMenuAction dropdownMenuAction) where T : State
+        private MovementEditorNode CreateNode<T> (DropdownMenuAction dropdownMenuAction) where T : State
             => CreateNode(dropdownMenuAction, typeof(T));
         
-        private BaseNode CreateNode(DropdownMenuAction dropdownMenuAction, Type type) {
+        private MovementEditorNode CreateNode(DropdownMenuAction dropdownMenuAction, Type type) {
             return CreateNode(dropdownMenuAction.eventInfo.localMousePosition,
                 () => (State) Activator.CreateInstance(type));
         }
         
-        private BaseNode CreateNode(Vector2 position, Func<State> createInstance) {
+        private MovementEditorNode CreateNode(Vector2 position, Func<State> createInstance) {
             State instance = createInstance();
             SerializedPropertyState newElement = _layer.AddState(instance);
             _layer.ApplyModifiedProperties();
             return CreateNode(position, newElement, instance);
         }
 
-        public void DeleteNode(BaseNode node) {
+        public void DeleteNode(MovementEditorNode node) {
             if (_layer.RemoveState(node.State.State)) {
                 _layer.ApplyModifiedProperties();
                 _nodes.Remove(node);

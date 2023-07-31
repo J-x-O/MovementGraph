@@ -12,16 +12,23 @@ namespace Editor.MovementEditor.PropertyUtility {
             set => _identifierProperty.stringValue = value;
         }
         
+        public string Guid {
+            get => _guidProperty.stringValue;
+            set => _guidProperty.stringValue = value;
+        }
+        
         public Vector2 Position {
             get => _positionProperty.vector2Value;
             set => _positionProperty.vector2Value = value;
         }
 
         private readonly SerializedProperty _identifierProperty;
+        private readonly SerializedProperty _guidProperty;
         private readonly SerializedProperty _positionProperty;
     
         public SerializedPropertyState(SerializedProperty property) : base(property){
             _identifierProperty = property.FindPropertyRelative("_identifier");
+            _guidProperty = property.FindPropertyRelative("_guid");
             _positionProperty = property.FindPropertyRelative("_position");
         }
     }

@@ -11,7 +11,7 @@ namespace JescoDev.MovementGraph.StateTransition {
         
         [field:NonSerialized] public MovementPort Target { get; private set; }
         
-        [SerializeField] private string _stateIdentifier;
+        [SerializeField] private string _stateGuid;
         [SerializeField] private string _portIdentifier;
 
         public Transition() { }
@@ -20,16 +20,16 @@ namespace JescoDev.MovementGraph.StateTransition {
             Target = target;
         }
 
-        public void OnBeforeSerialize(State state) {
+        internal void OnBeforeSerialize(State state) {
             if(Target?.State == null) return;
-            _stateIdentifier = Target.State.Identifier;
+            _stateGuid = Target.State.Guid;
             _portIdentifier = Target.Identifier;
         }
         
-        public void OnLateDeserialize(State state) {
-            State otherState = state.Layer.GetState(_stateIdentifier);
+        internal void OnLateDeserialize(State state) {
+            State otherState = state.Layer.GetStateGuid(_stateGuid);
             if (otherState == null) {
-                Debug.LogWarning($"Couldn't find State {_stateIdentifier} in Transition on state {state.Identifier}");
+                Debug.LogWarning($"Couldn't find State with GUID {_stateGuid} in Transition on state {state.Identifier}");
                 return;
             }
             Target = otherState.GetPort(_portIdentifier);

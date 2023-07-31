@@ -1,10 +1,11 @@
 ﻿using System;
+using JescoDev.MovementGraph.MovementGraph.Attributes;
 using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.States {
     
-    [Serializable]
+    [Serializable, HideStateIdentifier, MovementMenuPath("Default/Event")]
     public class EventState : State {
         
         [field: SerializeField, OutputPort] public MovementPort OutputPort { get; protected set; }
@@ -14,6 +15,6 @@ namespace JescoDev.MovementGraph.States {
         public override MovementState ResolveActivation(MovementPort incomingPort = null)
             => OutputPort.FindFirstValidTransition();
 
-        public EventState() : base("Event") { }
+        public EventState() : base("<Hidden>Event") { }
     }
 }
