@@ -28,42 +28,42 @@ namespace Editor.MovementEditor.PropertyUtility {
             TransitionsProperty.RemoveArrayElement(transition.Property);
         }
         public void RemoveTransition(BoundPort port)
-            => RemoveTransition(port.BaseNode.Identifier, port.Identifier);
-        public void RemoveTransition(string nodeIdentifier, string portIdentifier) {
+            => RemoveTransition(port.MovementEditorNode.Guid, port.Identifier);
+        public void RemoveTransition(string guid, string portIdentifier) {
             TransitionsProperty.RemoveArrayElement(element => {
                 SerializedPropertyTransition transition = new(element);
-                return transition.StateIdentifier == nodeIdentifier
+                return transition.StateGuid == guid
                     && transition.PortIdentifier == portIdentifier;
             });
         }
 
         public void AddTransition(BoundPort port)
-            => AddTransition(port.BaseNode.Identifier, port.Identifier);
+            => AddTransition(port.MovementEditorNode.Guid, port.Identifier);
 
-        public void AddTransition(string nodeIdentifier, string portIdentifier) {
-            if(HasTransitionTo(nodeIdentifier, portIdentifier)) return;
+        public void AddTransition(string guid, string portIdentifier) {
+            if(HasTransitionTo(guid, portIdentifier)) return;
             TransitionsProperty.AppendArrayElement(element => {
                 SerializedPropertyTransition transition = new(element);
                 transition.PortIdentifier = portIdentifier;
-                transition.StateIdentifier = nodeIdentifier;
+                transition.StateGuid = guid;
             });
             ApplyModifiedProperties();
         }
 
         public bool HasTransitionTo(BoundPort port)
-            => HasTransitionTo(port.BaseNode.Identifier, port.Identifier);
-        public bool HasTransitionTo(string nodeIdentifier, string portIdentifier) {
+            => HasTransitionTo(port.MovementEditorNode.Identifier, port.Identifier);
+        public bool HasTransitionTo(string guid, string portIdentifier) {
             return GetTransitions().Any(element
-                => element.StateIdentifier == nodeIdentifier
+                => element.StateGuid == guid
                    && element.PortIdentifier == portIdentifier);
         }
     }
 
     public class SerializedPropertyTransition : SerializedPropertyExtension {
 
-        public string StateIdentifier {
-            get => _stateIdentifierProperty.stringValue;
-            set => _stateIdentifierProperty.stringValue = value;
+        public string StateGuid {
+            get => _stateGuidProperty.stringValue;
+            set => _stateGuidProperty.stringValue = value;
         }
         
         public string PortIdentifier {
@@ -71,11 +71,11 @@ namespace Editor.MovementEditor.PropertyUtility {
             set => _portIdentifierProperty.stringValue = value;
         }
         
-        private readonly SerializedProperty _stateIdentifierProperty;
+        private readonly SerializedProperty _stateGuidProperty;
         private readonly SerializedProperty _portIdentifierProperty;
         
         public SerializedPropertyTransition(SerializedProperty property) : base(property){
-            _stateIdentifierProperty = property.FindPropertyRelative("_stateIdentifier");
+            _stateGuidProperty = property.FindPropertyRelative("_stateGuid");
             _portIdentifierProperty = property.FindPropertyRelative("_portIdentifier");
         }
             

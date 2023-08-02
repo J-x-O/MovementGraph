@@ -18,26 +18,26 @@ namespace Editor.MovementEditor {
 
         public string Identifier => PortProperty.Identifier;
         
-        public readonly BaseNode BaseNode;
+        public readonly MovementEditorNode MovementEditorNode;
         public readonly SerializedPropertyMovementPort PortProperty;
         private readonly SerializedProperty _baseNodeProperty;
 
         public bool IsInput => direction == Direction.Input;
         
-        public static BoundPort Create(BaseNode baseNode, string portName, bool showName, Direction direction) {
+        public static BoundPort Create(MovementEditorNode movementEditorNode, string portName, bool showName, Direction direction) {
 
             DefaultEdgeConnectorListener listener = new DefaultEdgeConnectorListener();
-            BoundPort ele = new BoundPort(baseNode, portName, showName, direction) {
+            BoundPort ele = new BoundPort(movementEditorNode, portName, showName, direction) {
                 m_EdgeConnector = new EdgeConnector<Edge>(listener)
             };
             ele.AddManipulator(ele.m_EdgeConnector);
             return ele;
         }
         
-        private BoundPort(BaseNode baseNode, string portName, bool showName, Direction direction)
+        private BoundPort(MovementEditorNode movementEditorNode, string portName, bool showName, Direction direction)
             : base(Orientation.Horizontal, direction, Capacity.Multi, typeof(bool)) {
-            BaseNode = baseNode;
-            PortProperty = new SerializedPropertyMovementPort(baseNode.State.FindPropertyRelative(portName));
+            MovementEditorNode = movementEditorNode;
+            PortProperty = new SerializedPropertyMovementPort(movementEditorNode.State.FindPropertyRelative(portName));
 
             if (!showName) this.portName = "";
             else {
@@ -53,7 +53,7 @@ namespace Editor.MovementEditor {
             List<SerializedPropertyTransition> toBeRemoved = new();
             foreach (SerializedPropertyTransition transition in PortProperty.GetTransitions()) {
                
-                BaseNode targetNode = BaseNode.View.FindNode(transition.StateIdentifier);
+                MovementEditorNode targetNode = MovementEditorNode.View.FindNode(transition.StateGuid);
                 BoundPort targetPort = targetNode?.FindPort(transition.PortIdentifier);
 
                 if (targetPort == null) {
@@ -63,7 +63,7 @@ namespace Editor.MovementEditor {
                 
                 // check if we are already connected
                 if(connections.Any(edge => edge.input == targetPort || edge.output == targetPort)) continue;
-                BaseNode.View.AddElement(ConnectTo(targetPort));
+                MovementEditorNode.View.AddElement(ConnectTo(targetPort));
             }
 
             if (!toBeRemoved.Any()) return;

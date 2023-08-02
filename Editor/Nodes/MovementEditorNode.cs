@@ -3,73 +3,62 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Editor.MovementEditor.PropertyUtility;
+using JescoDev.MovementGraph.Editor.Editor.NodeElements;
+using JescoDev.MovementGraph.Editor.Editor.Utility;
+using JescoDev.MovementGraph.Editor.Utility;
 using JescoDev.MovementGraph.States;
 using JescoDev.MovementGraph.StateTransition;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 namespace Editor.MovementEditor {
 
-    public abstract class BaseNode : Node {
+    public class MovementEditorNode : Node {
         
         public MovementGraphView View { get; protected set; }
         public SerializedPropertyState State { get; protected set; }
         public State StateObject { get; protected set; }
         
         public string Identifier => State.Identifier;
+        public string Guid => State.Guid;
 
-        protected BaseNode(MovementGraphView view, SerializedPropertyState state, State stateObject) {
+        private List<NodeElement> _elements;
+
+        public MovementEditorNode(MovementGraphView view, SerializedPropertyState state, State stateObject) {
             View = view;
             State = state;
             StateObject = stateObject;
+            _elements = ReflectionUtility.GetAllInheritors<NodeElement>()
+                .MoveToBack(typeof(NodeElementVariables))
+                .Select(type =>
+                    (NodeElement)type.GetConstructor(new[] { typeof(MovementEditorNode) })
+                        ?.Invoke(new object[] { this }))
+                .Where(instance => instance != null && instance.CanBeApplied())
+                .ToList();
             Rebuild();
         }
 
-        public void Rebuild(SerializedPropertyState property) {
-            State = property;
-            Rebuild();
-        }
-        
         public void Rebuild() {
+            this.AddManipulator(new OpenScriptManipulator(StateObject.GetType()));
+            
             List<FieldInfo> fieldInfos = StateObject.GetType()
                 .ExtractFields()
                 .ToList();
             
-            fieldInfos.RemoveAll(element => element.Name is "_position");
-            
-            List<FieldInfo> ports = fieldInfos.Where(IsMovementPort).ToList();
-            List<FieldInfo> inputPorts = ports.Where(element => element.IsInputPort()).ToList();
-            List<FieldInfo> outputPorts = ports.Where(element => element.IsOutputPort()).ToList();
-            RebuildPorts(inputPorts, outputPorts);
+            fieldInfos.RemoveAll(element => element.Name is "_position" or "_guid");
 
-            fieldInfos.RemoveAll(IsMovementPort);
-            Rebuild(fieldInfos);
+            foreach (NodeElement nodeElement in _elements) {
+                nodeElement.Rebuild(fieldInfos);
+            }
             
             mainContainer.AddToClassList("NodeMainContainer");
+            mainContainer.AddToClassList(StateObject.GetType().Name);
             extensionContainer.AddToClassList("NodeExtensionContainer");
             RefreshExpandedState();
         }
-
-        private static bool IsMovementPort(FieldInfo element)
-            => typeof(MovementPort).IsAssignableFrom(element.FieldType);
-
-        private void RebuildPorts(List<FieldInfo> inputPorts, List<FieldInfo> outputPorts) {
-            inputContainer.Clear();
-            bool multiple = inputPorts.Count > 1;
-            foreach (FieldInfo port in inputPorts) {
-                inputContainer.Add(BoundPort.Create(this, port.Name, multiple, Direction.Input));
-            }
-            
-            outputContainer.Clear();
-            multiple = outputPorts.Count > 1;
-            foreach (FieldInfo port in outputPorts) {
-                outputContainer.Add(BoundPort.Create(this, port.Name, multiple, Direction.Output));
-            }
-        }
-
-        protected abstract void Rebuild(List<FieldInfo> fieldInfos);
 
         public void LoadConnections() {
             foreach (BoundPort port in InputPorts) port.LoadConnection();

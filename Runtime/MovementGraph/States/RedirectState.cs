@@ -1,12 +1,13 @@
 ﻿using System;
 using Entities.Movement.States;
 using Gameplay.Movement.States;
+using JescoDev.MovementGraph.MovementGraph.Attributes;
 using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.States {
     
-    [Serializable]
+    [Serializable, HideStateIdentifier, MovementMenuPath("Default/Redirect")]
     public class RedirectState : State, IFastForward {
         
         [field: SerializeField, OutputPort] public MovementPort OutputPort { get; private set; }
@@ -23,6 +24,6 @@ namespace JescoDev.MovementGraph.States {
             return null;
         }
 
-        public RedirectState() : base("Redirect") { }
+        public RedirectState() : base("<Hidden>Redirect") { }
     }
 }

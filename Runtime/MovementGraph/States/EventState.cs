@@ -1,10 +1,11 @@
 ﻿using System;
+using JescoDev.MovementGraph.MovementGraph.Attributes;
 using JescoDev.MovementGraph.StateTransition;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.States {
     
-    [Serializable]
+    [Serializable, MovementMenuPath("Default/Event")]
     public class EventState : State {
         
         [field: SerializeField, OutputPort] public MovementPort OutputPort { get; protected set; }

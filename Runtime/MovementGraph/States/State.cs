@@ -19,12 +19,16 @@ namespace JescoDev.MovementGraph.States {
         
         public string Identifier => _identifier;
         [SerializeField] protected string _identifier;
+
+        internal string Guid => _guid;
+        [SerializeField] private string _guid;
         
         public Transform Transform => Layer?.System.transform;
         public GameObject GameObject => Layer?.System.gameObject;
 
         public State(string identifier) {
             _identifier = identifier;
+            _guid = System.Guid.NewGuid().ToString();
         }
         
         public abstract bool ValidActivation();

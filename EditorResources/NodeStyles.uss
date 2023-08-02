@@ -16,11 +16,11 @@
     min-width: 100px;
 }
 
-LayerOutNode > .NodeMainContainer {
+.LayerOut {
     background-color: #450506;
 }
 
-LayerInNode > .NodeMainContainer {
+.LayerIn {
     background-color: #053605;
 }
 
@@ -41,10 +41,10 @@ LayerInNode > .NodeMainContainer {
     border-color: #27292C;
 }
 
-.RedirectNode > #title {
+.RedirectState > #title {
     height: 0;
 }
 
-.RedirectNode {
+.RedirectState {
     border-radius: 50px;
 }

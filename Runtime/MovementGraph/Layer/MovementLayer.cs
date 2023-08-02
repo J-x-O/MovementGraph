@@ -142,6 +142,9 @@ namespace JescoDev.MovementGraph.Layer {
 
         public State GetState(string identifier)
             => States.FirstOrDefault(state => state.Identifier == identifier);
+        
+        internal State GetStateGuid(string guid)
+            => States.FirstOrDefault(state => state.Guid == guid);
 
         public bool HasState<T>() where T : MovementState => GetState<T>() != null;
         public bool HasState(string identifier) => GetState(identifier) != null;
