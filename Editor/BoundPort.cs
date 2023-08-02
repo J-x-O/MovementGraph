@@ -67,6 +67,7 @@ namespace Editor.MovementEditor {
             }
 
             if (!toBeRemoved.Any()) return;
+            toBeRemoved.Reverse();
             foreach (SerializedPropertyTransition transition in toBeRemoved) {
                 PortProperty.RemoveTransition(transition);
             }
