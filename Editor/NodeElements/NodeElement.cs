@@ -32,7 +32,7 @@ namespace JescoDev.MovementGraph.Editor.Editor.NodeElements {
         }
         
         public IEnumerable<T> GetAttributes<T>() where T : Attribute {
-            return State.GetType().GetCustomAttributes<T>();
+            return Node.StateObject.GetType().GetCustomAttributes<T>();
         }
     }
 }

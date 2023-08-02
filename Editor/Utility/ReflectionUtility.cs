@@ -14,17 +14,17 @@ namespace JescoDev.MovementGraph.Editor.Editor.Utility {
             return types;
         }
         
-        public static IEnumerable<Type> GetInstantiableInheritors<T>() where T : class {
-            return GetAllInheritors<T>().Where(p
+        public static IEnumerable<Type> WhereInstantiable(this IEnumerable<Type> iter) {
+            return iter.Where(p
                 => !p.IsAbstract && !p.IsGenericType && !typeof(UnityEngine.Object).IsAssignableFrom(p));
         }
         
-        public static IEnumerable<Type> Savable(this IEnumerable<Type> iter) {
+        public static IEnumerable<Type> WhereSerializable(this IEnumerable<Type> iter) {
             return iter.Where(p => Attribute.IsDefined(p,typeof(SerializableAttribute)));
         }
         
         public static IEnumerable<T> MoveToBack<T>(this IEnumerable<T> iter, T compare)
-            => iter.OrderBy(x => !x.Equals(compare));
+            => iter.OrderBy(x => x.Equals(compare));
         
         public static bool HasAttribute<T>(this Type type) where T : Attribute {
             return type.GetCustomAttributes<T>().Any();

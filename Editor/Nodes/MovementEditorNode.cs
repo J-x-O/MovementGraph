@@ -38,6 +38,7 @@ namespace Editor.MovementEditor {
                         ?.Invoke(new object[] { this }))
                 .Where(instance => instance != null && instance.CanBeApplied())
                 .ToList();
+            Rebuild();
         }
 
         public void Rebuild() {
@@ -47,7 +48,7 @@ namespace Editor.MovementEditor {
                 .ExtractFields()
                 .ToList();
             
-            fieldInfos.RemoveAll(element => element.Name is "_position");
+            fieldInfos.RemoveAll(element => element.Name is "_position" or "_guid");
 
             foreach (NodeElement nodeElement in _elements) {
                 nodeElement.Rebuild(fieldInfos);

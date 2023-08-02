@@ -12,9 +12,9 @@ using UnityEngine.UIElements;
 
 namespace JescoDev.MovementGraph.Editor.Editor.NodeElements {
     public class NodeElementHeader : NodeElement {
+        
         private SerializedProperty _identifier;
         
-
         public NodeElementHeader(MovementEditorNode node) : base(node) {}
 
         public override bool CanBeApplied() {

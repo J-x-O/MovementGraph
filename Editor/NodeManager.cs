@@ -52,7 +52,8 @@ namespace Editor.MovementEditor {
         public IManipulator CreateNodeContextualMenu() {
             return new ContextualMenuManipulator(
                 menuEvent => {
-                    IEnumerable<Type> enumerable = ReflectionUtility.GetInstantiableInheritors<MovementState>().Savable();
+                    IEnumerable<Type> enumerable = ReflectionUtility.GetAllInheritors<MovementState>()
+                        .WhereInstantiable().WhereSerializable();
                     foreach (Type type in enumerable) {
                         if(type.HasAttribute<MovementHideMenu>()) continue;
                         
