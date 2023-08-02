@@ -24,6 +24,6 @@ namespace JescoDev.MovementGraph.States {
             return null;
         }
 
-        public RedirectState() : base("Redirect") { }
+        public RedirectState() : base("<Hidden>Redirect") { }
     }
 }

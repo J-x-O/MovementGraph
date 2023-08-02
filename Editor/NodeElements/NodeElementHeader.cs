@@ -18,17 +18,18 @@ namespace JescoDev.MovementGraph.Editor.Editor.NodeElements {
         public NodeElementHeader(MovementEditorNode node) : base(node) {}
 
         public override bool CanBeApplied() {
-            if (HasAttribute<HideStateIdentifier>()) {
-                return false;
-            }
             _identifier = State.FindPropertyRelative("_identifier");
             return _identifier != null;
         }
 
         public override void Rebuild(List<FieldInfo> fieldInfos) {
             Node.titleContainer.Clear();
-            FixedStateIdentifier fixedID = GetAttribute<FixedStateIdentifier>();
-            Node.titleContainer.Add(fixedID == null ? CreateHeader() : CreateTitle(fixedID.Identifier));
+
+            if (!HasAttribute<HideStateIdentifier>()) {
+                FixedStateIdentifier fixedID = GetAttribute<FixedStateIdentifier>();
+                Node.titleContainer.Add(fixedID == null ? CreateHeader() : CreateTitle(fixedID.Identifier));
+            }
+            
             fieldInfos.RemoveAll(element => element.Name is "_identifier");
         }
         

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace JescoDev.MovementGraph.States {
     
-    [Serializable, HideStateIdentifier, MovementMenuPath("Default/Limited Event")]
+    [Serializable, MovementMenuPath("Default/Limited Event")]
     public class LimitedEventState : EventState {
 
         [field: SerializeField, InputPort] public MovementPort InputPort { get; private set; }

@@ -59,7 +59,7 @@ namespace JescoDev.MovementGraph.Editor.Utility {
                 string fileContent = File.ReadAllText(filePath);
                 return Regex.IsMatch(fileContent, regex);
             }
-            catch (Exception e) { return false; }
+            catch (Exception) { return false; }
         }
     }
 }

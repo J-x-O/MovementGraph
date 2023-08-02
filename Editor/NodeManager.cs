@@ -52,13 +52,12 @@ namespace Editor.MovementEditor {
         public IManipulator CreateNodeContextualMenu() {
             return new ContextualMenuManipulator(
                 menuEvent => {
-                    IEnumerable<Type> enumerable = ReflectionUtility.GetAllInheritors<MovementState>()
+                    IEnumerable<Type> enumerable = ReflectionUtility.GetAllInheritors<State>()
                         .WhereInstantiable().WhereSerializable();
                     foreach (Type type in enumerable) {
                         if(type.HasAttribute<MovementHideMenu>()) continue;
-                        
-                        menuEvent.menu.AppendAction($"Movement States/{MovementState.GetName(type)}", 
-                            action => _view.AddElement(CreateNode(action, type)));
+                        string path = type.GetAttribute<MovementMenuPath>()?.Path ?? MovementState.GetName(type);
+                        menuEvent.menu.AppendAction(path, action => _view.AddElement(CreateNode(action, type)));
                     }
                 });
         }
