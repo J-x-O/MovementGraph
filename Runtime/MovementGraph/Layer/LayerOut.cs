@@ -14,7 +14,7 @@ namespace Gameplay.Movement.Layer {
     public class LayerOut : State, IFastForward {
 
         public MovementPort OutReplay => _outReplay;
-        [SerializeField, InputPort] public MovementPort _outReplay = new MovementPort();
+        [SerializeField, InputPort] private MovementPort _outReplay = new MovementPort();
         
         public MovementPort OutStop => _outStop;
         [SerializeField, InputPort] private MovementPort _outStop = new MovementPort();

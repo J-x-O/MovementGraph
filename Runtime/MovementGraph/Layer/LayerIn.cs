@@ -27,8 +27,10 @@ namespace Gameplay.Movement.Layer {
         }
 
         public LayerIn() : base("Layer In") { }
-        
-        
-        public MovementPort GetNextPort(MovementPort port) => Out.OutReplay;
+
+
+        public MovementPort GetNextPort(MovementPort port) {
+            return _in;
+        }
     }
 }
