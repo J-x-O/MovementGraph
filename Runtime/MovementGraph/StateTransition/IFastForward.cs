@@ -1,5 +1,4 @@
 ﻿using JescoDev.MovementGraph.States;
-using UnityEditor.MemoryProfiler;
 
 namespace Gameplay.Movement.States {
     public interface IFastForward {
