@@ -147,9 +147,9 @@ namespace JescoDev.MovementGraph {
         private void ResolvePath(string identifier, Action<MovementLayer, string> handleHit, Action handleDefault) {
             Match match = Regex.Match(identifier, @"(.*)\/(.*)");
             if (match.Success) {
-                MovementLayer target = GetLayer(match.Groups[0].Value);
-                if (target != null) handleHit(target, match.Groups[1].Value);
-                else Debug.LogWarning($"Could not find layer {match.Groups[0].Value}");
+                MovementLayer target = GetLayer(match.Groups[1].Value);
+                if (target != null) handleHit(target, match.Groups[2].Value);
+                else Debug.LogWarning($"Could not find layer {match.Groups[1].Value}");
             }
             else handleDefault();
         }
