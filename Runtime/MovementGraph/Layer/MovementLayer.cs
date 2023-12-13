@@ -86,9 +86,10 @@ namespace JescoDev.MovementGraph.Layer {
         /// <inheritdoc cref="SetState{T}"/>
         public bool SetState(string t, bool ignoreActiveCheck = false) {
             if (!TryGetState(t, out State state)) return false;
-            if (!ignoreActiveCheck && IsStateActive(t)) return false;
-            if (CurrentState != null
-                && state.GetInputPorts().Any()
+            if (!ignoreActiveCheck && IsStateActive(state)) return false;
+            
+            bool requiresConnection = state.GetInputPorts().Any() && !IsStateActive(state);
+            if (requiresConnection && CurrentState != null
                 && !CurrentState.RegularExit.HasTransition(state)) return false;
             
             return ActivateState(state);
@@ -163,6 +164,7 @@ namespace JescoDev.MovementGraph.Layer {
 
         public bool IsStateActive<T>() where T : MovementState => IsStateActive(MovementState.GetName<T>());
         public bool IsStateActive(string identifier) => CurrentState != null && CurrentState.Identifier == identifier;
+        public bool IsStateActive(State state) => CurrentState == state;
         
         #endregion
 
