@@ -122,17 +122,17 @@ namespace JescoDev.MovementGraph {
 
         /// <summary> Sets the state to a new one of the provided type </summary>
         /// <returns> if the state was activated successfully </returns>
-        public bool SetState<T>(bool ignoreActiveCheck = false) where T : MovementState
-            => SetState(MovementState.GetName<T>(), ignoreActiveCheck);
+        public bool SetState<T>() where T : MovementState
+            => SetState(MovementState.GetName<T>());
         
         /// <inheritdoc cref="SetState{T}"/>
-        public bool SetState(string identifier, bool ignoreActiveCheck = false) {
+        public bool SetState(string identifier) {
             bool any = false;
             ResolvePath(identifier,
                 (layer, localId) => any = layer.SetState(localId),
                 () => {
                     foreach (MovementLayer layer in _layer) {
-                        if(layer.SetState(identifier, ignoreActiveCheck)) any = true;
+                        if(layer.SetState(identifier)) any = true;
                     }
                 });
             return any;

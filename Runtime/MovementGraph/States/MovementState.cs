@@ -23,6 +23,8 @@ namespace JescoDev.MovementGraph.States {
             _identifier = GetName(GetType());
         }
         
+        public virtual bool CanBeReactivated() => false;
+        
         public static string GetName<T> () where T : MovementState => GetName(typeof(T));
         public static string GetName(Type t) => t.Name.Replace("MovementState", "");
         

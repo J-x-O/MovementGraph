@@ -80,13 +80,14 @@ namespace JescoDev.MovementGraph.Layer {
 
         /// <summary> Sets the state to a new one of the provided type </summary>
         /// <returns> if the state was activated successfully </returns>
-        public bool SetState<T>(bool ignoreActiveCheck = false) where T : MovementState
-            => SetState(MovementState.GetName<T>(), ignoreActiveCheck);
+        public bool SetState<T>() where T : MovementState
+            => SetState(MovementState.GetName<T>());
         
         /// <inheritdoc cref="SetState{T}"/>
-        public bool SetState(string t, bool ignoreActiveCheck = false) {
+        public bool SetState(string t) {
             if (!TryGetState(t, out State state)) return false;
-            if (!ignoreActiveCheck && IsStateActive(state)) return false;
+            
+            if (state is MovementState move && !move.CanBeReactivated() && IsStateActive(state)) return false;
             
             bool requiresConnection = state.GetInputPorts().Any() && !IsStateActive(state);
             if (requiresConnection && CurrentState != null
