@@ -19,13 +19,15 @@ namespace JescoDev.MovementGraph {
 
         public IReadOnlyList<MovementLayer> Layers => _layer;
         [SerializeField] private List<MovementLayer> _layer = new List<MovementLayer>();
+        public IReadOnlyList<MovementLayer> ActiveLayers => _activeLayers;
+        private List<MovementLayer> _activeLayers = new List<MovementLayer>();
 
         public MovementState CurrentState { get; private set; }
         public MovementState PreviousState { get; private set; }
 
         private void Awake() {
             CustomMovement.MovementSystem = this;
-            foreach (MovementLayer state in _layer) state.Awake(this);
+            foreach (MovementLayer layer in _layer) layer.Awake(this);
             Events.OnAnyStateActivated += UpdateCurrentState;
         }
 
@@ -41,21 +43,14 @@ namespace JescoDev.MovementGraph {
 
         private void Start() {
             foreach (MovementLayer layer in _layer) layer.Start();
+            _activeLayers = FindActiveLayers();
         }
 
         private void FixedUpdate() {
             Vector3 localMovement = Vector3.zero;
-
-            List<MovementLayer> activeLayers = new List<MovementLayer>();
-            foreach (MovementLayer layer in _layer) {
-                if(!layer.IsActive) continue;
-                if (layer.Composition == LayerComposition.Overwrite) {
-                    activeLayers.RemoveAll(test => !test.PlayIfInactive);
-                }
-                activeLayers.Add(layer);
-            }
             
-            foreach (MovementLayer layer in activeLayers) {
+            _activeLayers = FindActiveLayers();
+            foreach (MovementLayer layer in _activeLayers) {
                 MovementDefinition move = layer.Update();
                 switch (move.Context) {
                     case MovementContext.Global:
@@ -79,6 +74,18 @@ namespace JescoDev.MovementGraph {
             CustomMovement.MoveByInternal(localMovement);
         }
 
+        private List<MovementLayer> FindActiveLayers() {
+            List<MovementLayer> activeLayers = new List<MovementLayer>();
+            foreach (MovementLayer layer in _layer) {
+                if(!layer.IsActive) continue;
+                if (layer.Composition == LayerComposition.Overwrite) {
+                    activeLayers.RemoveAll(test => !test.PlayIfInactive);
+                }
+                activeLayers.Add(layer);
+            }
+            return activeLayers;
+        }
+
         private void OnDestroy() {
             foreach (MovementLayer layer in _layer) {
                 layer.OnDestroy();
@@ -96,6 +103,10 @@ namespace JescoDev.MovementGraph {
 
         public MovementLayer GetLayer(string identifier) {
             return Layers.FirstOrDefault(layer => layer.Identifier == identifier);
+        }
+        
+        public MovementLayer GetActiveLayers(string identifier) {
+            return Layers.FirstOrDefault(layer => layer.Identifier == identifier && layer.IsActive);
         }
 
         public bool TryGetLayer(string identifier, out MovementLayer layer) {
