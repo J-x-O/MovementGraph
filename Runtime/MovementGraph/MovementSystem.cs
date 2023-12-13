@@ -114,10 +114,12 @@ namespace JescoDev.MovementGraph {
             return layer != null;
         }
         
-        public void SendEvent<T>(Action<T> action) {
+        public bool SendEvent<T>(Action<T> action) {
+            bool any = false;
             foreach (MovementLayer layer in _layer) {
-                layer.SendEvent(action);
+                if(layer.SendEvent(action)) any = true;
             }
+            return any;
         }
 
         /// <summary> Sets the state to a new one of the provided type </summary>

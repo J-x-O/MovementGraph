@@ -74,8 +74,10 @@ namespace JescoDev.MovementGraph.Layer {
         public void Restart() => ActivateState(_connector.InNode.ResolveActivation());
         public void Stop() => ActivateState(_connector.MovementStateNull);
         
-        public void SendEvent<T>(Action<T> action) {
-            if(CurrentState is T casted) action(casted);
+        public bool SendEvent<T>(Action<T> action) {
+            if (CurrentState is not T casted) return false;
+            action(casted);
+            return true;
         }
 
         /// <summary> Sets the state to a new one of the provided type </summary>
