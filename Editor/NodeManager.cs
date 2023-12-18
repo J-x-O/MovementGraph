@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
-using Gameplay.Movement.Layer;
 using JescoDev.MovementGraph.Editor.Editor.Utility;
 using JescoDev.MovementGraph.MovementGraph.Attributes;
-using JescoDev.MovementGraph.States;
+using JescoDev.SmoothBrainStates.States;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -56,7 +55,7 @@ namespace Editor.MovementEditor {
                         .WhereInstantiable().WhereSerializable();
                     foreach (Type type in enumerable) {
                         if(type.HasAttribute<MovementHideMenu>()) continue;
-                        string path = type.GetAttribute<MovementMenuPath>()?.Path ?? MovementState.GetName(type);
+                        string path = type.GetAttribute<MovementMenuPath>()?.Path ?? ExecutableState.GetName(type);
                         menuEvent.menu.AppendAction(path, action => _view.AddElement(CreateNode(action, type)));
                     }
                 });

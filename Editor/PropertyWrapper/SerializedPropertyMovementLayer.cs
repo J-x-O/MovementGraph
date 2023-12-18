@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Gameplay.Movement.Layer;
+using JescoDev.SmoothBrainStates.SubStates;
 using UnityEditor;
 using UnityEngine;
 
@@ -33,9 +33,9 @@ namespace Editor.MovementEditor.PropertyUtility {
             
             SerializedProperty connectorProperty = property.FindPropertyRelative("_connector");
             _inNodeProperty = connectorProperty.FindPropertyRelative("_inNode");
-            _inNodeProperty.managedReferenceValue ??= new LayerIn();
+            _inNodeProperty.managedReferenceValue ??= new SubContainerIn();
             _outNodeProperty = connectorProperty.FindPropertyRelative("_outNode");
-            _outNodeProperty.managedReferenceValue ??= new LayerOut();
+            _outNodeProperty.managedReferenceValue ??= new SubContainerOut();
 
             property.serializedObject.ApplyModifiedProperties();
         }
@@ -58,8 +58,8 @@ namespace Editor.MovementEditor.PropertyUtility {
         public void ClearStates() => _statesProperty.arraySize = 0;
         
         public void ResetInOut() {
-            _inNodeProperty.managedReferenceValue = new LayerIn();
-            _outNodeProperty.managedReferenceValue = new LayerOut();
+            _inNodeProperty.managedReferenceValue = new SubContainerIn();
+            _outNodeProperty.managedReferenceValue = new SubContainerOut();
             OutNode.Position = new Vector2(250, 0);
         }
         

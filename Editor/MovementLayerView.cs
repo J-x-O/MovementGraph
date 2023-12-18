@@ -2,6 +2,7 @@
 using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement;
 using JescoDev.MovementGraph;
+using JescoDev.SmoothBrainStates.Core;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -10,13 +11,13 @@ using UnityEngine.UIElements;
 namespace Editor.MovementEditor {
     public class MovementLayerView : TwoPaneSplitView {
 
-        private readonly MovementSystem _link;
+        private readonly SmoothBrainStates _link;
         private readonly SerializedObject _linkObject;
         private readonly SerializedProperty _layers;
         private readonly SerializedProperty _selectionProperty;
         private LayerButton _selection;
         
-        public MovementLayerView(MovementSystem link) : base(0, 150f, TwoPaneSplitViewOrientation.Horizontal) {
+        public MovementLayerView(SmoothBrainStates link) : base(0, 150f, TwoPaneSplitViewOrientation.Horizontal) {
             _link = link;
             _linkObject = new SerializedObject(_link);
             _layers = _linkObject.FindProperty("_layer");

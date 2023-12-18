@@ -5,8 +5,6 @@ using System.Text.RegularExpressions;
 using Codice.CM.Common.Merge;
 using Editor.MovementEditor.PropertyUtility;
 using Entities.Movement.States;
-using JescoDev.MovementGraph.States;
-using JescoDev.MovementGraph.StateTransition;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;

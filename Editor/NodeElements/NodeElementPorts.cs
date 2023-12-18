@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Editor.MovementEditor;
-using JescoDev.MovementGraph.States;
-using JescoDev.MovementGraph.StateTransition;
+using JescoDev.SmoothBrainStates.StateTransition;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
@@ -27,7 +26,7 @@ namespace JescoDev.MovementGraph.Editor.Editor.NodeElements {
         }
         
         private static bool IsMovementPort(FieldInfo element)
-            => typeof(MovementPort).IsAssignableFrom(element.FieldType);
+            => typeof(SmoothPort).IsAssignableFrom(element.FieldType);
         
         private void RebuildPorts(VisualElement target, List<FieldInfo> ports, Direction direction) {
             target.Clear();

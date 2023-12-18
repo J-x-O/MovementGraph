@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Entities.Movement.States;
-using JescoDev.MovementGraph.States;
 using UnityEditor;
 
 namespace Editor.MovementEditor.PropertyUtility {

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using JescoDev.MovementGraph.States;
-using JescoDev.MovementGraph.StateTransition;
+using JescoDev.SmoothBrainStates.States;
+using JescoDev.SmoothBrainStates.StateTransition;
 
 namespace Editor.MovementEditor {
     public static class PortUtility {
@@ -15,7 +15,7 @@ namespace Editor.MovementEditor {
         public static IEnumerable<string> GetAllPorts(this State state) {
             return state.GetType()
                 .GetFields(BindingFlags)
-                .Where(field => field.GetValue(state) is MovementPort)
+                .Where(field => field.GetValue(state) is SmoothPort)
                 .Select(field => field.Name);
         }
         
@@ -23,7 +23,7 @@ namespace Editor.MovementEditor {
             return state.GetType()
                 .GetFields(BindingFlags)
                 .Where(predicate)
-                .Where(field => field.GetValue(state) is MovementPort)
+                .Where(field => field.GetValue(state) is SmoothPort)
                 .Select(field => field.Name);
         }
         

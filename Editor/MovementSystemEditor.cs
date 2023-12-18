@@ -5,6 +5,7 @@ using Codice.Client.Common.TreeGrouper;
 using Entities.Movement;
 using Entities.Movement.States;
 using JescoDev.MovementGraph;
+using JescoDev.SmoothBrainStates.Core;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -35,7 +36,7 @@ namespace Editor.MovementEditor {
 
         private void UpdateSelection() {
             rootVisualElement.Clear();
-            MovementSystem system = Selection.activeGameObject.GetComponent<MovementSystem>();
+            SmoothBrainStates system = Selection.activeGameObject.GetComponent<SmoothBrainStates>();
             if (system != null) {
                 MovementLayerView view = new MovementLayerView(system);
                 view.StretchToParentSize();

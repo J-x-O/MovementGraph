@@ -1,4 +1,4 @@
-﻿using JescoDev.MovementGraph.States;
+﻿using JescoDev.SmoothBrainStates.States;
 using UnityEditor;
 using UnityEngine;
 
