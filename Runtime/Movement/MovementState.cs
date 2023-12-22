@@ -1,4 +1,4 @@
-﻿namespace JescoDev.SmoothBrainStates.MovementGraph {
+﻿namespace JescoDev.SmoothBrainStates.Movement {
     public interface IMovementState {
         
         public MovementDefinition HandleMovement();

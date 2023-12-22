@@ -41,7 +41,7 @@ namespace JescoDev.SmoothBrainStates.StateTransition {
                                                   System.Reflection.BindingFlags.Public;
         
         public static IEnumerable<FieldInfo> ExtractFields(this object obj) => ExtractFields(obj.GetType());
-        public static IEnumerable<FieldInfo> ExtractFields(this Type target) {
+        public static List<FieldInfo> ExtractFields(this Type target) {
 
             List<Type> inheritance = new() { target };
             while (target.BaseType != null) {
@@ -61,7 +61,10 @@ namespace JescoDev.SmoothBrainStates.StateTransition {
 
         public static IEnumerable<FieldInfo> ExtractPorts(this object obj) => ExtractPorts(obj.GetType());
         public static IEnumerable<FieldInfo> ExtractPorts(this Type type) {
-            return ExtractFields(type).Where(info => typeof(SmoothPort).IsAssignableFrom(info.FieldType));
+            
+            return ExtractFields(type)
+                .Where(info => typeof(SmoothPort).IsAssignableFrom(info.FieldType)
+                               || typeof(IEnumerable<SmoothPort>).IsAssignableFrom(info.FieldType));
         }
         
         

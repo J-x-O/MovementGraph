@@ -1,24 +1,24 @@
 using System;
-using JescoDev.MovementGraph.Layer;
 using JescoDev.SmoothBrainStates.States;
+using JescoDev.SmoothBrainStates.SubStates;
 using UnityEngine;
 
-namespace JescoDev.MovementGraph.MovementGraph.Utility {
+namespace JescoDev.SmoothBrainStates.Utility {
     
     [Serializable]
     public class MovementStateReference<T> : ISerializationCallbackReceiver where T : ExecutableState {
         
-        [field:SerializeField] public SmoothBrainStates.Core.SmoothBrainStates SmoothBrainStates { get; private set; }
+        [field:SerializeField] public SmoothBrainStateMashine SmoothBrainStateMashine { get; private set; }
         [SerializeField] private string _statePath;
         
         public T MovementState { get; private set; }
 
         public void OnBeforeSerialize() {
-            if(MovementState != null) _statePath = MovementState.Layer.Identifier + "/" + MovementState.Identifier;
+            if(MovementState != null) _statePath = MovementState.Parent.ResolvePath() + "/" + MovementState.Identifier;
         }
 
         public void OnAfterDeserialize() {
-            if(SmoothBrainStates != null) MovementState = SmoothBrainStates.GetState(_statePath) as T;
+            if(SmoothBrainStateMashine != null) MovementState = SmoothBrainStateMashine.GetState(_statePath) as T;
         }
 
         public static implicit operator T(MovementStateReference<T> d) => d.MovementState;

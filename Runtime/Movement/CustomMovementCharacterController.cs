@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-namespace JescoDev.SmoothBrainStates.Utility {
+namespace JescoDev.SmoothBrainStates.Movement {
     
     public interface IOnControllerColliderHitReceiver {
         void OnControllerColliderHit(ControllerColliderHit hit);
     }
     
-    public class CustomMovementCharacterController : CustomMovement {
+    public class CustomMovementCharacterController : MovementGraph {
         
         public Vector3 Center => _charController.transform.TransformPoint(_charController.center);
         
@@ -25,7 +25,7 @@ namespace JescoDev.SmoothBrainStates.Utility {
         }
 
         protected virtual void OnControllerColliderHit(ControllerColliderHit hit) {
-            SmoothBrainStates.SendEvent<IOnControllerColliderHitReceiver>(receiver => receiver.OnControllerColliderHit(hit));
+            SmoothBrainStateMashine.SendEvent<IOnControllerColliderHitReceiver>(receiver => receiver.OnControllerColliderHit(hit));
         }
     }
 }

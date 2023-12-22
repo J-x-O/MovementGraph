@@ -23,36 +23,44 @@ namespace JescoDev.SmoothBrainStates.States {
         internal string Guid => _guid;
         [SerializeField] private string _guid;
         
-        public SmoothBrainStates StateMachine => Parent.StateMachine;
-        public Transform Transform => StateMachine.transform;
-        public GameObject GameObject => StateMachine.gameObject;
+        public SmoothBrainStateMashine StateMashineMachine => Parent.StateMashineMachine;
+        public Transform Transform => StateMashineMachine.transform;
+        public GameObject GameObject => StateMashineMachine.gameObject;
 
         public State(string identifier) {
             _identifier = identifier;
             _guid = System.Guid.NewGuid().ToString();
         }
         
-        internal abstract bool CanBeActivated();
+        protected internal abstract bool CanBeActivated();
         
         /// <summary> This function decides if the state can be activated or not </summary>
         /// <returns> The resolved movement state for activation, or null if we cant activate </returns>
-        internal abstract ExecutableState ResolveActivation(SmoothPort incomingPort = null);
+        protected internal abstract ExecutableState ResolveActivation(SmoothPort incomingPort = null);
 
         public SmoothPort GetPort(string identifier) {
             return GetAllPorts().FirstOrDefault(port => port.Identifier == identifier);
         }
         
         public IEnumerable<SmoothPort> GetAllPorts() {
-            return GetType().ExtractFields()
-                .Select(field => field.GetValue(this))
-                .OfType<SmoothPort>();
+            IEnumerable<object> all = GetType().ExtractFields()
+                .Select(field => field.GetValue(this));
+            return GetPorts(all);
         }
         
         private IEnumerable<SmoothPort> GetFilteredPorts(Func<FieldInfo ,bool> predicate) {
-            return GetType().ExtractFields()
+            IEnumerable<object> all = GetType().ExtractFields()
                 .Where(predicate)
-                .Select(field => field.GetValue(this))
-                .OfType<SmoothPort>();
+                .Select(field => field.GetValue(this));
+            return GetPorts(all);
+        }
+        
+        private IEnumerable<SmoothPort> GetPorts(IEnumerable<object> objects) {
+            objects = objects.ToList();
+            return objects.OfType<SmoothPort>()
+                .Concat(objects
+                    .OfType<IEnumerable<SmoothPort>>()
+                    .SelectMany(ports => ports));
         }
         
         public IEnumerable<SmoothPort> GetInputPorts() => GetFilteredPorts(field => field.IsInputPort());
@@ -63,13 +71,13 @@ namespace JescoDev.SmoothBrainStates.States {
                 .Where(field => typeof(SmoothPort).IsAssignableFrom(field.FieldType));
         }
         
-        internal virtual void OnBeforeSerialize() {
+        protected internal virtual void OnBeforeSerialize() {
             foreach (SmoothPort port in GetAllPorts()) {
                 port.OnBeforeSerialize(this);
             }
         }
 
-        internal virtual void OnAfterDeserialize(IStateParent parent) {
+        protected internal virtual void OnAfterDeserialize(IStateParent parent) {
             Parent = parent;
             foreach (FieldInfo portInfo in GetPortInfo()) {
                 SmoothPort port = portInfo.GetValue(this) as SmoothPort;
@@ -78,7 +86,7 @@ namespace JescoDev.SmoothBrainStates.States {
             }
         }
 
-        internal virtual void OnLateDeserialize() {
+        protected internal virtual void OnLateDeserialize() {
             foreach (SmoothPort port in GetAllPorts()) {
                 port?.OnLateDeserialize(this);
             }

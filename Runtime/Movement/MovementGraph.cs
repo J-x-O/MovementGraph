@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 
-namespace JescoDev.SmoothBrainStates.MovementGraph {
-    public class MovementGraph : SmoothBrainStates {
-        
+namespace JescoDev.SmoothBrainStates.Movement {
+    public abstract class MovementGraph : MonoBehaviour {
+
+        [field:SerializeField] public SmoothBrainStateMashine SmoothBrainStateMashine { get; private set; }
+
         private void FixedUpdate() {
             Vector3 localMovement = Vector3.zero;
-            if(CurrentState is not IMovementState state) return;
+            if(SmoothBrainStateMashine.CurrentState is not IMovementState state) return;
 
             MovementDefinition move = state.HandleMovement();
             switch (move.Context) {
@@ -13,12 +15,26 @@ namespace JescoDev.SmoothBrainStates.MovementGraph {
                     move.Movement = transform.InverseTransformPoint(move.Movement);
                     break;
                 case MovementContext.Teleport:
-                    CustomMovement.TeleportToInternal(move.Movement);
+                    TeleportToInternal(move.Movement);
                     break;
             }
 
-            CustomMovement.MoveByInternal(localMovement);
+            MoveByInternal(localMovement);
         }
         
+        /// <inheritdoc cref="MoveBy"/>
+        internal void MoveByInternal(Vector3 movement) => MoveBy(movement);
+        
+        /// <summary> Moves the player along a vector </summary>
+        /// <param name="movement"> the movement vector, applied relative to the current player position </param>
+        protected abstract void MoveBy(Vector3 movement);
+
+        /// <inheritdoc cref="TeleportTo"/>
+        internal void TeleportToInternal(Vector3 targetWorld) => TeleportTo(targetWorld);
+        
+        /// <summary> Teleports the player to a specified position </summary>
+        /// <param name="targetWorld"> the target position in world space </param>
+        protected abstract void TeleportTo(Vector3 targetWorld);
+
     }
 }

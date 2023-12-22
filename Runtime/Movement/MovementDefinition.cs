@@ -1,7 +1,7 @@
 ﻿
 using UnityEngine;
 
-namespace JescoDev.SmoothBrainStates.MovementGraph {
+namespace JescoDev.SmoothBrainStates.Movement {
 
     public enum MovementContext { Global, Local, Teleport }
     

@@ -1,5 +1,6 @@
 ﻿using System;
 using JescoDev.SmoothBrainStates.States;
+using JescoDev.SmoothBrainStates.SubStates;
 using UnityEngine;
 
 namespace JescoDev.SmoothBrainStates.StateTransition {

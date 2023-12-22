@@ -73,9 +73,9 @@ namespace JescoDev.SmoothBrainStates.StateTransition {
         /// <summary> Check if there is a valid transition from the currently active state of the system </summary>
         /// <param name="useAnyState"> if true then the check will include if there is a transition from the any state block </param>
         public bool HasActiveTransition(bool useAnyState) {
-            if (HasTransition(State.Parent.StateMachine.CurrentState)) return true;
+            if (HasTransition(State.Parent.StateMashineMachine.CurrentState)) return true;
             return useAnyState 
-                   && (State.StateMachine as IStateParent).TryGetState("Any State", out State anyState)
+                   && (State.StateMashineMachine as IStateParent).TryGetState("Any State", out State anyState)
                    && HasTransition(anyState);
         }
 

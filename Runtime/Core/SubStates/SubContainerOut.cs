@@ -1,20 +1,21 @@
 ﻿using System;
-using JescoDev.MovementGraph.Editor.Attributes;
-using JescoDev.MovementGraph.MovementGraph.Attributes;
+using System.Collections.Generic;
+using JescoDev.SmoothBrainStates.Attributes;
 using JescoDev.SmoothBrainStates.States;
 using JescoDev.SmoothBrainStates.StateTransition;
 using UnityEngine;
 
 namespace JescoDev.SmoothBrainStates.SubStates {
     
-    [Serializable, FixedStateIdentifier("Layer Out"), MovementHideMenu]
+    [Serializable, SmoothStateFixedIdentifier("Layer Out"), SmoothStateHideMenu]
     public class SubContainerOut : State, IFastForward {
 
         public SmoothPort OutReplay => _outReplay;
         [SerializeField, InputPort] private SmoothPort _outReplay = new SmoothPort();
         
+        [SerializeField, InputPort] private List<SmoothPort> _extra = new List<SmoothPort>();
+        
         [field:NonSerialized] public SubContainerIn In { get; internal set; }
-        [field:NonSerialized] public IPortEnumerable Connections { get; internal set; }
         
         public SubContainerOut() : base("Layer Out") { }
 
@@ -23,11 +24,11 @@ namespace JescoDev.SmoothBrainStates.SubStates {
             return port == OutReplay ? In.In : null;
         }
 
-        internal override bool CanBeActivated() {
+        protected internal override bool CanBeActivated() {
             return true;
         }
 
-        internal override ExecutableState ResolveActivation(SmoothPort incomingPort) {
+        protected internal override ExecutableState ResolveActivation(SmoothPort incomingPort) {
             if (incomingPort == _outReplay) return In.ResolveActivation(_outReplay);
             return null;
         }

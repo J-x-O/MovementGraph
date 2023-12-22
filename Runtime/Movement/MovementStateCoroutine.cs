@@ -3,7 +3,7 @@ using System.Collections;
 using JescoDev.SmoothBrainStates.States;
 using UnityEngine;
 
-namespace JescoDev.SmoothBrainStates.MovementGraph {
+namespace JescoDev.SmoothBrainStates.Movement {
     public abstract class MovementStateCoroutine : ExecutableState, IMovementState {
 
         /// <summary> Overwrite this to still use the normal movement </summary>
@@ -11,12 +11,14 @@ namespace JescoDev.SmoothBrainStates.MovementGraph {
 
         protected Coroutine _routine;
         
-        public override void OnActivate() {
-            _routine = StateMachine.StartCoroutine(Coroutine());
+        protected MovementStateCoroutine(string identifier) : base(identifier) { }
+        
+        protected override void OnActivate() {
+            _routine = StateMashineMachine.StartCoroutine(Coroutine());
         }
 
-        public override void OnDeactivate() {
-            if(_routine != null) StateMachine.StopCoroutine(_routine);
+        protected override void OnDeactivate() {
+            if(_routine != null) StateMashineMachine.StopCoroutine(_routine);
         }
 
         private IEnumerator Coroutine() {
