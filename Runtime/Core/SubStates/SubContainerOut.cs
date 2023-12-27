@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using JescoDev.SmoothBrainStates.Attributes;
 using JescoDev.SmoothBrainStates.States;
-using JescoDev.SmoothBrainStates.StateTransition;
 using UnityEngine;
 
 namespace JescoDev.SmoothBrainStates.SubStates {
@@ -13,15 +12,24 @@ namespace JescoDev.SmoothBrainStates.SubStates {
         public SmoothPort OutReplay => _outReplay;
         [SerializeField, InputPort] private SmoothPort _outReplay = new SmoothPort();
         
-        [SerializeField, InputPort] private List<SmoothPort> _extra = new List<SmoothPort>();
+        public SmoothPort OutExit => _outExit;
+        [SerializeField, InputPort] private SmoothPort _outExit = new SmoothPort();
         
         [field:NonSerialized] public SubContainerIn In { get; internal set; }
-        
-        public SubContainerOut() : base("Layer Out") { }
+
+        public SubContainerOut() : base("Layer Out") {
+            #if UNITY_EDITOR
+            _position = new Vector2(200, 0);
+            #endif
+        }
 
         public SmoothPort GetNextPort(SmoothPort port) {
             // this node will forward the output to the input, so the whole system loops
-            return port == OutReplay ? In.In : null;
+            if (port == OutReplay) return In.In;
+            
+            // if the parent is a state parent with exit, we will forward the output to the exit
+            if (port != OutExit) return null;
+            return Parent is IStateParentWithExit exit ? exit.RegularExit : null;
         }
 
         protected internal override bool CanBeActivated() {

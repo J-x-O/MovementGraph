@@ -1,16 +1,17 @@
 ﻿using System;
-using JescoDev.MovementGraph.Layer;
-using JescoDev.MovementGraph.States;
-using JescoDev.MovementGraph.StateTransition;
+using JescoDev.SmoothBrainStates;
+using JescoDev.SmoothBrainStates.Movement;
+using JescoDev.SmoothBrainStates.Movement.Tags;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.Samples.BasicMovement {
     
     // very similar to walk
     [Serializable]
-    public class MovementStateAirborne : MovementState<CustomMovementSample> {
+    public class MovementStateAirborne : TaggedExecutableState, IMovementState {
 
-        [SerializeField, OutputPort] private MovementPort _onGrounded;
+        [SerializeField] private CustomMovementSample _custom;
+        [SerializeField, OutputPort] private SmoothPort _onGrounded;
         
         [SerializeField] private GroundedManager _floorManager;
         [SerializeField] private float _movementSpeed;
@@ -19,27 +20,29 @@ namespace JescoDev.MovementGraph.Samples.BasicMovement {
 
         // you can utilize runtime variables like this
         protected float _downwardsVelocity = 0;
-        
-        public override void Activate() {
+
+        protected override bool CanBeActivated() => _floorManager.Grounded == false;
+
+        protected override void OnActivate() {
             // we use a different event here, compared to walking
             _floorManager.OnGrounded.AddListener(SwitchToAir);
             
             // dont forget to reset them
-            _downwardsVelocity = Custom.CharController.velocity.y;
+            _downwardsVelocity = _custom.CharController.velocity.y;
         }
 
-        public override void Deactivate() => _floorManager.OnGrounded.RemoveListener(SwitchToAir);
-        private void SwitchToAir() => Layer.QueueExit(_onGrounded);
+        protected override void OnDeactivate() => _floorManager.OnGrounded.RemoveListener(SwitchToAir);
+        private void SwitchToAir() => ExitCurrentState(_onGrounded);
 
-        public override MovementDefinition HandleMovement() {
+        public virtual MovementDefinition HandleMovement() {
             
             // apply gravity, respective to the passed time
-            _downwardsVelocity += Custom.Gravity * Time.fixedDeltaTime;
+            _downwardsVelocity += _custom.Gravity * Time.fixedDeltaTime;
             _downwardsVelocity = Mathf.Max(_downwardsVelocity, -_maxFallSpeed);
             
             // Custom and our data is accessible since we extend MovementState<CustomMovementSample>
-            float input = Custom.Input;
-            Vector3 currentVelocity = Custom.CharController.velocity;
+            float input = _custom.Input;
+            Vector3 currentVelocity = _custom.CharController.velocity;
             float targetMovement = input * _movementSpeed;
             
             // calculate our preferred movement value
@@ -49,6 +52,5 @@ namespace JescoDev.MovementGraph.Samples.BasicMovement {
             // account for delta time
             return MovementDefinition.Local(currentVelocity * Time.fixedDeltaTime);
         }
-        
     }
 }

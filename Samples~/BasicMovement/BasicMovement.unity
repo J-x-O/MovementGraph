@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -196,7 +196,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -478,7 +478,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _system: {fileID: 1919187033}
   _text: {fileID: 544410984}
-  _targetLayer: Default
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,7 +570,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &963194225
 GameObject:
@@ -655,7 +654,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &984337515
 GameObject:
@@ -702,8 +701,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 19.903658, y: 1, z: 1}
-  m_Center: {x: -0.056937218, y: 0, z: 0}
+  m_Size: {x: 20, y: 1, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &984337518
 Transform:
   m_ObjectHideFlags: 0
@@ -848,7 +847,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.61, y: 0.44, z: 1}
+  m_Size: {x: 1, y: 0.2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1764467467
 MonoBehaviour:
@@ -939,9 +938,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b84dbdfe34194d79b809595b60bb789c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <StateMashine>k__BackingField: {fileID: 1919187033}
   _charController: {fileID: 1919187029}
-  _movement: {fileID: 1919187033}
   _gravity: 9.81
+  <Input>k__BackingField: 0
 --- !u!114 &1919187033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -954,37 +954,174 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d46d011ef1cc4bce8abab1be039dbba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _customMovement: {fileID: 1919187032}
-  _layer:
-  - _identifier: New Layer
-    _connector:
-      _outNode:
-        rid: 1952420676067917827
-      _inNode:
-        rid: 1952420676067917826
-    _playIfInactive: 0
-    _autoplay: 0
-    _composition: 0
-    _states: []
-  _cameraPosition: {x: 10.4, y: 108}
-  _cameraZoom: 0.8695652
-  _selectedLayer: 0
+  _connector:
+    _outNode:
+      rid: 5092913201823088640
+    _inNode:
+      rid: 5092913201823088641
+  _states:
+  - rid: 5092913202035949568
+  - rid: 5092913202035949573
+  _extensions:
+  - rid: 5092913201870012416
+  _cameraPosition: {x: 0, y: 0}
+  _cameraZoom: 1
   references:
     version: 2
     RefIds:
-    - rid: 1952420676067917826
-      type: {class: LayerIn, ns: Gameplay.Movement.Layer, asm: JescoDev.MovementGraph}
+    - rid: 5092913201823088640
+      type: {class: SubContainerOut, ns: JescoDev.SmoothBrainStates.SubStates, asm: JescoDev.SmoothBrainStates}
       data:
-        _position: {x: 0, y: 0}
-        _identifier: Layer In
-        _in:
-          _transitions: []
-    - rid: 1952420676067917827
-      type: {class: LayerOut, ns: Gameplay.Movement.Layer, asm: JescoDev.MovementGraph}
-      data:
-        _position: {x: 250, y: 0}
+        _position: {x: 491.2, y: 0}
         _identifier: Layer Out
+        _guid: b17fa31a-a759-4425-93ea-b126365aa42b
         _outReplay:
+          _transitions:
+          - _stateGuid: e189c776-5d3a-4d86-b654-0aef6ecbc864
+            _portIdentifier: <RegularExit>k__BackingField
+          - _stateGuid: 405eb653-8eba-4066-80ee-4e4cdaa0d1be
+            _portIdentifier: _onGrounded
+          - _stateGuid: 405eb653-8eba-4066-80ee-4e4cdaa0d1be
+            _portIdentifier: <RegularExit>k__BackingField
+        _outExit:
           _transitions: []
-        _outStop:
-          _transitions: []
+    - rid: 5092913201823088641
+      type: {class: SubContainerIn, ns: JescoDev.SmoothBrainStates.SubStates, asm: JescoDev.SmoothBrainStates}
+      data:
+        _position: {x: -174.4, y: 0}
+        _identifier: Layer In
+        _guid: a6ed9662-e79f-45c1-83e2-46327fe61a04
+        _in:
+          _transitions:
+          - _stateGuid: e189c776-5d3a-4d86-b654-0aef6ecbc864
+            _portIdentifier: <InputPort>k__BackingField
+          - _stateGuid: 405eb653-8eba-4066-80ee-4e4cdaa0d1be
+            _portIdentifier: <InputPort>k__BackingField
+    - rid: 5092913201870012416
+      type: {class: StateTagExtension, ns: JescoDev.SmoothBrainStates.Movement.Tags, asm: JescoDev.SmoothBrainStates.Tags}
+      data:
+        _tags: []
+    - rid: 5092913202035949568
+      type: {class: StateParent, ns: JescoDev.SmoothBrainStates.SubStates, asm: JescoDev.SmoothBrainStates}
+      data:
+        _position: {x: 89.600006, y: 0}
+        _identifier: Default
+        _guid: e189c776-5d3a-4d86-b654-0aef6ecbc864
+        <InputPort>k__BackingField:
+          _transitions:
+          - _stateGuid: a6ed9662-e79f-45c1-83e2-46327fe61a04
+            _portIdentifier: _in
+        <RegularExit>k__BackingField:
+          _transitions:
+          - _stateGuid: b17fa31a-a759-4425-93ea-b126365aa42b
+            _portIdentifier: _outReplay
+        _connector:
+          _outNode:
+            rid: 5092913202035949569
+          _inNode:
+            rid: 5092913202035949570
+        _states:
+        - rid: 5092913202035949571
+        - rid: 5092913202035949572
+    - rid: 5092913202035949569
+      type: {class: SubContainerOut, ns: JescoDev.SmoothBrainStates.SubStates, asm: JescoDev.SmoothBrainStates}
+      data:
+        _position: {x: 379.2, y: 0}
+        _identifier: Layer Out
+        _guid: 57098627-cbd7-451b-ba2f-2ae65190c7f0
+        _outReplay:
+          _transitions:
+          - _stateGuid: 34594ca3-ef55-4085-9c0e-7da29cfe9b85
+            _portIdentifier: _onGrounded
+          - _stateGuid: 1a32d493-bbd6-4406-bf6e-5322d422d87f
+            _portIdentifier: _onAirborne
+        _outExit:
+          _transitions:
+          - _stateGuid: 34594ca3-ef55-4085-9c0e-7da29cfe9b85
+            _portIdentifier: <RegularExit>k__BackingField
+          - _stateGuid: 1a32d493-bbd6-4406-bf6e-5322d422d87f
+            _portIdentifier: <RegularExit>k__BackingField
+    - rid: 5092913202035949570
+      type: {class: SubContainerIn, ns: JescoDev.SmoothBrainStates.SubStates, asm: JescoDev.SmoothBrainStates}
+      data:
+        _position: {x: -316, y: -10.400002}
+        _identifier: Layer In
+        _guid: c0befb76-d542-445a-b1eb-4393a0772261
+        _in:
+          _transitions:
+          - _stateGuid: 34594ca3-ef55-4085-9c0e-7da29cfe9b85
+            _portIdentifier: <InputPort>k__BackingField
+          - _stateGuid: 1a32d493-bbd6-4406-bf6e-5322d422d87f
+            _portIdentifier: <InputPort>k__BackingField
+    - rid: 5092913202035949571
+      type: {class: MovementStateAirborne, ns: JescoDev.MovementGraph.Samples.BasicMovement, asm: JescoDev.MovementGraph.Samples.BasicMovement}
+      data:
+        _position: {x: -90.399994, y: -44}
+        _identifier: MovementStateAirborne
+        _guid: 34594ca3-ef55-4085-9c0e-7da29cfe9b85
+        <InputPort>k__BackingField:
+          _transitions:
+          - _stateGuid: c0befb76-d542-445a-b1eb-4393a0772261
+            _portIdentifier: _in
+        <RegularExit>k__BackingField:
+          _transitions:
+          - _stateGuid: 57098627-cbd7-451b-ba2f-2ae65190c7f0
+            _portIdentifier: _outExit
+        _tags: []
+        _custom: {fileID: 1919187032}
+        _onGrounded:
+          _transitions:
+          - _stateGuid: 57098627-cbd7-451b-ba2f-2ae65190c7f0
+            _portIdentifier: _outReplay
+        _floorManager: {fileID: 1764467467}
+        _movementSpeed: 4
+        _maxFallSpeed: 10
+        _drag: 0.8
+    - rid: 5092913202035949572
+      type: {class: MovementStateWalk, ns: JescoDev.MovementGraph.Samples.BasicMovement, asm: JescoDev.MovementGraph.Samples.BasicMovement}
+      data:
+        _position: {x: -90.399994, y: 213.6}
+        _identifier: MovementStateWalk
+        _guid: 1a32d493-bbd6-4406-bf6e-5322d422d87f
+        <InputPort>k__BackingField:
+          _transitions:
+          - _stateGuid: c0befb76-d542-445a-b1eb-4393a0772261
+            _portIdentifier: _in
+        <RegularExit>k__BackingField:
+          _transitions:
+          - _stateGuid: 57098627-cbd7-451b-ba2f-2ae65190c7f0
+            _portIdentifier: _outExit
+        _tags: []
+        _custom: {fileID: 1919187032}
+        _onAirborne:
+          _transitions:
+          - _stateGuid: 57098627-cbd7-451b-ba2f-2ae65190c7f0
+            _portIdentifier: _outReplay
+        _floorManager: {fileID: 1764467467}
+        _movementSpeed: 4
+        _drag: 0.9
+    - rid: 5092913202035949573
+      type: {class: MovementStateJump, ns: JescoDev.MovementGraph.Samples.BasicMovement, asm: JescoDev.MovementGraph.Samples.BasicMovement}
+      data:
+        _position: {x: 0.80000305, y: 120}
+        _identifier: MovementStateJump
+        _guid: 405eb653-8eba-4066-80ee-4e4cdaa0d1be
+        <InputPort>k__BackingField:
+          _transitions:
+          - _stateGuid: a6ed9662-e79f-45c1-83e2-46327fe61a04
+            _portIdentifier: _in
+        <RegularExit>k__BackingField:
+          _transitions:
+          - _stateGuid: b17fa31a-a759-4425-93ea-b126365aa42b
+            _portIdentifier: _outReplay
+        _tags: []
+        _custom: {fileID: 1919187032}
+        _onGrounded:
+          _transitions:
+          - _stateGuid: b17fa31a-a759-4425-93ea-b126365aa42b
+            _portIdentifier: _outReplay
+        _floorManager: {fileID: 1764467467}
+        _movementSpeed: 5
+        _maxFallSpeed: 10
+        _drag: 0.8
+        _jumpForce: 3

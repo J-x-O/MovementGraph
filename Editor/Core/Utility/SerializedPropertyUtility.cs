@@ -4,8 +4,15 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.MovementEditor {
+namespace JescoDev.SmoothBrainStates.Editor {
     public static class SerializedPropertyUtility {
+        
+        /// <summary> Calling serializedObject. </summary>
+        public static SerializedProperty FindPropertySave(this SerializedProperty target, string propertyPath) {
+            return target.depth == -1 
+                ? target.serializedObject.FindProperty(propertyPath)
+                : target.FindPropertyRelative(propertyPath);
+        }
         
         public static SerializedProperty AppendArrayElement(this SerializedProperty target, Action<SerializedProperty> setData) {
             target.arraySize++;
@@ -56,6 +63,23 @@ namespace Editor.MovementEditor {
                 if (predicate(element)) return true;
             }
             return false;
+        }
+        
+        public static IEnumerable<SerializedProperty> ForEach(this SerializedProperty target) {
+            for (int i = 0; i < target.arraySize; i++) {
+                SerializedProperty element = target.GetArrayElementAtIndex(i);
+                yield return element;
+            }
+        }
+        
+        public static void RemoveAll(this SerializedProperty target, Func<SerializedProperty, bool> predicate) {
+            for (int i = 0; i < target.arraySize; i++) {
+                SerializedProperty element = target.GetArrayElementAtIndex(i);
+                if (!predicate(element)) continue;
+                target.DeleteArrayElementAtIndex(i);
+                i--;
+            }
+            target.serializedObject.ApplyModifiedProperties();
         }
         
         public static bool RemoveArrayElement(this SerializedProperty target, Func<SerializedProperty, bool> predicate) {

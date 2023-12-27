@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace JescoDev.SmoothBrainStates.StateTransition {
+namespace JescoDev.SmoothBrainStates {
 
     public class PortType : Attribute {
 

@@ -10,6 +10,7 @@ namespace JescoDev.SmoothBrainStates.Editor {
         public Breadcrumbs(PathTracker tracker) {
             _tracker = tracker;
             _tracker.OnPathChanged += OnPathChanged;
+            OnPathChanged();
         }
         
         ~Breadcrumbs() {
@@ -18,14 +19,19 @@ namespace JescoDev.SmoothBrainStates.Editor {
 
         private void OnPathChanged() {
             Clear();
+            AddBreadcrumb("Root", 0);
             for (int index = 0; index < _tracker.Path.Count; index++) {
-                PathTracker.PathElement element = _tracker.Path[index];
-                int cut = index;
-                Button label = new Button(() => _tracker.CutTo(cut));
-                label.text = element.Identifier;
-                label.AddToClassList("breadcrumb");
-                Add(label);
+                Add(new Label("->"));
+                AddBreadcrumb(_tracker.Path[index].Identifier, index + 1);
             }
+        }
+        
+        private void AddBreadcrumb(string identifier, int index) {
+            Button label = new Button(() => _tracker.CutTo(index)) {
+                name = "BreadcrumbPathButton",
+                text = identifier
+            };
+            Add(label);
         }
     }
 }

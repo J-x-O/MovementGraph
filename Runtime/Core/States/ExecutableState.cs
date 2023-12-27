@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using JescoDev.SmoothBrainStates.StateTransition;
 using UnityEngine;
 
 namespace JescoDev.SmoothBrainStates.States {
@@ -10,6 +9,10 @@ namespace JescoDev.SmoothBrainStates.States {
 
         [field: SerializeField, InputPort] public SmoothPort InputPort { get; protected set; }
         [field: SerializeField, OutputPort] public SmoothPort RegularExit { get; protected set; }
+
+        public ExecutableState() : base("") {
+            _identifier = GetType().Name;
+        }
         
         public ExecutableState(string identifier) : base(identifier) { }
         

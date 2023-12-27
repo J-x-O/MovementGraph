@@ -5,7 +5,7 @@ using JescoDev.SmoothBrainStates.States;
 using JescoDev.SmoothBrainStates.SubStates;
 using UnityEngine;
 
-namespace JescoDev.SmoothBrainStates.StateTransition {
+namespace JescoDev.SmoothBrainStates {
     
     [Serializable]
     public class SmoothPort {
@@ -87,7 +87,6 @@ namespace JescoDev.SmoothBrainStates.StateTransition {
 
         public void OnAfterDeserialize(State state, string identifier) {
             State = state;
-            
             Identifier = identifier;
         }
 

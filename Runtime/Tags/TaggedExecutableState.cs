@@ -10,6 +10,7 @@ namespace JescoDev.SmoothBrainStates.Movement.Tags {
         public IReadOnlyList<string> Tags => _tags;
         [SerializeField] private List<string> _tags = new();
 
+        public TaggedExecutableState() {}
         public TaggedExecutableState(string identifier) : base(identifier) { }
         
         public bool HasTag(string tag) => _tags.Contains(tag);

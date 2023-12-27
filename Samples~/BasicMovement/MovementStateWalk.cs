@@ -1,16 +1,17 @@
 ﻿using System;
-using JescoDev.MovementGraph.Layer;
-using JescoDev.MovementGraph.States;
-using JescoDev.MovementGraph.StateTransition;
+using JescoDev.SmoothBrainStates;
+using JescoDev.SmoothBrainStates.Movement;
+using JescoDev.SmoothBrainStates.Movement.Tags;
 using UnityEngine;
 
 namespace JescoDev.MovementGraph.Samples.BasicMovement {
     
     // we extend MovementState<CustomMovementSample> so we can access our custom data
     [Serializable]
-    public class MovementStateWalk : MovementState<CustomMovementSample> {
+    public class MovementStateWalk : TaggedExecutableState, IMovementState {
         
-        [SerializeField, OutputPort] private MovementPort _onAirborne;
+        [SerializeField] private CustomMovementSample _custom;
+        [SerializeField, OutputPort] private SmoothPort _onAirborne;
         
         // you can expose scene references, utilizing dependency injection
         [SerializeField] private GroundedManager _floorManager;
@@ -21,23 +22,26 @@ namespace JescoDev.MovementGraph.Samples.BasicMovement {
         // you can use custom editors
         [SerializeField, Range(0, 1)] private float _drag;
 
+        // you can define custom conditions for activation
+        protected override bool CanBeActivated() => _floorManager.Grounded == true;
+        
         // you can utilize activate and deactivate to hook up event subscribtions
-        public override void Activate() => _floorManager.OnUngrounded.AddListener(SwitchToAir);
-        public override void Deactivate() => _floorManager.OnUngrounded.RemoveListener(SwitchToAir);
+        protected override void OnActivate() => _floorManager.OnUngrounded.AddListener(SwitchToAir);
+        protected override void OnDeactivate() => _floorManager.OnUngrounded.RemoveListener(SwitchToAir);
 
         // you can exit a state through a custom port like this
-        private void SwitchToAir() => Layer.QueueExit(_onAirborne);
+        private void SwitchToAir() => ExitCurrentState(_onAirborne);
 
-        public override MovementDefinition HandleMovement() {
+        public MovementDefinition HandleMovement() {
             
             // Custom and our data is accessible since we extend MovementState<CustomMovementSample>
-            float input = Custom.Input;
-            Vector3 currentVelocity = Custom.CharController.velocity;
+            float input = _custom.Input;
+            Vector3 currentVelocity = _custom.CharController.velocity;
             float targetMovement = input * _movementSpeed;
             
             // calculate our preferred movement value
             currentVelocity.x = Mathf.Lerp(currentVelocity.x, targetMovement, _drag);
-            currentVelocity.y = Custom.Gravity;
+            currentVelocity.y = _custom.Gravity;
             
             // account for delta time
             return MovementDefinition.Local(currentVelocity * Time.fixedDeltaTime);

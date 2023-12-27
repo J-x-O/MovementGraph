@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace JescoDev.MovementGraph.Editor.Utility {
+namespace JescoDev.SmoothBrainStates.Editor {
     public class OpenScriptManipulator : ContextualMenuManipulator {
 
         public OpenScriptManipulator(Type target) : base(menuEvent => {

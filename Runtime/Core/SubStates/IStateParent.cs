@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using JescoDev.SmoothBrainStates.States;
-using JescoDev.SmoothBrainStates.StateTransition;
 using UnityEngine;
 
 namespace JescoDev.SmoothBrainStates.SubStates {
@@ -10,9 +9,10 @@ namespace JescoDev.SmoothBrainStates.SubStates {
     public interface IStateParent : ISubContainer {
         
         public IEnumerable<State> States { get; }
-        public IEnumerable<SmoothPort> InputPorts { get; }
-        public IEnumerable<SmoothPort> OutputPorts { get; }
-        
+    }
+    
+    public interface IStateParentWithExit : IStateParent {
+        public SmoothPort RegularExit { get; }
     }
     
     public static class StateParentExtensions {

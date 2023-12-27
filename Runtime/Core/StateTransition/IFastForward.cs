@@ -1,4 +1,4 @@
-﻿namespace JescoDev.SmoothBrainStates.StateTransition {
+﻿namespace JescoDev.SmoothBrainStates {
     public interface IFastForward {
 
         public SmoothPort GetNextPort(SmoothPort port);

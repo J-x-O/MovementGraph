@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 
-namespace JescoDev.MovementGraph.Editor.Editor.Utility {
+namespace JescoDev.SmoothBrainStates.Editor {
     public static class ReflectionUtility {
         
         public static IEnumerable<Type> GetAllInheritors<T>() where T : class {
@@ -17,6 +17,18 @@ namespace JescoDev.MovementGraph.Editor.Editor.Utility {
         public static IEnumerable<Type> WhereInstantiable(this IEnumerable<Type> iter) {
             return iter.Where(p
                 => !p.IsAbstract && !p.IsGenericType && !typeof(UnityEngine.Object).IsAssignableFrom(p));
+        }
+        
+        public static IEnumerable<T> Instantiate<T>(this IEnumerable<Type> iter) {
+            return iter.WhereInstantiable().Select(p => (T) Activator.CreateInstance(p));
+        }
+        
+        public static IEnumerable<T> Instantiate<T>(this IEnumerable<Type> iter, params object[] args) {
+            return iter.WhereInstantiable().Select(p => (T) Activator.CreateInstance(p, args));
+        }
+        
+        public static IEnumerable<T> InstantiateInheritors<T>() where T : class {
+            return GetAllInheritors<T>().Instantiate<T>();
         }
         
         public static IEnumerable<Type> WhereSerializable(this IEnumerable<Type> iter) {

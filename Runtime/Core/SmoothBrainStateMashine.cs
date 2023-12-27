@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JescoDev.SmoothBrainStates.States;
-using JescoDev.SmoothBrainStates.StateTransition;
 using JescoDev.SmoothBrainStates.SubStates;
 using JescoDev.SmoothBrainStates.Utility;
 using UnityEngine;
@@ -14,26 +13,24 @@ namespace JescoDev.SmoothBrainStates {
     public class SmoothBrainStateMashine : MonoBehaviour, IStateParent, ISerializationCallbackReceiver {
 
         public readonly MovementEvents Events = new MovementEvents();
-
-        public IEnumerable<SmoothPort> InputPorts => Enumerable.Empty<SmoothPort>();
-        public IEnumerable<SmoothPort> OutputPorts => Enumerable.Empty<SmoothPort>();
-        [SerializeField] protected MovementLayerConnector _connector;
         
-        public IEnumerable<State> States => _states;
-        [SerializeField] protected List<State> _states = new List<State>();
+        [SerializeField] protected SmoothInOut _connector;
+        
+        public IEnumerable<State> States => _states.Concat(_connector.Nodes);
+        [SerializeReference] protected List<State> _states = new List<State>();
         protected IEnumerable<ExecutableState> _allExecutables => _all.OfType<ExecutableState>();
         protected IEnumerable<State> _all => this.FlattenedStates();
 
         public ExecutableState CurrentState { get; protected set; }
         public ExecutableState PreviousState { get; protected set; }
         
-        protected Dictionary<Type, ISmoothExtension> _extensions => new();
+        [SerializeReference] protected List<ISmoothExtension> _extensions = new();
 
         protected virtual void Awake() {
             foreach (ExecutableState layer in _allExecutables) layer.Awake();
         }
 
-        protected virtual void Start() => _connector.ResolveActivation();
+        protected virtual void Start() => ActivateState(_connector.ResolveActivation());
 
         protected virtual void OnDestroy() {
             foreach (ExecutableState layer in _allExecutables) layer.Destroy();
@@ -118,20 +115,22 @@ namespace JescoDev.SmoothBrainStates {
         }
 
         public T GetExtension<T>() where T : class, ISmoothExtension {
-            if (_extensions.TryGetValue(typeof(T), out ISmoothExtension extension)) return extension as T;
+            T extension = _extensions.OfType<T>().FirstOrDefault();
+            if (extension != null) return extension;
             T newExtension = Activator.CreateInstance<T>();
-            _extensions.Add(typeof(T), newExtension);
+            _extensions.Add(newExtension);
             return newExtension;
         }
 
         #endregion
         
         public void OnBeforeSerialize() {
-            foreach (State layer in _all) layer.OnBeforeSerialize();
+            foreach (State state in States) state?.OnBeforeSerialize();
         }
 
         public void OnAfterDeserialize() {
-            foreach (State layer in _all) layer.OnAfterDeserialize(this);
+            foreach (State layer in States) layer?.OnAfterDeserialize(this);
+            foreach (State layer in States) layer?.OnLateDeserialize();
         }
 
 #if UNITY_EDITOR

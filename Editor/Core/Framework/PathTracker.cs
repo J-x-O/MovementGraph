@@ -17,11 +17,11 @@ namespace JescoDev.SmoothBrainStates.Editor {
         private List<PathElement> _path = new();
 
         public readonly SerializedObject Root;
-        public SerializedProperty CurrentProperty { get; private set; }
+        public SerializedObjectOrProperty CurrentProperty { get; private set; }
         
         public PathTracker(SerializedObject root) {
             Root = root;
-            CurrentProperty = root.FindProperty("");
+            CurrentProperty = Root;
         }
 
         public bool EnterArrayElement(string variableName, int index, string identifier) {
@@ -34,7 +34,9 @@ namespace JescoDev.SmoothBrainStates.Editor {
         public bool EnterSerializedProperty(string identifier, SerializedProperty property) {
             return TryUpdatePath(new PathElement() {
                 Identifier = ObjectNames.NicifyVariableName(identifier),
-                Path = property.propertyPath.Replace(CurrentProperty.propertyPath, "")
+                Path = !string.IsNullOrEmpty(CurrentProperty.propertyPath)
+                    ? property.propertyPath.Replace(CurrentProperty.propertyPath, "")
+                    : property.propertyPath
             });
         }
         
@@ -58,13 +60,15 @@ namespace JescoDev.SmoothBrainStates.Editor {
         }
         
         public void CutTo(int elements) {
+            if (elements < 0 || _path.Count <= elements ) return;
+            if (elements == 0) { Reset(); return; }
             _path.RemoveRange(elements, _path.Count - elements);
             ShortenPath();
         }
         
         public void Reset() {
             _path.Clear();
-            CurrentProperty = null;
+            CurrentProperty = Root;
             OnPathChanged?.Invoke();
         }
         

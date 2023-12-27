@@ -1,31 +1,25 @@
-#FlexedPlane {
-    flex-direction: column;
-    flex-wrap: nowrap;
+#FixedPane {
+    padding: 2px;
+}
+
+#DisplayRoot {
+    flex-grow: 1;
+}
+
+Breadcrumbs {
+    flex-direction: row;
     justify-content: flex-start;
-    align-items: stretch;
-    align-content: stretch;
-}
-
-#LayerContainer {
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-}
-
-#GraphHeader {
-    flex-direction: row;
-    justify-content: space-between;
     flex-wrap: wrap;
 }
 
-#GraphHeader > * {
+Breadcrumbs > * {
     flex-direction: row;
     flex-wrap: nowrap;
     height: 18px;
     -unity-text-align: middle-center;
 }
 
-#GraphHeader {
+Breadcrumbs {
     padding: 5px;
 }
 
