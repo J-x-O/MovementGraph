@@ -1,0 +1,19 @@
+{
+    "name": "JescoDev.SmoothBrainStates",
+    "rootNamespace": "JescoDev.SmoothBrainStates",
+    "references": [
+        "TNRD.SerializableInterface",
+        "MackySoft.SerializeReferenceExtensions",
+        "JescoDev.Utility.EventUtility",
+        "JescoDev.Utility.Condition"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

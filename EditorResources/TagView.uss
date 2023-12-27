@@ -4,14 +4,9 @@
     padding: 3px;
 }
 
-.tag-list-item > .unity-text-field__input {
-    background-color: #323232;
-    border-color: rgba(0,0,0,0);
-    padding: 0 6px;
-    font-size: 12px;
-}
-
-.tag-list-item > .unity-text-field__input:focus {
-    background-color: #1D1D1E;
-    border-color: #27292C;
+.tag-list-item {
+    margin: 3 4px;
+    padding: 1 6px;
+    -unity-text-align: middle-center;
+    border-radius: 5px;
 }

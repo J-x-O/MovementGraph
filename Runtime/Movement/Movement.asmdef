@@ -1,0 +1,16 @@
+{
+    "name": "JescoDev.SmoothBrainStates.Movement",
+    "rootNamespace": "JescoDev.SmoothBrainStates.Movement",
+    "references": [
+        "GUID:3c2495c3febf0ec408eab489fecdbe82"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

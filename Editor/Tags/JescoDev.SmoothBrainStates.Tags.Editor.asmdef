@@ -1,0 +1,21 @@
+{
+    "name": "JescoDev.SmoothBrainStates.Tags.Editor",
+    "rootNamespace": "JescoDev.SmoothBrainStates.Tags.Editor",
+    "references": [
+        "GUID:3c2495c3febf0ec408eab489fecdbe82",
+        "GUID:85d99c2a945d2ff43934dcbb7a5507a6",
+        "GUID:5c47f90cfa87457ab9a60038c182f4e0",
+        "GUID:744fef7dc6b9186448b5623c4d123377"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
