@@ -34,6 +34,6 @@ namespace JescoDev.SmoothBrainStates.States {
         }
         
         public void ExitCurrentState(SmoothPort port = null)
-            => Parent.StateMashineMachine.ExitCurrentState(port ?? RegularExit);
+            => Parent.StateMachine.ExitCurrentState(port ?? RegularExit);
     }
 }

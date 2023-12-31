@@ -48,6 +48,9 @@ namespace JescoDev.SmoothBrainStates {
             return true;
         }
         
+        public bool IsStateActive<T>() where T : ExecutableState => CurrentState is T;
+        public bool IsStateActive(string identifier) => CurrentState.Identifier == identifier;
+        
         public bool SetState(string identifier) {
             State state = this.GetState(identifier);
             return ActivateState(state);
@@ -134,12 +137,11 @@ namespace JescoDev.SmoothBrainStates {
         }
 
 #if UNITY_EDITOR
-        //[SerializeField] protected List<Tuple<string, Color>> _tags;
         [SerializeField, HideInInspector] protected Vector2 _cameraPosition;
         [SerializeField, HideInInspector] protected float _cameraZoom = 1;
 #endif
 
-        public SmoothBrainStateMashine StateMashineMachine => this;
+        public SmoothBrainStateMashine StateMachine => this;
         public string ResolvePath() => "";
     }
 }

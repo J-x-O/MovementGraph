@@ -22,7 +22,7 @@ namespace JescoDev.SmoothBrainStates.States {
         internal string Guid => _guid;
         [SerializeField] private string _guid;
         
-        public SmoothBrainStateMashine StateMashineMachine => Parent.StateMashineMachine;
+        public SmoothBrainStateMashine StateMashineMachine => Parent.StateMachine;
         public Transform Transform => StateMashineMachine.transform;
         public GameObject GameObject => StateMashineMachine.gameObject;
 

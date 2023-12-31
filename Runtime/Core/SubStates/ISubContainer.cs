@@ -1,6 +1,6 @@
 ﻿namespace JescoDev.SmoothBrainStates.SubStates {
     public interface ISubContainer {
-        public SmoothBrainStateMashine StateMashineMachine { get; }
+        public SmoothBrainStateMashine StateMachine { get; }
         public string ResolvePath();
     }
 }

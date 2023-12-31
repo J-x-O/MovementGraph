@@ -25,7 +25,7 @@ namespace JescoDev.SmoothBrainStates.SubStates {
 
         public StateParent() : base("StateParent") { }
         
-        public SmoothBrainStateMashine StateMashineMachine => Parent.StateMashineMachine;
+        public SmoothBrainStateMashine StateMachine => Parent.StateMachine;
         protected internal override bool CanBeActivated() => true;
 
         protected internal override ExecutableState ResolveActivation(SmoothPort incomingPort = null) {
