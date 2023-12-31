@@ -14,11 +14,15 @@ namespace JescoDev.SmoothBrainStates {
         public IReadOnlyVarBasedEventSystem<string, ExecutableState> Path => _path;
         private readonly VarBasedEventSystem<string, ExecutableState> _path = new();
         
+        public IReadOnlyTypeBasedEventSystem<ExecutableState> Type => _type;
+        private readonly TypeBasedEventSystem<ExecutableState> _type = new();
+        
         internal void InvokeStart(ExecutableState newState) {
             OnAnyStateActivated.TryInvoke(newState);
             string fullPath = newState.Parent.ResolvePath() + "/" + newState.Identifier;
             _id.InvokeVarBasedEventStart(newState.Identifier, newState);
             _path.InvokeVarBasedEventStart(fullPath, newState);
+            _type.InvokeTypeBasedEventStart(newState);
         }
         
         internal void InvokeEnd(ExecutableState oldState) {
@@ -27,6 +31,7 @@ namespace JescoDev.SmoothBrainStates {
             string fullPath = oldState.Parent.ResolvePath() + "/" + oldState.Identifier;
             _id.InvokeVarBasedEventEnd(oldState.Identifier, oldState);
             _path.InvokeVarBasedEventEnd(fullPath, oldState);
+            _type.InvokeTypeBasedEventEnd(oldState);
         }
     }
 }

@@ -2,7 +2,8 @@
     "name": "JescoDev.SmoothBrainStates.Editor",
     "rootNamespace": "JescoDev.SmoothBrainStates.Editor",
     "references": [
-        "GUID:3c2495c3febf0ec408eab489fecdbe82"
+        "GUID:3c2495c3febf0ec408eab489fecdbe82",
+        "JescoDev.SmoothBrainStates"
     ],
     "includePlatforms": [
         "Editor"

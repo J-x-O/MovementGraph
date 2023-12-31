@@ -3,7 +3,8 @@
     "rootNamespace": "JescoDev.SmoothBrainStates.Movement.Tags",
     "references": [
         "GUID:3c2495c3febf0ec408eab489fecdbe82",
-        "GUID:744fef7dc6b9186448b5623c4d123377"
+        "GUID:744fef7dc6b9186448b5623c4d123377",
+        "JescoDev.SmoothBrainStates"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
