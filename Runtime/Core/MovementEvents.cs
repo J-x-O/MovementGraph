@@ -1,7 +1,6 @@
 ﻿using System;
-using GameProgramming.Utility.TypeBasedEventSystem;
 using JescoDev.SmoothBrainStates.States;
-using JescoDev.Utility.EventUtility.EventUtility;
+using JescoDev.Utility.EventUtility;
 
 namespace JescoDev.SmoothBrainStates {
     public class MovementEvents {

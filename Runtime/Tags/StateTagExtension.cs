@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using GameProgramming.Utility.TypeBasedEventSystem;
 using JescoDev.SmoothBrainStates.States;
-using JescoDev.Utility.EventUtility.EventUtility;
+using JescoDev.Utility.EventUtility;
 using UnityEngine;
 
 namespace JescoDev.SmoothBrainStates.Movement.Tags {
