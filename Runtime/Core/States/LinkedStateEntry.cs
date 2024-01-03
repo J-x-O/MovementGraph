@@ -10,18 +10,19 @@ namespace JescoDev.SmoothBrainStates.States {
         [field:SerializeField, InputPort] public SmoothPort InputPort { get; protected set; }
         [SerializeField] private string _targetPath;
         
+        private State _target;
+        
         public LinkedStateEntry() : base("Linked Entry") { }
         
         protected internal override bool CanBeActivated() => true;
 
         protected internal override ExecutableState ResolveActivation(SmoothPort incomingPort = null) {
-            State target = StateMashineMachine.GetStateByPath(_targetPath);
-            if (target == null) {
-                Debug.LogError($"Could not find state at path {_targetPath}");
-                return null;
-            }
-            
-            return target.ResolveActivation();
+            return _target?.ResolveActivation();
+        }
+
+        protected internal override void OnLateDeserialize() {
+            _target = StateMashineMachine.GetStateByPath(_targetPath);
+            if (_target == null) Debug.LogError($"Could not find state at path {_targetPath}");
         }
     }
 }
