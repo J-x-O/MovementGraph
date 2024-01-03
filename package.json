@@ -1,6 +1,6 @@
 {
   "name": "com.j-x-o.movement-graph",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "displayName": "Movement Graph",
   "description": "A State machine focused on moving player characters",
   "unity": "2021.3",

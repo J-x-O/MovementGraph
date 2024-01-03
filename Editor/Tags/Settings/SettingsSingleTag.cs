@@ -17,7 +17,7 @@ namespace JescoDev.SmoothBrainStates.Tags.Editor {
             name = "TagElement";
             
             TextField text = new TextField("");
-            VisualElement actualText = text.Children().First().Children().First();
+            VisualElement actualText = text.Children().First();
             text.BindProperty(property.NameProperty);
             text.RegisterCallback<FocusEvent>(focus => {
                 actualText.style.color = Color.white;

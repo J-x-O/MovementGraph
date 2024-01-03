@@ -18,8 +18,7 @@ namespace JescoDev.SmoothBrainStates.Tags.Editor {
         }
 
         public override void Rebuild(List<FieldInfo> fieldInfos) {
-            TagView tagView = new TagView(Node.View.Root.GetExtension<SettingsDrawerTags>());
-            tagView.BindProperty(_tags);
+            TagView tagView = new TagView(Node.View.Root.GetExtension<SettingsDrawerTags>(), _tags);
             Node.mainContainer.Insert(1, tagView);
             fieldInfos.RemoveAll(element => element.Name is "_tags");
         }

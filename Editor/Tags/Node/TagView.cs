@@ -9,13 +9,13 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace JescoDev.SmoothBrainStates.Tags.Editor {
-    public class TagView : BindableElement {
+    public class TagView : VisualElement {
         private readonly SettingsDrawerTags _settings;
 
         private readonly Button _addButton;
         private SerializedProperty _array;
 
-        public TagView(SettingsDrawerTags settings) {
+        public TagView(SettingsDrawerTags settings, SerializedProperty array) {
             _settings = settings;
             _settings.OnTagRenamed += RenameTag;
             _settings.OnColorChanged += ChangeColor;
@@ -31,6 +31,10 @@ namespace JescoDev.SmoothBrainStates.Tags.Editor {
             _addButton.AddManipulator(test);
             
             styleSheets.Add(Loading.LoadStyleSheet("TagView.uss"));
+
+            _array = array;
+            RemoveDuplicates();
+            Rebuild();
         }
 
         ~TagView() {
@@ -46,20 +50,6 @@ namespace JescoDev.SmoothBrainStates.Tags.Editor {
         
         private void RemoveUnknown() {
             _array.RemoveAll(prop => !_settings.HasTag(prop.stringValue));
-        }
-
-        // Get the reference to the bound serialized object.
-        protected override void ExecuteDefaultAction(EventBase evt) {
-            
-            Type type = evt.GetType(); //SerializedObjectBindEvent is internal, so need to use reflection here
-            if (type.Name == "SerializedPropertyBindEvent" && !string.IsNullOrWhiteSpace(bindingPath)) {
-                SerializedProperty obj = type.GetProperty("bindProperty")?.GetValue(evt) as SerializedProperty;
-                _array = obj;
-                // Updating it twice here doesn't cause an issue.
-                RemoveDuplicates();
-                Rebuild();
-            }
-            base.ExecuteDefaultAction(evt);
         }
         
         private void RemoveDuplicates() {
