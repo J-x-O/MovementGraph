@@ -37,8 +37,7 @@ namespace JescoDev.SmoothBrainStates.SubStates {
         }
 
         protected internal override ExecutableState ResolveActivation(SmoothPort incomingPort) {
-            if (incomingPort == _outReplay) return In.ResolveActivation(_outReplay);
-            return null;
+            return GetNextPort(incomingPort)?.FindFirstValidTransition();
         }
         
     }

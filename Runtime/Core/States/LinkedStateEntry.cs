@@ -22,7 +22,7 @@ namespace JescoDev.SmoothBrainStates.States {
 
         protected internal override void OnLateDeserialize() {
             _target = StateMashineMachine.GetStateByPath(_targetPath);
-            if (_target == null) Debug.LogError($"Could not find state at path {_targetPath}");
+            if (_target == null && Application.isPlaying) Debug.LogError($"Could not find state at path {_targetPath}");
         }
     }
 }
