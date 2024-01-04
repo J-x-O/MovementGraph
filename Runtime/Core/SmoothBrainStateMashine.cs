@@ -28,12 +28,14 @@ namespace JescoDev.SmoothBrainStates {
 
         protected virtual void Awake() {
             foreach (ExecutableState layer in _allExecutables) layer.Awake();
+            foreach (ISmoothExtension extension in _extensions) extension.Setup(this);
         }
 
         protected virtual void Start() => ActivateState(_connector.ResolveActivation());
 
         protected virtual void OnDestroy() {
             foreach (ExecutableState layer in _allExecutables) layer.Destroy();
+            foreach (ISmoothExtension extension in _extensions) extension.Cleanup(this);
         }
 
         protected void OnDrawGizmosSelected() {
