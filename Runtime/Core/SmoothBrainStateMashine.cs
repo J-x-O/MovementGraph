@@ -72,6 +72,7 @@ namespace JescoDev.SmoothBrainStates {
         }
 
         private bool ActivateState(State state) {
+            if (state == null) return false;
             
             bool requiresConnection = state.GetInputPorts().Any() && CurrentState != state;
             SmoothPort found = null;
