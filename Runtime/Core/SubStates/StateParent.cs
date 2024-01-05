@@ -36,7 +36,11 @@ namespace JescoDev.SmoothBrainStates.SubStates {
             return port == InputPort ? _connector.InNode.In : null;
         }
         
-        public string ResolvePath() => Parent.ResolvePath() + "/" + Identifier;
+        public string ResolvePath() {
+            string path = Parent.ResolvePath();
+            if (string.IsNullOrEmpty(path)) return Identifier;
+            return path + "/" + Identifier;
+        }
 
         protected internal override void OnBeforeSerialize() {
             base.OnBeforeSerialize();
