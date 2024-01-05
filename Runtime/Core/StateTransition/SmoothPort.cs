@@ -75,7 +75,7 @@ namespace JescoDev.SmoothBrainStates {
         public bool HasActiveTransition(bool useAnyState) {
             if (HasTransition(State.Parent.StateMachine.CurrentState)) return true;
             return useAnyState 
-                   && (State.StateMashineMachine as IStateParent).TryGetState("Any State", out State anyState)
+                   && (State.StateMashine as IStateParent).TryGetState("Any State", out State anyState)
                    && HasTransition(anyState);
         }
 

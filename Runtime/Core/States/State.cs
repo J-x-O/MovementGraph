@@ -18,13 +18,15 @@ namespace JescoDev.SmoothBrainStates.States {
         
         public string Identifier => _identifier;
         [SerializeField] protected string _identifier;
+        
+        public string Path => Parent is SmoothBrainStateMashine ? Identifier : Parent.ResolvePath() + "/" + Identifier;
 
         internal string Guid => _guid;
         [SerializeField] private string _guid;
         
-        public SmoothBrainStateMashine StateMashineMachine => Parent.StateMachine;
-        public Transform Transform => StateMashineMachine.transform;
-        public GameObject GameObject => StateMashineMachine.gameObject;
+        public SmoothBrainStateMashine StateMashine => Parent.StateMachine;
+        public Transform Transform => StateMashine.transform;
+        public GameObject GameObject => StateMashine.gameObject;
 
         public State(string identifier) {
             _identifier = identifier;

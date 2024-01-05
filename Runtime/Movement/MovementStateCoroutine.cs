@@ -14,11 +14,11 @@ namespace JescoDev.SmoothBrainStates.Movement {
         protected MovementStateCoroutine(string identifier) : base(identifier) { }
         
         protected override void OnActivate() {
-            _routine = StateMashineMachine.StartCoroutine(Coroutine());
+            _routine = StateMashine.StartCoroutine(Coroutine());
         }
 
         protected override void OnDeactivate() {
-            if(_routine != null) StateMashineMachine.StopCoroutine(_routine);
+            if(_routine != null) StateMashine.StopCoroutine(_routine);
         }
 
         private IEnumerator Coroutine() {
