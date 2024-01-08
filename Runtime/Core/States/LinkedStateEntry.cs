@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Linq;
 using JescoDev.SmoothBrainStates.Attributes;
 using JescoDev.SmoothBrainStates.SubStates;
 using UnityEngine;
 
 namespace JescoDev.SmoothBrainStates.States {
     [Serializable, SmoothStateMenuPath("Default/Linked Entry"), SmoothStateFixedIdentifier("Linked Entry")]
-    public class LinkedStateEntry : State {
+    public class LinkedStateEntry : State, IFastForward {
 
         [field:SerializeField, InputPort] public SmoothPort InputPort { get; protected set; }
         [SerializeField] private string _targetPath;
@@ -24,5 +25,8 @@ namespace JescoDev.SmoothBrainStates.States {
             _target = StateMashine.GetStateByPath(_targetPath);
             if (_target == null && Application.isPlaying) Debug.LogError($"Could not find state at path {_targetPath}");
         }
+
+        // todo: sus for multiple ports
+        public SmoothPort GetNextPort(SmoothPort port) => _target.GetOutputPorts().FirstOrDefault();
     }
 }
