@@ -21,10 +21,7 @@ namespace JescoDev.SmoothBrainStates.States {
             return _target?.ResolveActivation();
         }
 
-        protected internal override void OnLateDeserialize() {
-            _target = StateMashine.GetStateByPath(_targetPath);
-            if (_target == null && Application.isPlaying) Debug.LogError($"Could not find state at path {_targetPath}");
-        }
+        protected internal override void OnLateDeserialize() => _target = StateMashine.GetStateByPath(_targetPath);
 
         // todo: sus for multiple ports
         public SmoothPort GetNextPort(SmoothPort port) => _target.GetOutputPorts().FirstOrDefault();
